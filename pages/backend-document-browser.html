@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>后端开发文档中心 - CreativePro Studio</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css">
+    <style>
+        :root {
+            /* Apple 设计色彩系统 */
+            --blue: #007aff;
+            --indigo: #5856d6;
+            --purple: #af52de;
+            --pink: #ff2d55;
+            --red: #ff3b30;
+            --orange: #ff9500;
+            --yellow: #ffcc00;
+            --green: #34c759;
+            --mint: #00c7be;
+            --teal: #30b0c7;
+            --cyan: #32ade6;
+            --gray: #8e8e93;
+            --gray2: #aeaeb2;
+            --gray3: #c7c7cc;
+            --gray4: #d1d1d6;
+            --gray5: #e5e5ea;
+            --gray6: #f2f2f7;
+            
+            /* 间距 */
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+            --spacing-xxl: 48px;
+            
+            /* 圆角 */
+            --radius-sm: 6px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            
+            /* 字体大小 */
+            --font-xs: 12px;
+            --font-sm: 14px;
+            --font-md: 16px;
+            --font-lg: 20px;
+            --font-xl: 24px;
+            --font-xxl: 32px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--gray6);
+            color: #000;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        a {
+            text-decoration: none;
+            color: var(--blue);
+        }
+        
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* 侧边栏样式 */
+        .sidebar {
+            width: 280px;
+            background-color: var(--gray6);
+            border-right: 1px solid var(--gray5);
+            padding: var(--spacing-lg) 0;
+            overflow-y: auto;
+        }
+        
+        .sidebar-header {
+            padding: 0 var(--spacing-lg) var(--spacing-lg);
+            border-bottom: 1px solid var(--gray5);
+        }
+        
+        .sidebar-title {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            font-size: var(--font-md);
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .sidebar-title i {
+            color: var(--green);
+        }
+        
+        .sidebar-subtitle {
+            font-size: var(--font-sm);
+            color: var(--gray);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background-color: white;
+            border-radius: var(--radius-md);
+            padding: var(--spacing-sm) var(--spacing-md);
+            border: 1px solid var(--gray4);
+        }
+        
+        .search-bar i {
+            color: var(--gray2);
+            margin-right: var(--spacing-sm);
+        }
+        
+        .search-input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: var(--font-sm);
+            background: transparent;
+        }
+        
+        /* 主内容区样式 */
+        .main-content {
+            flex: 1;
+            padding: var(--spacing-xl);
+            overflow-y: auto;
+        }
+        
+        .header {
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .breadcrumbs {
+            display: flex;
+            align-items: center;
+            font-size: var(--font-sm);
+            color: var(--gray);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .breadcrumbs a {
+            color: var(--gray);
+        }
+        
+        .breadcrumbs a:hover {
+            color: var(--blue);
+        }
+        
+        .breadcrumbs i {
+            margin: 0 var(--spacing-xs);
+            font-size: 10px;
+        }
+        
+        .page-title {
+            font-size: var(--font-xl);
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .page-meta {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            color: var(--gray);
+            font-size: var(--font-sm);
+        }
+        
+        .page-meta span {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+        }
+        
+        /* 文件目录样式 */
+        .directory-container {
+            background-color: white;
+            border-radius: var(--radius-lg);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .directory-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-bottom: 1px solid var(--gray5);
+        }
+        
+        .directory-title {
+            font-size: var(--font-md);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+        
+        .directory-views {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+        
+        .view-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray);
+        }
+        
+        .view-btn:hover {
+            background-color: var(--gray6);
+            color: var(--gray2);
+        }
+        
+        .view-btn.active {
+            background-color: var(--green);
+            color: white;
+        }
+        
+        .directory-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .directory-table th {
+            text-align: left;
+            padding: var(--spacing-md) var(--spacing-lg);
+            font-weight: 500;
+            color: var(--gray);
+            border-bottom: 1px solid var(--gray5);
+            font-size: var(--font-sm);
+        }
+        
+        .directory-table tbody tr {
+            border-bottom: 1px solid var(--gray5);
+            transition: background-color 0.2s;
+        }
+        
+        .directory-table tbody tr:hover {
+            background-color: var(--gray6);
+        }
+        
+        .directory-table tbody tr:last-child {
+            border-bottom: none;
+        }
+        
+        .directory-table td {
+            padding: var(--spacing-md) var(--spacing-lg);
+        }
+        
+        .file-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: var(--spacing-sm);
+            color: var(--green);
+        }
+        
+        .file-icon.folder {
+            color: var(--blue);
+        }
+        
+        .file-icon.document {
+            color: var(--gray);
+        }
+        
+        .file-name {
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+        }
+        
+        .file-size, .file-date {
+            color: var(--gray);
+            font-size: var(--font-sm);
+        }
+        
+        /* 文档预览样式 */
+        .document-preview {
+            background-color: white;
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-xl);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-top: var(--spacing-lg);
+            display: none;
+        }
+        
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-lg);
+            padding-bottom: var(--spacing-md);
+            border-bottom: 1px solid var(--gray5);
+        }
+        
+        .preview-title {
+            font-size: var(--font-lg);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+        
+        .preview-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+        
+        .preview-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: var(--gray6);
+            color: var(--gray);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+        }
+        
+        .preview-btn:hover {
+            background-color: var(--gray5);
+            color: #000;
+        }
+        
+        .markdown-content {
+            font-size: var(--font-md);
+            line-height: 1.6;
+        }
+        
+        /* 底部元素 */
+        .footer {
+            margin-top: var(--spacing-xxl);
+            padding-top: var(--spacing-lg);
+            border-top: 1px solid var(--gray5);
+            color: var(--gray);
+            font-size: var(--font-sm);
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid var(--gray5);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 侧边栏 -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-title">
+                    <i class="fas fa-server"></i>
+                    <span>后端开发文档中心</span>
+                </div>
+                <p class="sidebar-subtitle">浏览后端开发相关的文档</p>
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" class="search-input" placeholder="搜索文件或文件夹...">
+                </div>
+            </div>
+        </aside>
+        
+        <!-- 主内容区 -->
+        <main class="main-content">
+            <div class="header">
+                <div class="breadcrumbs">
+                    <a href="index.html">首页</a>
+                    <i class="fas fa-chevron-right"></i>
+                    <span>后端开发文档中心</span>
+                </div>
+                <h1 class="page-title">后端开发文档</h1>
+                <div class="page-meta">
+                    <span><i class="far fa-folder"></i> 3 个文件夹</span>
+                    <span><i class="far fa-file"></i> 15 个文件</span>
+                    <span><i class="far fa-clock"></i> 最近更新: 2025-04-28</span>
+                </div>
+            </div>
+            
+            <!-- 文件目录容器 -->
+            <div class="directory-container">
+                <div class="directory-header">
+                    <h2 class="directory-title">
+                        <i class="fas fa-folder-open"></i>
+                        文档目录
+                    </h2>
+                    <div class="directory-views">
+                        <button class="view-btn active" title="列表视图">
+                            <i class="fas fa-list"></i>
+                        </button>
+                        <button class="view-btn" title="网格视图">
+                            <i class="fas fa-th"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <table class="directory-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 50%">名称</th>
+                            <th style="width: 15%">大小</th>
+                            <th style="width: 20%">修改日期</th>
+                            <th style="width: 15%">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- 文件夹 -->
+                        <tr class="directory-item" data-type="folder" data-name="系统设计文档">
+                            <td>
+                                <div class="file-name">
+                                    <div class="file-icon folder">
+                                        <i class="fas fa-folder"></i>
+                                    </div>
+                                    系统设计文档
+                                </div>
+                            </td>
+                            <td class="file-size">-</td>
+                            <td class="file-date">2025-04-20</td>
+                            <td>
+                                <a href="#" class="open-folder">打开</a>
+                            </td>
+                        </tr>
+                        <tr class="directory-item" data-type="folder" data-name="API文档">
+                            <td>
+                                <div class="file-name">
+                                    <div class="file-icon folder">
+                                        <i class="fas fa-folder"></i>
+                                    </div>
+                                    API文档
+                                </div>
+                            </td>
+                            <td class="file-size">-</td>
+                            <td class="file-date">2025-04-22</td>
+                            <td>
+                                <a href="#" class="open-folder">打开</a>
+                            </td>
+                        </tr>
+                        <tr class="directory-item" data-type="folder" data-name="数据库设计">
+                            <td>
+                                <div class="file-name">
+                                    <div class="file-icon folder">
+                                        <i class="fas fa-folder"></i>
+                                    </div>
+                                    数据库设计
+                                </div>
+                            </td>
+                            <td class="file-size">-</td>
+                            <td class="file-date">2025-04-25</td>
+                            <td>
+                                <a href="#" class="open-folder">打开</a>
+                            </td>
+                        </tr>
+                        
+                        <!-- 文件 -->
+                        <tr class="directory-item" data-type="file" data-name="后端架构概述">
+                            <td>
+                                <div class="file-name">
+                                    <div class="file-icon document">
+                                        <i class="fas fa-file-alt"></i>
+                                    </div>
+                                    后端架构概述.md
+                                </div>
+                            </td>
+                            <td class="file-size">24KB</td>
+                            <td class="file-date">2025-04-28</td>
+                            <td>
+                                <a href="#" class="view-file" data-document="后端架构概述">查看</a>
+                            </td>
+                        </tr>
+                        <tr class="directory-item" data-type="file" data-name="微服务设计原则">
+                            <td>
+                                <div class="file-name">
+                                    <div class="file-icon document">
+                                        <i class="fas fa-file-alt"></i>
+                                    </div>
+                                    微服务设计原则.md
+                                </div>
+                            </td>
+                            <td class="file-size">18KB</td>
+                            <td class="file-date">2025-04-26</td>
+                            <td>
+                                <a href="#" class="view-file" data-document="微服务设计原则">查看</a>
+                            </td>
+                        </tr>
+                        <tr class="directory-item" data-type="file" data-name="缓存策略">
+                            <td>
+                                <div class="file-name">
+                                    <div class="file-icon document">
+                                        <i class="fas fa-file-alt"></i>
+                                    </div>
+                                    缓存策略.md
+                                </div>
+                            </td>
+                            <td class="file-size">12KB</td>
+                            <td class="file-date">2025-04-24</td>
+                            <td>
+                                <a href="#" class="view-file" data-document="缓存策略">查看</a>
+                            </td>
+                        </tr>
+                        <tr class="directory-item" data-type="file" data-name="认证与授权">
+                            <td>
+                                <div class="file-name">
+                                    <div class="file-icon document">
+                                        <i class="fas fa-file-alt"></i>
+                                    </div>
+                                    认证与授权.md
+                                </div>
+                            </td>
+                            <td class="file-size">15KB</td>
+                            <td class="file-date">2025-04-23</td>
+                            <td>
+                                <a href="#" class="view-file" data-document="认证与授权">查看</a>
+                            </td>
+                        </tr>
+                        <tr class="directory-item" data-type="file" data-name="错误处理规范">
+                            <td>
+                                <div class="file-name">
+                                    <div class="file-icon document">
+                                        <i class="fas fa-file-alt"></i>
+                                    </div>
+                                    错误处理规范.md
+                                </div>
+                            </td>
+                            <td class="file-size">10KB</td>
+                            <td class="file-date">2025-04-22</td>
+                            <td>
+                                <a href="#" class="view-file" data-document="错误处理规范">查看</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- 文档预览区域 -->
+            <div class="document-preview" id="documentPreview">
+                <div class="preview-header">
+                    <h2 class="preview-title" id="previewTitle">
+                        <i class="fas fa-file-alt"></i>
+                        <span>文档标题</span>
+                    </h2>
+                    <div class="preview-actions">
+                        <button class="preview-btn" id="downloadBtn" title="下载">
+                            <i class="fas fa-download"></i>
+                        </button>
+                        <button class="preview-btn" id="closePreview" title="关闭">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="markdown-content" id="markdownContent">
+                    <!-- 这里会动态加载Markdown内容 -->
+                    <p>请选择一个文档进行查看</p>
+                </div>
+            </div>
+            
+            <div class="footer">
+                <div>© 2023-2024 CreativePro Studio</div>
+                <div>版本 1.0.0</div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const documentPreview = document.getElementById('documentPreview');
+            const previewTitle = document.getElementById('previewTitle').querySelector('span');
+            const markdownContent = document.getElementById('markdownContent');
+            const closePreview = document.getElementById('closePreview');
+            const viewButtons = document.querySelectorAll('.view-file');
+            const searchInput = document.querySelector('.search-input');
+            const directoryItems = document.querySelectorAll('.directory-item');
+            
+            // 模拟markdown文档内容，实际项目中可通过AJAX从服务器获取
+            const mdContents = {
+                "后端架构概述": "# 后端架构概述\n\n## 总体架构\n\n我们采用微服务架构，将系统拆分为多个独立的服务，每个服务负责特定的业务功能。\n\n## 服务划分\n\n- **用户服务**：用户注册、认证、管理\n- **内容服务**：创意内容存储与管理\n- **模板服务**：模板创建、存储、搜索\n- **素材服务**：素材管理与检索\n- **审核服务**：内容审核、报告生成\n- **批处理服务**：大规模任务管理\n- **通知服务**：消息推送、邮件发送\n\n## 技术栈\n\n- **语言**：Java 17\n- **框架**：Spring Boot 3.0, Spring Cloud\n- **数据库**：PostgreSQL 15, Redis 7.0\n- **消息队列**：Kafka\n- **搜索引擎**：Elasticsearch\n- **容器化**：Docker, Kubernetes\n- **CI/CD**：Jenkins, GitLab CI\n\n## 基础设施\n\n- API网关：Spring Cloud Gateway\n- 服务发现：Eureka\n- 配置管理：Spring Cloud Config\n- 负载均衡：Spring Cloud LoadBalancer\n- 链路追踪：Sleuth, Zipkin\n- 监控系统：Prometheus, Grafana\n\n## 架构原则\n\n1. **高内聚低耦合**：服务内功能紧密相关，服务间通过明确的接口通信\n2. **服务自治**：每个服务拥有自己的数据存储和业务逻辑\n3. **容错设计**：设计时考虑失败，实现优雅降级和熔断\n4. **可观测性**：全面的日志、指标和追踪能力\n5. **安全第一**：层层深入的安全防护措施",
+                
+                "微服务设计原则": "# 微服务设计原则\n\n## 单一职责\n\n每个微服务应该有明确且单一的职责。通过以下方式实现：\n\n- 基于业务领域划分服务边界\n- 避免服务之间共享数据库\n- 遵循领域驱动设计(DDD)原则\n\n## 接口设计\n\n服务接口应保持简单明确：\n\n- 使用RESTful API或gRPC\n- 版本化API以支持演进\n- 提供清晰的文档和契约\n\n## 数据管理\n\n- 每个服务拥有自己的数据库\n- 使用事件驱动架构实现数据一致性\n- 通过CQRS模式分离读写操作\n\n## 通信模式\n\n服务间通信可采用以下模式：\n\n- 同步通信：REST, gRPC\n- 异步通信：Kafka, RabbitMQ\n- 混合通信：根据业务需求选择合适的模式\n\n## 服务发现\n\n- 使用注册中心（Eureka）管理服务实例\n- 实现健康检查与自动恢复\n- 支持动态扩缩容\n\n## 故障处理\n\n- 实现断路器模式（Resilience4j）\n- 提供优雅降级策略\n- 设计幂等操作支持重试\n\n## 可观测性\n\n构建全面的监控体系：\n\n- 分布式追踪（Sleuth + Zipkin）\n- 集中式日志（ELK栈）\n- 性能指标监控（Prometheus + Grafana）",
+                
+                "缓存策略": "# 缓存策略\n\n## 缓存层次\n\n系统采用多级缓存策略：\n\n1. **本地缓存**：服务实例内部的内存缓存\n2. **分布式缓存**：Redis集群\n3. **CDN缓存**：静态资源缓存\n\n## 缓存模式\n\n### Cache-Aside模式\n\n```java\npublic Data getById(String id) {\n    // 1. 尝试从缓存获取\n    Data data = cache.get(id);\n    \n    // 2. 缓存未命中时，从数据库获取\n    if (data == null) {\n        data = database.get(id);\n        \n        // 3. 将结果放入缓存\n        if (data != null) {\n            cache.put(id, data, EXPIRY_TIME);\n        }\n    }\n    \n    return data;\n}\n```\n\n### Write-Through模式\n\n```java\npublic void save(Data data) {\n    // 1. 写入数据库\n    database.save(data);\n    \n    // 2. 更新缓存\n    cache.put(data.getId(), data, EXPIRY_TIME);\n}\n```\n\n## 缓存失效策略\n\n- **基于时间**：设置合理的TTL\n- **基于容量**：LRU淘汰策略\n- **基于事件**：数据变更时主动失效\n\n## 缓存一致性\n\n为保持缓存与数据源一致性，我们采用：\n\n1. 写入数据库后主动更新或失效缓存\n2. 使用消息队列传播缓存失效事件\n3. 设置合理的TTL避免长期不一致\n\n## 缓存穿透防护\n\n- 对空值进行缓存\n- 使用布隆过滤器快速判断不存在的值\n- API层增加参数校验",
+                
+                "认证与授权": "# 认证与授权\n\n## 认证架构\n\n系统采用基于OAuth 2.0的认证框架，具体实现为Spring Security OAuth：\n\n```\n+--------+                               +---------------+\n|        |--(A)- Authorization Request ->|   Resource    |\n|        |                               |     Owner     |\n|        |<-(B)-- Authorization Grant ---|               |\n|        |                               +---------------+\n|        |                               \n|        |                               +---------------+\n|        |--(C)-- Authorization Grant -->| Authorization |\n| Client |                               |     Server    |\n|        |<-(D)----- Access Token -------|               |\n|        |                               +---------------+\n|        |                               \n|        |                               +---------------+\n|        |--(E)----- Access Token ------>|    Resource   |\n|        |                               |     Server    |\n|        |<-(F)--- Protected Resource ---|               |\n+--------+                               +---------------+\n```\n\n## 认证流程\n\n1. 用户通过用户名/密码登录或第三方OAuth登录\n2. 认证服务验证凭据后颁发JWT令牌\n3. 客户端在后续请求中携带令牌\n4. 资源服务验证令牌有效性并授权访问\n\n## JWT令牌结构\n\n```json\n{\n  \"header\": {\n    \"alg\": \"RS256\",\n    \"typ\": \"JWT\"\n  },\n  \"payload\": {\n    \"sub\": \"1234567890\",\n    \"name\": \"用户名\",\n    \"roles\": [\"ROLE_USER\"],\n    \"permissions\": [\"read\", \"write\"],\n    \"iat\": 1516239022,\n    \"exp\": 1516242622\n  },\n  \"signature\": \"...\"\n}\n```\n\n## 授权模型\n\n系统采用基于角色（RBAC）和属性（ABAC）的混合授权模型：\n\n- **角色**：用户、编辑者、审核员、管理员\n- **权限**：细粒度操作权限，如read:project, write:content\n- **资源约束**：基于用户属性和资源属性的访问控制\n\n## 安全最佳实践\n\n1. 令牌存储在HttpOnly Cookie中防止XSS攻击\n2. 实现CSRF保护机制\n3. 敏感操作要求重新验证\n4. 限制令牌有效期并支持刷新\n5. IP异常检测与地理位置验证",
+                
+                "错误处理规范": "# 错误处理规范\n\n## 错误码设计\n\n错误码格式：服务标识-错误类型-具体错误\n\n```\nUSR-AUTH-001：用户名或密码错误\nUSR-PERM-002：权限不足\nCONT-VAL-001：内容格式无效\n```\n\n## 统一响应结构\n\n所有API响应采用统一的JSON格式：\n\n```json\n{\n  \"success\": true/false,\n  \"data\": { /* 成功时返回的数据 */ },\n  \"error\": {\n    \"code\": \"服务-类型-编号\",\n    \"message\": \"用户友好的错误消息\",\n    \"details\": \"详细错误信息（仅开发环境返回）\",\n    \"timestamp\": \"2023-04-28T12:00:00Z\",\n    \"path\": \"/api/resource\"\n  }\n}\n```\n\n## 异常处理层次\n\n1. **控制器层**：使用@ExceptionHandler捕获并转换异常\n2. **服务层**：抛出领域特定的业务异常\n3. **全局处理**：使用@ControllerAdvice处理未捕获异常\n\n```java\n@RestControllerAdvice\npublic class GlobalExceptionHandler {\n\n    @ExceptionHandler(BusinessException.class)\n    public ResponseEntity<ErrorResponse> handleBusinessException(BusinessException ex, HttpServletRequest request) {\n        ErrorResponse error = new ErrorResponse(\n            ex.getErrorCode(),\n            ex.getMessage(),\n            null,\n            LocalDateTime.now(),\n            request.getRequestURI()\n        );\n        \n        return new ResponseEntity<>(error, ex.getStatus());\n    }\n    \n    @ExceptionHandler(Exception.class)\n    public ResponseEntity<ErrorResponse> handleGenericException(Exception ex, HttpServletRequest request) {\n        // 处理未预期的异常\n        // ...\n    }\n}\n```\n\n## 错误记录与监控\n\n- 所有错误都应记录到日志系统\n- 严重错误应触发告警通知\n- 错误频率应纳入监控指标\n\n## 客户端处理建议\n\n- 支持错误码国际化\n- 实现统一的错误处理拦截器\n- 根据错误类型提供不同的用户反馈"
+            };
+            
+            // 点击查看文件
+            viewButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const docName = this.getAttribute('data-document');
+                    showDocumentPreview(docName);
+                });
+            });
+            
+            // 关闭预览
+            closePreview.addEventListener('click', function() {
+                documentPreview.style.display = 'none';
+            });
+            
+            // 显示文档预览
+            function showDocumentPreview(docName) {
+                if (mdContents[docName]) {
+                    previewTitle.textContent = docName + '.md';
+                    markdownContent.innerHTML = marked.parse(mdContents[docName]);
+                    documentPreview.style.display = 'block';
+                    
+                    // 应用Prism.js语法高亮
+                    Prism.highlightAllUnder(markdownContent);
+                    
+                    // 滚动到顶部
+                    documentPreview.scrollTop = 0;
+                }
+            }
+            
+            // 文件夹打开
+            document.querySelectorAll('.open-folder').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const folderName = this.closest('.directory-item').getAttribute('data-name');
+                    alert(`${folderName} 文件夹将在这里展开子目录内容`);
+                });
+            });
+            
+            // 搜索功能
+            searchInput.addEventListener('input', function() {
+                const query = this.value.toLowerCase();
+                
+                directoryItems.forEach(item => {
+                    const name = item.getAttribute('data-name').toLowerCase();
+                    if (name.includes(query)) {
+                        item.style.display = 'table-row';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+            
+            // 视图切换
+            const viewButtons = document.querySelectorAll('.view-btn');
+            viewButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    viewButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // 这里可以添加切换为网格视图的逻辑
+                    if (this.title === '网格视图') {
+                        alert('切换为网格视图的功能在此处实现');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html> 

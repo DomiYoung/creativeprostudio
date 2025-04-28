@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文档浏览器 - CreativePro Studio</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="../styles/kimtrue-brand.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@5.1.0/github-markdown-light.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.6.0/styles/github.min.css">
+    <style>
+        :root {
+            --doc-sidebar-width: 280px;
+            --doc-header-height: 60px;
+            --doc-accent-color: #007AFF;
+            --doc-accent-light: rgba(0, 122, 255, 0.1);
+            --doc-success-color: #34C759;
+            --soft-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            --medium-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 16px;
+            --transition-quick: 0.15s ease;
+            --transition-normal: 0.25s ease;
+        }
+        
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--gray-100);
+            color: var(--gray-900);
+            overflow: hidden;
+        }
+        
+        /* 文档查看器布局 */
+        .doc-viewer {
+            display: grid;
+            grid-template-columns: var(--doc-sidebar-width) 1fr;
+            grid-template-rows: var(--doc-header-height) 1fr;
+            grid-template-areas: 
+                "header header"
+                "sidebar content";
+            height: 100vh;
+            width: 100%;
+        }
+        
+        /* 导航栏样式 */
+        .doc-header {
+            grid-area: header;
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 var(--spacing-lg);
+            position: relative;
+            z-index: 10;
+        }
+        
+        .doc-logo {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .doc-logo-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background-color: var(--doc-accent-light);
+            color: var(--doc-accent-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+        
+        .doc-logo-text {
+            font-weight: 600;
+            font-size: 16px;
+        }
+        
+        .doc-nav-controls {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+        }
+        
+        .doc-search {
+            position: relative;
+        }
+        
+        .doc-search input {
+            width: 240px;
+            height: 36px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--gray-200);
+            background-color: var(--gray-50);
+            padding: 0 var(--spacing-md) 0 36px;
+            font-size: 14px;
+            outline: none;
+            transition: var(--transition-quick);
+        }
+        
+        .doc-search input:focus {
+            border-color: var(--doc-accent-color);
+            background-color: white;
+        }
+        
+        .doc-search i {
+            position: absolute;
+            left: var(--spacing-md);
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray-500);
+            pointer-events: none;
+        }
+        
+        .doc-actions {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+        
+        .doc-action-btn {
+            background: none;
+            border: none;
+            padding: 0;
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray-600);
+            cursor: pointer;
+            transition: var(--transition-quick);
+        }
+        
+        .doc-action-btn:hover {
+            background-color: var(--gray-100);
+            color: var(--gray-900);
+        }
+        
+        /* 侧边栏样式 */
+        .doc-sidebar {
+            grid-area: sidebar;
+            background-color: white;
+            border-right: 1px solid var(--gray-200);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .doc-sidebar-header {
+            padding: var(--spacing-md);
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .doc-sidebar-title {
+            font-weight: 600;
+            font-size: 15px;
+        }
+        
+        .doc-tree {
+            flex: 1;
+            padding: var(--spacing-md);
+        }
+        
+        .doc-tree-item {
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .doc-tree-folder {
+            cursor: pointer;
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .doc-tree-folder-header {
+            display: flex;
+            align-items: center;
+            padding: var(--spacing-sm) var(--spacing-sm);
+            border-radius: var(--radius-sm);
+            transition: var(--transition-quick);
+        }
+        
+        .doc-tree-folder-header:hover {
+            background-color: var(--gray-100);
+        }
+        
+        .doc-tree-folder-header.active {
+            background-color: var(--doc-accent-light);
+            color: var(--doc-accent-color);
+        }
+        
+        .doc-tree-folder-icon {
+            margin-right: var(--spacing-sm);
+            width: 16px;
+            text-align: center;
+            transition: transform var(--transition-quick);
+        }
+        
+        .doc-tree-folder.open > .doc-tree-folder-header .doc-tree-folder-icon {
+            transform: rotate(90deg);
+        }
+        
+        .doc-tree-folder-name {
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .doc-tree-folder-content {
+            padding-left: var(--spacing-lg);
+            margin-top: var(--spacing-xs);
+            display: none;
+        }
+        
+        .doc-tree-folder.open > .doc-tree-folder-content {
+            display: block;
+        }
+        
+        .doc-tree-file {
+            display: flex;
+            align-items: center;
+            padding: var(--spacing-sm) var(--spacing-sm);
+            border-radius: var(--radius-sm);
+            margin-bottom: var(--spacing-xs);
+            cursor: pointer;
+            transition: var(--transition-quick);
+            font-size: 14px;
+        }
+        
+        .doc-tree-file:hover {
+            background-color: var(--gray-100);
+        }
+        
+        .doc-tree-file.active {
+            background-color: var(--doc-accent-light);
+            color: var(--doc-accent-color);
+        }
+        
+        .doc-tree-file-icon {
+            margin-right: var(--spacing-sm);
+            color: var(--gray-500);
+            width: 16px;
+            text-align: center;
+        }
+        
+        .doc-tree-file.active .doc-tree-file-icon {
+            color: var(--doc-accent-color);
+        }
+        
+        /* 内容区域样式 */
+        .doc-content {
+            grid-area: content;
+            overflow-y: auto;
+            padding: var(--spacing-lg);
+            background-color: white;
+        }
+        
+        .doc-breadcrumb {
+            display: flex;
+            align-items: center;
+            font-size: 13px;
+            color: var(--gray-500);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .doc-breadcrumb-item {
+            display: flex;
+            align-items: center;
+        }
+        
+        .doc-breadcrumb-separator {
+            margin: 0 var(--spacing-xs);
+            color: var(--gray-400);
+        }
+        
+        .doc-content-header {
+            margin-bottom: var(--spacing-lg);
+            padding-bottom: var(--spacing-md);
+            border-bottom: 1px solid var(--gray-200);
+        }
+        
+        .doc-content-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+            color: var(--gray-900);
+        }
+        
+        .doc-content-meta {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            font-size: 13px;
+            color: var(--gray-500);
+        }
+        
+        .doc-content-meta-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+        }
+        
+        /* Markdown 样式调整 */
+        .markdown-body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+            font-size: 15px;
+            line-height: 1.6;
+            color: var(--gray-900);
+        }
+        
+        .markdown-body h1 {
+            font-size: 24px;
+            border-bottom: 1px solid var(--gray-200);
+            padding-bottom: var(--spacing-md);
+        }
+        
+        .markdown-body h2 {
+            font-size: 20px;
+            margin-top: var(--spacing-xl);
+        }
+        
+        .markdown-body h3 {
+            font-size: 18px;
+        }
+        
+        .markdown-body code {
+            background-color: var(--gray-100);
+            border-radius: 4px;
+            padding: 2px 6px;
+            font-family: "SF Mono", Monaco, Menlo, Consolas, monospace;
+            font-size: 0.9em;
+        }
+        
+        .markdown-body pre code {
+            padding: 0;
+        }
+        
+        .markdown-body pre {
+            background-color: var(--gray-100);
+            border-radius: var(--radius-md);
+            margin: var(--spacing-md) 0;
+        }
+        
+        .markdown-body blockquote {
+            border-left: 4px solid var(--gray-300);
+            padding: var(--spacing-sm) var(--spacing-md);
+            background-color: var(--gray-50);
+            margin: var(--spacing-md) 0;
+        }
+        
+        .markdown-body table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: var(--spacing-md) 0;
+        }
+        
+        .markdown-body th, .markdown-body td {
+            border: 1px solid var(--gray-300);
+            padding: 8px 12px;
+        }
+        
+        .markdown-body th {
+            background-color: var(--gray-100);
+            font-weight: 600;
+        }
+        
+        .markdown-body img {
+            max-width: 100%;
+            border-radius: var(--radius-sm);
+        }
+        
+        /* 响应式样式 */
+        @media (max-width: 768px) {
+            .doc-viewer {
+                grid-template-columns: 1fr;
+                grid-template-areas: 
+                    "header"
+                    "content";
+            }
+            
+            .doc-sidebar {
+                position: fixed;
+                left: 0;
+                top: var(--doc-header-height);
+                bottom: 0;
+                width: var(--doc-sidebar-width);
+                transform: translateX(-100%);
+                transition: transform var(--transition-normal);
+                z-index: 5;
+                box-shadow: var(--medium-shadow);
+            }
+            
+            .doc-sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .doc-sidebar-toggle {
+                display: block;
+            }
+        }
+        
+        /* 加载动画 */
+        .doc-loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+        
+        .doc-loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--gray-200);
+            border-top-color: var(--doc-accent-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto var(--spacing-md);
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* 额外的工具提示样式 */
+        .tooltip {
+            position: relative;
+        }
+        
+        .tooltip:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--gray-900);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            white-space: nowrap;
+            z-index: 10;
+            margin-bottom: 6px;
+        }
+        
+        .tooltip:hover::before {
+            content: '';
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 5px solid transparent;
+            border-top-color: var(--gray-900);
+            margin-bottom: -4px;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+    <div class="doc-viewer">
+        <!-- 顶部导航 -->
+        <header class="doc-header">
+            <a href="../index.html" class="doc-logo">
+                <div class="doc-logo-icon">
+                    <i class="fas fa-book"></i>
+                </div>
+                <div class="doc-logo-text">
+                    <span style="color: #333;">Creative</span><span style="color: var(--dopamine-orange);">Pro</span> <span style="font-weight: 400;">文档</span>
+                </div>
+            </a>
+            
+            <div class="doc-nav-controls">
+                <div class="doc-search">
+                    <input type="text" placeholder="搜索文档..." id="docSearch">
+                    <i class="fas fa-search"></i>
+                </div>
+                
+                <div class="doc-actions">
+                    <button class="doc-action-btn tooltip" data-tooltip="回到开发者工作站" id="backToWorkstation">
+                        <i class="fas fa-laptop-code"></i>
+                    </button>
+                    <button class="doc-action-btn tooltip" data-tooltip="显示/隐藏侧边栏" id="sidebarToggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <button class="doc-action-btn tooltip" data-tooltip="在GitHub上编辑">
+                        <i class="fab fa-github"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+        
+        <!-- 侧边栏 -->
+        <aside class="doc-sidebar" id="docSidebar">
+            <div class="doc-sidebar-header">
+                <div class="doc-sidebar-title">文档导航</div>
+            </div>
+            
+            <div class="doc-tree" id="docTree">
+                <!-- 文件树结构将通过JavaScript动态生成 -->
+                <div class="doc-loading">
+                    <div class="doc-loading-spinner"></div>
+                    <div>加载文档结构...</div>
+                </div>
+            </div>
+        </aside>
+        
+        <!-- 内容区域 -->
+        <main class="doc-content" id="docContent">
+            <div class="doc-loading" id="contentLoading">
+                <div class="doc-loading-spinner"></div>
+                <div>加载文档内容...</div>
+            </div>
+            
+            <div class="doc-content-container" id="contentContainer" style="display: none;">
+                <div class="doc-breadcrumb" id="docBreadcrumb">
+                    <div class="doc-breadcrumb-item">文档</div>
+                </div>
+                
+                <div class="doc-content-header">
+                    <h1 class="doc-content-title" id="docTitle">文档标题</h1>
+                    <div class="doc-content-meta">
+                        <div class="doc-content-meta-item">
+                            <i class="fas fa-calendar"></i>
+                            <span id="docDate">2023-07-15</span>
+                        </div>
+                        <div class="doc-content-meta-item">
+                            <i class="fas fa-clock"></i>
+                            <span id="docReadTime">5 min read</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="markdown-body" id="markdownContent">
+                    <!-- Markdown内容将通过JavaScript动态加载和渲染 -->
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- 引入必要的脚本 -->
+    <script src="https://cdn.jsdelivr.net/npm/marked@4.0.0/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.6.0/lib/core.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.6.0/lib/languages/javascript.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.6.0/lib/languages/typescript.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.6.0/lib/languages/css.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.6.0/lib/languages/xml.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.6.0/lib/languages/bash.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const docTree = document.getElementById('docTree');
+            const contentContainer = document.getElementById('contentContainer');
+            const markdownContent = document.getElementById('markdownContent');
+            const contentLoading = document.getElementById('contentLoading');
+            const docTitle = document.getElementById('docTitle');
+            const docDate = document.getElementById('docDate');
+            const docReadTime = document.getElementById('docReadTime');
+            const docBreadcrumb = document.getElementById('docBreadcrumb');
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const docSidebar = document.getElementById('docSidebar');
+            const docSearch = document.getElementById('docSearch');
+            const backToWorkstation = document.getElementById('backToWorkstation');
+            
+            // 设置marked选项
+            marked.setOptions({
+                highlight: function(code, lang) {
+                    if (lang && hljs.getLanguage(lang)) {
+                        return hljs.highlight(code, { language: lang }).value;
+                    }
+                    return hljs.highlightAuto(code).value;
+                },
+                breaks: true
+            });
+            
+            // 文档结构数据
+            const docStructure = [
+                {
+                    type: 'folder',
+                    name: '前端',
+                    children: [
+                        { type: 'file', name: '组件库.md', path: '../docs/前端/组件库.md' },
+                        { type: 'file', name: '原型设计.md', path: '../docs/前端/原型设计.md' },
+                        { type: 'file', name: '样式指南.md', path: '../docs/前端/样式指南.md' },
+                        { type: 'file', name: '前端架构.md', path: '../docs/前端/前端架构.md' }
+                    ]
+                },
+                {
+                    type: 'folder',
+                    name: '后端',
+                    children: [
+                        { type: 'file', name: '系统架构.md', path: '../docs/后端/系统架构.md' },
+                        { type: 'file', name: 'API文档.md', path: '../docs/后端/API文档.md' },
+                        { type: 'file', name: '数据库设计.md', path: '../docs/后端/数据库设计.md' },
+                        { type: 'file', name: '服务部署.md', path: '../docs/后端/服务部署.md' }
+                    ]
+                },
+                {
+                    type: 'folder',
+                    name: '概要设计',
+                    children: [
+                        { type: 'file', name: '系统蓝图.md', path: '../docs/概要设计/系统蓝图.md' },
+                        { type: 'file', name: '架构决策.md', path: '../docs/概要设计/架构决策.md' }
+                    ]
+                },
+                {
+                    type: 'folder',
+                    name: '跨域文档',
+                    children: [
+                        { type: 'file', name: '设计规范.md', path: '../docs/跨域文档/设计规范.md' },
+                        { type: 'file', name: '开发流程.md', path: '../docs/跨域文档/开发流程.md' }
+                    ]
+                },
+                { type: 'file', name: 'README.md', path: '../docs/README.md' },
+                { type: 'file', name: '文档指南.md', path: '../docs/文档指南.md' },
+                { type: 'file', name: '项目结构.md', path: '../docs/项目结构.md' },
+                { type: 'file', name: '文档系统指南.md', path: '../docs/文档系统指南.md' },
+            ];
+            
+            // 初始加载的默认文档
+            const defaultDocPath = '../CreativePro_Studio_重设方案.md';
+            
+            // 渲染文档树结构
+            function renderDocTree(structure, container) {
+                container.innerHTML = '';
+                
+                structure.forEach(item => {
+                    if (item.type === 'folder') {
+                        const folderEl = document.createElement('div');
+                        folderEl.className = 'doc-tree-folder';
+                        
+                        const folderHeader = document.createElement('div');
+                        folderHeader.className = 'doc-tree-folder-header';
+                        folderHeader.innerHTML = `
+                            <div class="doc-tree-folder-icon"><i class="fas fa-chevron-right"></i></div>
+                            <div class="doc-tree-folder-name">${item.name}</div>
+                        `;
+                        
+                        const folderContent = document.createElement('div');
+                        folderContent.className = 'doc-tree-folder-content';
+                        
+                        renderDocTree(item.children, folderContent);
+                        
+                        folderEl.appendChild(folderHeader);
+                        folderEl.appendChild(folderContent);
+                        
+                        folderHeader.addEventListener('click', () => {
+                            folderEl.classList.toggle('open');
+                        });
+                        
+                        container.appendChild(folderEl);
+                    } else if (item.type === 'file') {
+                        const fileEl = document.createElement('div');
+                        fileEl.className = 'doc-tree-file';
+                        fileEl.innerHTML = `
+                            <div class="doc-tree-file-icon"><i class="fas fa-file-alt"></i></div>
+                            <div class="doc-tree-file-name">${item.name}</div>
+                        `;
+                        
+                        fileEl.addEventListener('click', () => {
+                            // 移除所有活跃状态
+                            document.querySelectorAll('.doc-tree-file.active').forEach(el => {
+                                el.classList.remove('active');
+                            });
+                            
+                            // 添加活跃状态
+                            fileEl.classList.add('active');
+                            
+                            // 加载文档内容
+                            loadDocument(item.path, item.name);
+                        });
+                        
+                        container.appendChild(fileEl);
+                    }
+                });
+            }
+            
+            // 加载文档内容
+            function loadDocument(path, fileName) {
+                // 显示加载状态
+                contentContainer.style.display = 'none';
+                contentLoading.style.display = 'block';
+                
+                fetch(path)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('文档加载失败');
+                        }
+                        return response.text();
+                    })
+                    .then(markdown => {
+                        // 渲染Markdown内容
+                        markdownContent.innerHTML = marked.parse(markdown);
+                        
+                        // 提取文档标题
+                        const titleMatch = markdown.match(/^#\s+(.+)$/m);
+                        const title = titleMatch ? titleMatch[1] : fileName.replace('.md', '');
+                        docTitle.textContent = title;
+                        
+                        // 设置文档元数据
+                        const today = new Date();
+                        docDate.textContent = today.toISOString().slice(0, 10);
+                        
+                        // 估计阅读时间
+                        const wordCount = markdown.split(/\s+/).length;
+                        const readTimeMinutes = Math.max(1, Math.ceil(wordCount / 250));
+                        docReadTime.textContent = `${readTimeMinutes} 分钟阅读`;
+                        
+                        // 设置面包屑导航
+                        updateBreadcrumb(path);
+                        
+                        // 隐藏加载状态，显示内容
+                        contentLoading.style.display = 'none';
+                        contentContainer.style.display = 'block';
+                        
+                        // 对代码块应用高亮
+                        document.querySelectorAll('pre code').forEach(block => {
+                            hljs.highlightElement(block);
+                        });
+                    })
+                    .catch(error => {
+                        console.error('加载文档失败:', error);
+                        markdownContent.innerHTML = `
+                            <div style="text-align: center; padding: 2rem;">
+                                <div style="font-size: 4rem; margin-bottom: 1rem;">😢</div>
+                                <h2>文档加载失败</h2>
+                                <p>无法加载文档: ${path}</p>
+                                <p>错误: ${error.message}</p>
+                            </div>
+                        `;
+                        contentLoading.style.display = 'none';
+                        contentContainer.style.display = 'block';
+                    });
+            }
+            
+            // 更新面包屑导航
+            function updateBreadcrumb(path) {
+                // 解析路径
+                const parts = path.split('/').filter(part => part && part !== '..' && part !== '.');
+                
+                // 构建面包屑
+                let breadcrumbHTML = '<div class="doc-breadcrumb-item">文档</div>';
+                
+                parts.forEach((part, index) => {
+                    breadcrumbHTML += `<div class="doc-breadcrumb-separator"><i class="fas fa-chevron-right"></i></div>`;
+                    
+                    // 移除.md扩展名
+                    const displayName = part.endsWith('.md') ? part.slice(0, -3) : part;
+                    
+                    breadcrumbHTML += `<div class="doc-breadcrumb-item">${displayName}</div>`;
+                });
+                
+                docBreadcrumb.innerHTML = breadcrumbHTML;
+            }
+            
+            // 搜索功能
+            function setupSearch() {
+                docSearch.addEventListener('input', (e) => {
+                    const searchTerm = e.target.value.toLowerCase();
+                    
+                    if (!searchTerm) {
+                        // 如果搜索框为空，还原文档树
+                        renderDocTree(docStructure, docTree);
+                        return;
+                    }
+                    
+                    // 搜索文件
+                    const searchResults = [];
+                    
+                    function searchInStructure(items) {
+                        items.forEach(item => {
+                            if (item.type === 'file') {
+                                if (item.name.toLowerCase().includes(searchTerm)) {
+                                    searchResults.push(item);
+                                }
+                            } else if (item.type === 'folder') {
+                                if (item.name.toLowerCase().includes(searchTerm)) {
+                                    searchResults.push({
+                                        type: 'folder',
+                                        name: item.name + ' (文件夹)'
+                                    });
+                                }
+                                searchInStructure(item.children);
+                            }
+                        });
+                    }
+                    
+                    searchInStructure(docStructure);
+                    
+                    // 显示搜索结果
+                    docTree.innerHTML = '';
+                    
+                    if (searchResults.length === 0) {
+                        docTree.innerHTML = `
+                            <div style="text-align: center; padding: 2rem;">
+                                <div style="font-size: 2rem; margin-bottom: 1rem;">🔍</div>
+                                <p>没有找到匹配的文档</p>
+                            </div>
+                        `;
+                        return;
+                    }
+                    
+                    const searchResultsEl = document.createElement('div');
+                    searchResultsEl.innerHTML = `
+                        <div style="padding: 0.5rem; font-weight: 500; color: var(--gray-600);">
+                            搜索结果 (${searchResults.length})
+                        </div>
+                    `;
+                    
+                    searchResults.forEach(item => {
+                        const resultEl = document.createElement('div');
+                        
+                        if (item.type === 'file') {
+                            resultEl.className = 'doc-tree-file';
+                            resultEl.innerHTML = `
+                                <div class="doc-tree-file-icon"><i class="fas fa-file-alt"></i></div>
+                                <div class="doc-tree-file-name">${item.name}</div>
+                            `;
+                            
+                            resultEl.addEventListener('click', () => {
+                                loadDocument(item.path, item.name);
+                            });
+                        } else {
+                            resultEl.className = 'doc-tree-file';
+                            resultEl.innerHTML = `
+                                <div class="doc-tree-file-icon"><i class="fas fa-folder"></i></div>
+                                <div class="doc-tree-file-name">${item.name}</div>
+                            `;
+                        }
+                        
+                        searchResultsEl.appendChild(resultEl);
+                    });
+                    
+                    docTree.appendChild(searchResultsEl);
+                });
+            }
+            
+            // 初始化
+            renderDocTree(docStructure, docTree);
+            loadDocument(defaultDocPath, 'CreativePro_Studio_重设方案.md');
+            setupSearch();
+            
+            // 侧边栏切换
+            sidebarToggle.addEventListener('click', () => {
+                docSidebar.classList.toggle('active');
+            });
+            
+            // 返回工作站
+            backToWorkstation.addEventListener('click', () => {
+                window.location.href = 'developer-workstation.html';
+            });
+            
+            // 媒体查询监听
+            const mediaQuery = window.matchMedia('(max-width: 768px)');
+            
+            function handleScreenChange(e) {
+                if (e.matches) {
+                    // 小屏幕，默认隐藏侧边栏
+                    docSidebar.classList.remove('active');
+                } else {
+                    // 大屏幕，默认显示侧边栏
+                    docSidebar.classList.add('active');
+                }
+            }
+            
+            mediaQuery.addEventListener('change', handleScreenChange);
+            handleScreenChange(mediaQuery);
+        });
+    </script>
+</body>
+</html> 

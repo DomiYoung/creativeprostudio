@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CreativePro Studio - 产品AI助手</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* 设计变量 */
+        :root {
+            --dopamine-orange: #F5E1D9;
+            --dopamine-pink: #FFB5C5;
+            --dopamine-mint: #B6E5D8;
+            --dopamine-blue: #97C1FF;
+            --dopamine-purple: #D5B3FF;
+            --dopamine-yellow: #FFE599;
+            --gray-50: #F9FAFB;
+            --gray-100: #F5F5F7;
+            --gray-200: #E5E5E7;
+            --gray-300: #D1D1D6;
+            --gray-400: #A1A1A6;
+            --gray-500: #86868B;
+            --gray-600: #636366;
+            --gray-700: #48484A;
+            --gray-800: #3A3A3C;
+            --gray-900: #1D1D1F;
+        }
+
+        /* 基础样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--gray-100);
+            color: var(--gray-900);
+            min-height: 100vh;
+        }
+
+        button {
+            border: none;
+            background: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray-700);
+        }
+
+        button:hover {
+            color: var(--gray-900);
+        }
+
+        .btn {
+            border-radius: 20px;
+            padding: 0 16px;
+            height: 36px;
+            font-size: 14px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background-color: var(--dopamine-orange);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #FF7E45;
+            color: white;
+        }
+
+        .btn-outline {
+            border: 1px solid var(--gray-300);
+            background-color: white;
+        }
+
+        .btn-outline:hover {
+            background-color: var(--gray-100);
+        }
+
+        .btn i {
+            margin-right: 6px;
+        }
+
+        /* 布局组件 */
+        .header {
+            height: 64px;
+            background-color: white;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-weight: 600;
+            font-size: 16px;
+            color: var(--gray-900);
+            display: flex;
+            align-items: center;
+        }
+
+        .logo span {
+            color: var(--dopamine-orange);
+            margin-left: 2px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .page-title {
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .page-description {
+            color: var(--gray-600);
+            margin-top: 4px;
+            font-size: 14px;
+        }
+
+        /* AI功能组件样式 */
+        .ai-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .ai-card {
+            background-color: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+
+        .ai-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .ai-card-header {
+            background-color: var(--gray-50);
+            padding: 16px;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .ai-card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background-color: var(--dopamine-orange);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            margin-bottom: 12px;
+        }
+
+        .ai-card-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .ai-card-description {
+            font-size: 14px;
+            color: var(--gray-600);
+            margin-top: 4px;
+        }
+
+        .ai-card-body {
+            padding: 16px;
+        }
+
+        .preview-img {
+            width: 100%;
+            height: 160px;
+            background-color: var(--gray-100);
+            border-radius: 8px;
+            margin-bottom: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .preview-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .preview-img .after {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 50%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .preview-img .after img {
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 200%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .preview-img .divider {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            width: 2px;
+            background-color: white;
+            z-index: 2;
+        }
+
+        .preview-img .handle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 24px;
+            height: 24px;
+            background-color: white;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            z-index: 3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: var(--gray-600);
+        }
+
+        .ai-params {
+            margin-bottom: 16px;
+        }
+
+        .param-slider {
+            margin-bottom: 12px;
+        }
+
+        .param-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            margin-bottom: 6px;
+        }
+
+        .param-label .name {
+            color: var(--gray-700);
+        }
+
+        .param-label .value {
+            color: var(--gray-500);
+        }
+
+        .slider {
+            width: 100%;
+            height: 4px;
+            background-color: var(--gray-200);
+            border-radius: 2px;
+            position: relative;
+        }
+
+        .slider-fill {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            background-color: var(--dopamine-orange);
+            border-radius: 2px;
+        }
+
+        .slider-handle {
+            position: absolute;
+            top: 50%;
+            width: 16px;
+            height: 16px;
+            background-color: white;
+            border: 2px solid var(--dopamine-orange);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            cursor: pointer;
+        }
+
+        /* AI历史记录 */
+        .ai-history {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            padding: 24px;
+            margin-bottom: 40px;
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .history-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .history-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 16px;
+        }
+
+        .history-item {
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            transition: transform 0.15s;
+        }
+
+        .history-item:hover {
+            transform: translateY(-2px);
+        }
+
+        .history-image {
+            height: 120px;
+            background-color: var(--gray-100);
+            position: relative;
+        }
+
+        .history-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .history-type {
+            position: absolute;
+            bottom: 8px;
+            left: 8px;
+            background-color: rgba(0,0,0,0.6);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+        }
+
+        .history-info {
+            padding: 8px;
+            font-size: 12px;
+        }
+
+        .history-date {
+            color: var(--gray-500);
+            font-size: 11px;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">
+           <span> CreativePro </span> <span>Studio</span>
+        </div>
+        <div>
+            <input type="search" placeholder="搜索项目或素材..." style="width: 240px; height: 36px; padding: 0 12px; border-radius: 18px; border: 1px solid var(--gray-300); background-color: var(--gray-100);">
+        </div>
+        <div>
+            <span style="margin-right: 16px; font-size: 14px;">Domi</span>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">产品AI助手</h1>
+                <p class="page-description">智能处理美妆产品图片，提升质量与效率</p>
+            </div>
+            <div>
+                <button class="btn btn-outline"><i class="fas fa-history"></i> AI历史</button>
+                <button class="btn btn-primary"><i class="fas fa-magic"></i> 应用到当前项目</button>
+            </div>
+        </div>
+
+        <div class="ai-features">
+            <!-- 背景移除功能 -->
+            <div class="ai-card">
+                <div class="ai-card-header">
+                    <div class="ai-card-icon">
+                        <i class="fas fa-object-ungroup"></i>
+                    </div>
+                    <h3 class="ai-card-title">一键抠图</h3>
+                    <p class="ai-card-description">智能分离产品与背景，无需手动进行复杂抠图</p>
+                </div>
+                <div class="ai-card-body">
+                    <div class="preview-img">
+                        <img src="https://images.pexels.com/photos/4465124/pexels-photo-4465124.jpeg?auto=compress&cs=tinysrgb&w=800" alt="产品原图">
+                        <div class="after">
+                            <img src="https://images.pexels.com/photos/4465124/pexels-photo-4465124.jpeg?auto=compress&cs=tinysrgb&w=800" alt="产品抠图后">
+                        </div>
+                        <div class="divider"></div>
+                        <div class="handle"><i class="fas fa-chevron-left"></i><i class="fas fa-chevron-right"></i></div>
+                    </div>
+                    <div class="ai-params">
+                        <div class="param-slider">
+                            <div class="param-label">
+                                <div class="name">边缘平滑度</div>
+                                <div class="value">70%</div>
+                            </div>
+                            <div class="slider">
+                                <div class="slider-fill" style="width: 70%"></div>
+                                <div class="slider-handle" style="left: 70%"></div>
+                            </div>
+                        </div>
+                        <div class="param-slider">
+                            <div class="param-label">
+                                <div class="name">细节保留</div>
+                                <div class="value">85%</div>
+                            </div>
+                            <div class="slider">
+                                <div class="slider-fill" style="width: 85%"></div>
+                                <div class="slider-handle" style="left: 85%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" style="width: 100%"><i class="fas fa-magic"></i> 一键应用</button>
+                </div>
+            </div>
+
+            <!-- 智能美化功能 -->
+            <div class="ai-card">
+                <div class="ai-card-header">
+                    <div class="ai-card-icon" style="background-color: var(--dopamine-blue);">
+                        <i class="fas fa-wand-magic-sparkles"></i>
+                    </div>
+                    <h3 class="ai-card-title">智能美化</h3>
+                    <p class="ai-card-description">自动调整亮度、对比度和色彩平衡，突出产品特点</p>
+                </div>
+                <div class="ai-card-body">
+                    <div class="preview-img">
+                        <img src="https://images.pexels.com/photos/8544753/pexels-photo-8544753.jpeg?auto=compress&cs=tinysrgb&w=800" alt="产品原图">
+                        <div class="after">
+                            <img src="https://images.pexels.com/photos/8544753/pexels-photo-8544753.jpeg?auto=compress&cs=tinysrgb&w=800" alt="产品美化后">
+                        </div>
+                        <div class="divider"></div>
+                        <div class="handle"><i class="fas fa-chevron-left"></i><i class="fas fa-chevron-right"></i></div>
+                    </div>
+                    <div class="ai-params">
+                        <div class="param-slider">
+                            <div class="param-label">
+                                <div class="name">美化强度</div>
+                                <div class="value">65%</div>
+                            </div>
+                            <div class="slider">
+                                <div class="slider-fill" style="width: 65%"></div>
+                                <div class="slider-handle" style="left: 65%"></div>
+                            </div>
+                        </div>
+                        <div class="param-slider">
+                            <div class="param-label">
+                                <div class="name">自然度</div>
+                                <div class="value">90%</div>
+                            </div>
+                            <div class="slider">
+                                <div class="slider-fill" style="width: 90%"></div>
+                                <div class="slider-handle" style="left: 90%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" style="width: 100%"><i class="fas fa-magic"></i> 一键应用</button>
+                </div>
+            </div>
+
+            <!-- 产品识别功能 -->
+            <div class="ai-card">
+                <div class="ai-card-header">
+                    <div class="ai-card-icon" style="background-color: var(--dopamine-purple);">
+                        <i class="fas fa-barcode"></i>
+                    </div>
+                    <h3 class="ai-card-title">产品识别</h3>
+                    <p class="ai-card-description">自动识别产品类型、品牌和名称，提取关键信息</p>
+                </div>
+                <div class="ai-card-body">
+                    <div class="preview-img">
+                        <img src="https://images.pexels.com/photos/6621356/pexels-photo-6621356.jpeg?auto=compress&cs=tinysrgb&w=800" alt="产品识别">
+                    </div>
+                    <div style="background-color: var(--gray-50); border-radius: 8px; padding: 12px; margin-bottom: 16px;">
+                        <div style="margin-bottom: 8px; font-size: 13px; color: var(--gray-700);"><i class="fas fa-tag" style="margin-right: 8px;"></i> 识别结果:</div>
+                        <div style="font-size: 13px; margin-bottom: 4px;"><strong>产品系列:</strong> <span style="color: var(--dopamine-orange);">土豆泥</span></div>
+                        <div style="font-size: 13px; margin-bottom: 4px;"><strong>产品名称:</strong> <span style="color: var(--dopamine-orange);">卸妆膏 - 经典款</span></div>
+                        <div style="font-size: 13px;"><strong>产品编号:</strong> <span style="color: var(--dopamine-orange);">KT-CL001</span></div>
+                    </div>
+                    <button class="btn btn-primary" style="width: 100%"><i class="fas fa-magic"></i> 应用产品信息</button>
+                </div>
+            </div>
+
+            <!-- 智能文案生成 -->
+            <div class="ai-card">
+                <div class="ai-card-header">
+                    <div class="ai-card-icon" style="background-color: var(--dopamine-mint);">
+                        <i class="fas fa-pen-fancy"></i>
+                    </div>
+                    <h3 class="ai-card-title">智能文案</h3>
+                    <p class="ai-card-description">基于产品特性自动生成吸引人的促销文案</p>
+                </div>
+                <div class="ai-card-body">
+                    <div class="preview-img" style="height: 120px; display: flex; align-items: center; justify-content: center; padding: 16px; font-size: 18px; font-weight: 500; color: var(--dopamine-orange); text-align: center;">
+                        清爽无负担，一抹即净
+                    </div>
+                    <div style="background-color: var(--gray-50); border-radius: 8px; padding: 12px; margin-bottom: 16px;">
+                        <div style="margin-bottom: 8px; font-size: 13px; color: var(--gray-700);"><i class="fas fa-lightbulb" style="margin-right: 8px;"></i> 更多创意:</div>
+                        <div style="font-size: 13px; margin-bottom: 8px; cursor: pointer;">• 温和配方，深层洁净</div>
+                        <div style="font-size: 13px; margin-bottom: 8px; cursor: pointer;">• 告别顽固彩妆，肌肤轻松呼吸</div>
+                        <div style="font-size: 13px; cursor: pointer;">• 纯天然成分，呵护敏感肌</div>
+                    </div>
+                    <button class="btn btn-primary" style="width: 100%"><i class="fas fa-magic"></i> 应用文案</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI历史记录 -->
+        <div class="ai-history">
+            <div class="history-header">
+                <h2 class="history-title">AI历史记录</h2>
+                <button style="font-size: 14px; color: var(--dopamine-blue);">查看全部</button>
+            </div>
+            <div class="history-items">
+                <div class="history-item">
+                    <div class="history-image">
+                        <img src="https://images.pexels.com/photos/4465124/pexels-photo-4465124.jpeg?auto=compress&cs=tinysrgb&w=800" alt="历史记录">
+                        <div class="history-type">一键抠图</div>
+                    </div>
+                    <div class="history-info">
+                        <div>土豆泥卸妆膏-薰衣草</div>
+                        <div class="history-date">今天 10:23</div>
+                    </div>
+                </div>
+                <div class="history-item">
+                    <div class="history-image">
+                        <img src="https://images.pexels.com/photos/8544753/pexels-photo-8544753.jpeg?auto=compress&cs=tinysrgb&w=800" alt="历史记录">
+                        <div class="history-type">智能美化</div>
+                    </div>
+                    <div class="history-info">
+                        <div>土豆泥卸妆膏-樱花</div>
+                        <div class="history-date">今天 09:45</div>
+                    </div>
+                </div>
+                <div class="history-item">
+                    <div class="history-image">
+                        <img src="https://images.pexels.com/photos/6621356/pexels-photo-6621356.jpeg?auto=compress&cs=tinysrgb&w=800" alt="历史记录">
+                        <div class="history-type">产品识别</div>
+                    </div>
+                    <div class="history-info">
+                        <div>土豆泥卸妆膏-经典款</div>
+                        <div class="history-date">昨天 16:30</div>
+                    </div>
+                </div>
+                <div class="history-item">
+                    <div class="history-image">
+                        <img src="https://images.pexels.com/photos/7796028/pexels-photo-7796028.jpeg?auto=compress&cs=tinysrgb&w=800" alt="历史记录">
+                        <div class="history-type">智能美化</div>
+                    </div>
+                    <div class="history-info">
+                        <div>土豆泥卸妆膏-玫瑰</div>
+                        <div class="history-date">昨天 15:12</div>
+                    </div>
+                </div>
+                <div class="history-item">
+                    <div class="history-image" style="background-color: var(--gray-100); display: flex; align-items: center; justify-content: center; color: var(--gray-500); font-size: 14px;">
+                        <div class="history-type">智能文案</div>
+                    </div>
+                    <div class="history-info">
+                        <div>618促销文案</div>
+                        <div class="history-date">昨天 14:38</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI推荐特色使用 -->
+        <h2 style="font-size: 18px; font-weight: 600; margin-bottom: 16px;">推荐使用场景</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px;">
+            <div style="background-color: white; border-radius: 12px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                <div style="margin-bottom: 12px; font-size: 16px; font-weight: 500;">批量产品抠图</div>
+                <p style="font-size: 14px; color: var(--gray-600); margin-bottom: 16px;">
+                    使用AI一键抠图功能，快速移除多个产品图片的背景，为618活动准备统一背景的产品图。
+                </p>
+                <button class="btn btn-outline" style="width: 100%;"><i class="fas fa-arrow-right"></i> 立即尝试</button>
+            </div>
+            <div style="background-color: white; border-radius: 12px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                <div style="margin-bottom: 12px; font-size: 16px; font-weight: 500;">新品上市优化</div>
+                <p style="font-size: 14px; color: var(--gray-600); margin-bottom: 16px;">
+                    对新品产品图进行智能美化和文案生成，快速准备上线素材，无需等待专业摄影。
+                </p>
+                <button class="btn btn-outline" style="width: 100%;"><i class="fas fa-arrow-right"></i> 立即尝试</button>
+            </div>
+            <div style="background-color: white; border-radius: 12px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                <div style="margin-bottom: 12px; font-size: 16px; font-weight: 500;">产品信息更新</div>
+                <p style="font-size: 14px; color: var(--gray-600); margin-bottom: 16px;">
+                    使用AI产品识别功能，快速提取产品信息并更新到素材库，保持信息的一致性和准确性。
+                </p>
+                <button class="btn btn-outline" style="width: 100%;"><i class="fas fa-arrow-right"></i> 立即尝试</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 页面交互逻辑
+        });
+    </script>
+</body>
+</html> 

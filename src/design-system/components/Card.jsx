@@ -1,104 +1,122 @@
 import React from 'react';
-import styled from '@emotion/styled';
-import { colors } from '../tokens/colors';
-import { spacing } from '../tokens/spacing';
-import { typography } from '../tokens/typography';
+import { cva } from 'class-variance-authority';
+import { motion } from 'framer-motion';
+import clsx from 'clsx';
 
-// 卡片容器
-const CardContainer = styled.div`
-  background-color: ${colors.background.primary};
-  border-radius: ${props => props.rounded ? spacing.borderRadius.lg : spacing.borderRadius.md};
-  box-shadow: ${props => props.elevated ? spacing.shadows.md : 'none'};
-  border: ${props => props.bordered ? `1px solid ${colors.neutral.gray10}` : 'none'};
-  overflow: hidden;
-  transition: all 0.2s ease;
-  width: ${props => props.fullWidth ? '100%' : 'auto'};
-  
-  /* 悬停效果 */
-  &:hover {
-    ${props => props.interactive && `
-      transform: translateY(-2px);
-      box-shadow: ${spacing.shadows.lg};
-    `}
+const cardVariants = cva(
+  // 基础样式
+  "overflow-hidden transition-all",
+  {
+    variants: {
+      // 卡片变体
+      variant: {
+        default: "bg-white",
+        colored: "bg-primary-light",
+        transparent: "bg-transparent",
+      },
+      // 边框
+      bordered: {
+        true: "border border-gray4",
+        false: "border-0",
+      },
+      // 阴影
+      shadow: {
+        none: "shadow-none",
+        sm: "shadow-sm",
+        md: "shadow-md",
+        lg: "shadow-lg",
+      },
+      // 圆角
+      rounded: {
+        none: "rounded-none",
+        sm: "rounded-sm",
+        md: "rounded-md",
+        lg: "rounded-lg",
+        xl: "rounded-xl",
+        full: "rounded-full",
+      },
+      // 动画效果
+      interactive: {
+        true: "hover:shadow-lg hover:-translate-y-1",
+        false: "",
+      },
+      // 内边距
+      padding: {
+        none: "p-0",
+        sm: "p-3",
+        md: "p-4",
+        lg: "p-6",
+        xl: "p-8",
+      },
+    },
+    // 默认值
+    defaultVariants: {
+      variant: "default",
+      bordered: false,
+      shadow: "md",
+      rounded: "lg",
+      interactive: false,
+      padding: "md",
+    },
   }
-`;
+);
 
-// 卡片头部
-const CardHeader = styled.div`
-  padding: ${spacing.space[4]};
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-bottom: ${props => props.divider ? `1px solid ${colors.neutral.gray10}` : 'none'};
-`;
-
-// 卡片标题
-const CardTitle = styled.h3`
-  margin: 0;
-  font-family: ${typography.fontFamily.display};
-  font-weight: ${typography.fontWeight.semibold};
-  font-size: ${typography.fontSize.lg};
-  color: ${colors.neutral.gray1};
-`;
-
-// 卡片内容
-const CardContent = styled.div`
-  padding: ${spacing.space[4]};
-`;
-
-// 卡片底部
-const CardFooter = styled.div`
-  padding: ${spacing.space[4]};
-  display: flex;
-  align-items: center;
-  justify-content: ${props => props.align || 'flex-end'};
-  gap: ${spacing.space[3]};
-  border-top: ${props => props.divider ? `1px solid ${colors.neutral.gray10}` : 'none'};
-  background-color: ${colors.background.secondary};
-`;
-
-const Card = ({
+const Card = React.forwardRef(({
   children,
-  title,
-  extra,
-  footer,
-  footerAlign,
-  bordered = true,
-  elevated = false,
-  rounded = false,
-  interactive = false,
-  fullWidth = false,
-  headerDivider = true,
-  footerDivider = true,
   className,
+  variant,
+  bordered,
+  shadow,
+  rounded,
+  interactive,
+  padding,
+  title,
+  footer,
+  footerClassName,
+  titleClassName,
+  bodyClassName,
+  onClick,
   ...props
-}) => {
+}, ref) => {
+  const isClickable = Boolean(onClick) || interactive;
+  
   return (
-    <CardContainer 
-      bordered={bordered}
-      elevated={elevated}
-      rounded={rounded}
-      interactive={interactive}
-      fullWidth={fullWidth}
-      className={className}
+    <motion.div
+      ref={ref}
+      className={clsx(cardVariants({
+        variant,
+        bordered,
+        shadow,
+        rounded,
+        interactive,
+        padding,
+        className,
+      }))}
+      onClick={onClick}
+      whileHover={isClickable ? { scale: 1.01 } : undefined}
+      whileTap={isClickable ? { scale: 0.99 } : undefined}
+      style={isClickable ? { cursor: 'pointer' } : undefined}
       {...props}
     >
       {title && (
-        <CardHeader divider={headerDivider}>
-          <CardTitle>{title}</CardTitle>
-          {extra && <div>{extra}</div>}
-        </CardHeader>
+        <div className={clsx("font-semibold text-xl mb-4", titleClassName)}>
+          {title}
+        </div>
       )}
-      <CardContent>
+      
+      <div className={clsx("card-body", bodyClassName)}>
         {children}
-      </CardContent>
+      </div>
+      
       {footer && (
-        <CardFooter divider={footerDivider} align={footerAlign}>
+        <div className={clsx("mt-4 pt-4 border-t border-gray4", footerClassName)}>
           {footer}
-        </CardFooter>
+        </div>
       )}
-    </CardContainer>
+    </motion.div>
   );
-};
+});
+
+Card.displayName = "Card";
 
 export default Card; 

@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CreativePro Studio - 项目详情</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* 设计变量 */
+        :root {
+            --dopamine-orange: #F5E1D9;
+            --dopamine-pink: #FFB5C5;
+            --dopamine-mint: #B6E5D8;
+            --dopamine-blue: #97C1FF;
+            --dopamine-purple: #D5B3FF;
+            --dopamine-yellow: #FFE599;
+            --gray-50: #F9FAFB;
+            --gray-100: #F5F5F7;
+            --gray-200: #E5E5E7;
+            --gray-300: #D1D1D6;
+            --gray-400: #A1A1A6;
+            --gray-500: #86868B;
+            --gray-600: #636366;
+            --gray-700: #48484A;
+            --gray-800: #3A3A3C;
+            --gray-900: #1D1D1F;
+        }
+
+        /* 基础样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--gray-100);
+            color: var(--gray-900);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        button {
+            border: none;
+            background: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray-700);
+        }
+
+        button:hover {
+            color: var(--gray-900);
+        }
+
+        .btn {
+            border-radius: 6px;
+            padding: 0 12px;
+            height: 32px;
+            font-size: 13px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background-color: var(--dopamine-orange);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #FF7E45;
+            color: white;
+        }
+
+        .btn-outline {
+            border: 1px solid var(--gray-300);
+            background-color: white;
+        }
+
+        .btn-outline:hover {
+            background-color: var(--gray-100);
+        }
+
+        .btn i {
+            margin-right: 4px;
+        }
+
+        .btn-icon {
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            border-radius: 6px;
+        }
+
+        .btn-icon i {
+            margin-right: 0;
+        }
+
+        /* 布局组件 */
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 24px;
+            width: 100%;
+        }
+
+        /* 顶部导航栏 */
+        .top-nav {
+            height: 56px;
+            background-color: white;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+        }
+
+        .top-nav-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-logo span {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            margin-left: 48px;
+        }
+
+        .nav-link {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--gray-600);
+            text-decoration: none;
+            position: relative;
+        }
+
+        .nav-link.active {
+            color: var(--gray-900);
+        }
+
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -17px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: var(--dopamine-orange);
+        }
+
+        .nav-link:hover {
+            color: var(--gray-900);
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: var(--dopamine-orange);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        /* 主页内容 */
+        .main {
+            flex: 1;
+            padding: 32px 0;
+        }
+
+        /* 项目详情页样式 */
+        .project-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .back-link {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            color: var(--gray-600);
+            text-decoration: none;
+            margin-right: 16px;
+        }
+
+        .back-link:hover {
+            color: var(--gray-900);
+        }
+
+        .back-link i {
+            margin-right: 4px;
+        }
+
+        .project-title-container {
+            flex: 1;
+        }
+
+        .project-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .project-meta {
+            font-size: 14px;
+            color: var(--gray-600);
+        }
+
+        .project-meta-item {
+            margin-right: 12px;
+        }
+
+        .project-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        /* 项目信息卡片 */
+        .project-info-card {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .project-description {
+            font-size: 14px;
+            color: var(--gray-700);
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+
+        .project-stats {
+            display: flex;
+            gap: 24px;
+            margin-top: 16px;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--gray-900);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--gray-600);
+            margin-top: 4px;
+        }
+
+        /* 项目资源部分 */
+        .project-content {
+            margin-bottom: 24px;
+        }
+
+        .content-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .content-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .resource-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .resource-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .resource-preview {
+            height: 160px;
+            background-color: var(--gray-100);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .resource-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .resource-info {
+            padding: 12px;
+        }
+
+        .resource-title {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 4px;
+            color: var(--gray-900);
+        }
+
+        .resource-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--gray-500);
+        }
+
+        .resource-type {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .resource-dimensions {
+            font-size: 11px;
+            background-color: var(--gray-100);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        /* 创建资源卡片 */
+        .create-resource-card {
+            background-color: var(--gray-50);
+            border: 1px dashed var(--gray-300);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            min-height: 220px;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .create-resource-card:hover {
+            background-color: var(--gray-100);
+            border-color: var(--gray-400);
+            transform: translateY(-4px);
+        }
+
+        .create-icon {
+            width: 40px;
+            height: 40px;
+            background-color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+            color: var(--dopamine-orange);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .create-icon i {
+            font-size: 16px;
+        }
+
+        .create-text {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--gray-700);
+        }
+
+        /* 活动和评论部分 */
+        .project-sidebar {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+        }
+
+        .sidebar-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .sidebar-title-text {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .activity-list {
+            margin-bottom: 20px;
+        }
+
+        .activity-item {
+            display: flex;
+            margin-bottom: 16px;
+            position: relative;
+        }
+
+        .activity-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .activity-item:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            top: 32px;
+            left: 16px;
+            width: 1px;
+            height: calc(100% - 16px);
+            background-color: var(--gray-200);
+        }
+
+        .activity-icon {
+            width: 32px;
+            height: 32px;
+            background-color: var(--dopamine-mint);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            flex-shrink: 0;
+            z-index: 1;
+        }
+
+        .activity-icon i {
+            font-size: 14px;
+            color: var(--gray-700);
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 4px;
+        }
+
+        .activity-user {
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .activity-time {
+            font-size: 12px;
+            color: var(--gray-500);
+        }
+
+        .activity-text {
+            font-size: 13px;
+            color: var(--gray-700);
+            line-height: 1.4;
+        }
+
+        .activity-file {
+            font-size: 12px;
+            color: var(--dopamine-blue);
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 4px;
+        }
+
+        .activity-file:hover {
+            text-decoration: underline;
+        }
+
+        /* 创建资源模态框 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background-color: white;
+            border-radius: 12px;
+            width: 480px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            transform: translateY(20px);
+            transition: all 0.3s;
+        }
+
+        .modal-overlay.active .modal {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray-600);
+            cursor: pointer;
+        }
+
+        .modal-close:hover {
+            background-color: var(--gray-100);
+            color: var(--gray-900);
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 13px;
+            color: var(--gray-700);
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            height: 40px;
+            border: 1px solid var(--gray-300);
+            border-radius: 6px;
+            padding: 0 12px;
+            font-size: 14px;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--dopamine-orange);
+        }
+
+        textarea.form-control {
+            height: auto;
+            padding: 10px 12px;
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--gray-200);
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        .modal-btn {
+            border-radius: 6px;
+            padding: 0 16px;
+            height: 36px;
+            font-size: 14px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .modal-btn-primary {
+            background-color: var(--dopamine-orange);
+            color: white;
+        }
+
+        .modal-btn-primary:hover {
+            background-color: #FF7E45;
+        }
+
+        .modal-btn-outline {
+            border: 1px solid var(--gray-300);
+            color: var(--gray-700);
+        }
+
+        .modal-btn-outline:hover {
+            background-color: var(--gray-100);
+            color: var(--gray-900);
+        }
+
+        /* 主内容和侧边栏布局 */
+        .project-layout {
+            display: grid;
+            grid-template-columns: 3fr 1fr;
+            gap: 24px;
+        }
+
+        /* 资源类型标签 */
+        .resource-type-tag {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background-color: rgba(0, 0, 0, 0.6);
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            backdrop-filter: blur(4px);
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <nav class="top-nav">
+        <div class="top-nav-container">
+            <div class="nav-left">
+                <div class="nav-logo">
+                    <span>
+                        <span style="color: #333;">Creative</span><span style="color: var(--dopamine-orange);">Pro</span>
+                    </span>
+                </div>
+                <div class="nav-links">
+                    <a href="../index.html" class="nav-link">首页</a>
+                    <a href="projects.html" class="nav-link active">项目</a>
+                    <a href="master-library.html" class="nav-link">母版库</a>
+                    <a href="material-library.html" class="nav-link">素材库</a>
+                    <a href="batch-center.html" class="nav-link">批量创建</a>
+                </div>
+            </div>
+            <div class="nav-right">
+                <button class="btn btn-outline">
+                    <i class="fas fa-bell"></i>
+                </button>
+                <div class="user-avatar">D</div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主内容区域 -->
+    <main class="main">
+        <div class="container">
+            <!-- 项目页面头部 -->
+            <div class="project-header">
+                <a href="projects.html" class="back-link">
+                    <i class="fas fa-arrow-left"></i> 返回项目
+                </a>
+                <div class="project-title-container">
+                    <h1 class="project-title" id="projectTitle">618主会场Banner</h1>
+                    <div class="project-meta">
+                        <span class="project-meta-item"><i class="far fa-calendar"></i> 创建于 2023-05-10</span>
+                        <span class="project-meta-item"><i class="fas fa-tag"></i> 营销活动</span>
+                        <span class="project-meta-item"><i class="fas fa-circle" style="color: var(--dopamine-orange); font-size: 10px;"></i> 进行中</span>
+                    </div>
+                </div>
+                <div class="project-actions">
+                    <button class="btn btn-outline">
+                        <i class="fas fa-share-alt"></i> 分享
+                    </button>
+                    <button class="btn btn-outline">
+                        <i class="fas fa-ellipsis-h"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 项目主体内容 -->
+            <div class="project-layout">
+                <!-- 主内容区 -->
+                <div class="project-main">
+                    <!-- 项目信息卡片 -->
+                    <div class="project-info-card">
+                        <p class="project-description">618电商促销活动的主会场Banner设计，包括PC端和移动端多个尺寸，突出"夏日盛典"主题，强调折扣力度和限时优惠。</p>
+                        <div class="project-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">12</div>
+                                <div class="stat-label">设计稿</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">3</div>
+                                <div class="stat-label">成员</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">16</div>
+                                <div class="stat-label">活动</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">5</div>
+                                <div class="stat-label">评论</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 项目设计资源 -->
+                    <div class="project-content">
+                        <div class="content-header">
+                            <h2 class="content-title">设计资源</h2>
+                            <button class="btn btn-primary" id="createResourceBtn">
+                                <i class="fas fa-plus"></i> 创建设计
+                            </button>
+                        </div>
+
+                        <div class="resources-grid">
+                            <!-- 创建设计卡片 -->
+                            <div class="create-resource-card" id="createResourceCard">
+                                <div class="create-icon">
+                                    <i class="fas fa-plus"></i>
+                                </div>
+                                <div class="create-text">创建新设计</div>
+                            </div>
+
+                            <!-- 设计资源卡片 -->
+                            <div class="resource-card" data-resource="618-main-banner">
+                                <div class="resource-preview">
+                                    <img src="https://images.pexels.com/photos/6621462/pexels-photo-6621462.jpeg" alt="618主Banner">
+                                    <div class="resource-type-tag">Banner</div>
+                                </div>
+                                <div class="resource-info">
+                                    <h3 class="resource-title">主会场Banner</h3>
+                                    <div class="resource-meta">
+                                        <div class="resource-type">
+                                            <i class="fas fa-image"></i> 横幅
+                                        </div>
+                                        <div class="resource-dimensions">1200 × 628 px</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="resource-card" data-resource="618-mobile-banner">
+                                <div class="resource-preview">
+                                    <img src="https://images.pexels.com/photos/5632402/pexels-photo-5632402.jpeg" alt="移动端Banner">
+                                    <div class="resource-type-tag">移动端</div>
+                                </div>
+                                <div class="resource-info">
+                                    <h3 class="resource-title">移动端Banner</h3>
+                                    <div class="resource-meta">
+                                        <div class="resource-type">
+                                            <i class="fas fa-mobile-alt"></i> 移动端
+                                        </div>
+                                        <div class="resource-dimensions">800 × 800 px</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="resource-card" data-resource="618-countdown">
+                                <div class="resource-preview">
+                                    <img src="https://images.pexels.com/photos/5632398/pexels-photo-5632398.jpeg" alt="倒计时Banner">
+                                    <div class="resource-type-tag">倒计时</div>
+                                </div>
+                                <div class="resource-info">
+                                    <h3 class="resource-title">活动倒计时</h3>
+                                    <div class="resource-meta">
+                                        <div class="resource-type">
+                                            <i class="fas fa-clock"></i> 倒计时
+                                        </div>
+                                        <div class="resource-dimensions">1080 × 1080 px</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="resource-card" data-resource="618-product-showcase">
+                                <div class="resource-preview">
+                                    <img src="https://images.pexels.com/photos/5632397/pexels-photo-5632397.jpeg" alt="产品展示">
+                                    <div class="resource-type-tag">产品</div>
+                                </div>
+                                <div class="resource-info">
+                                    <h3 class="resource-title">产品展示</h3>
+                                    <div class="resource-meta">
+                                        <div class="resource-type">
+                                            <i class="fas fa-cube"></i> 产品
+                                        </div>
+                                        <div class="resource-dimensions">1200 × 628 px</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 侧边栏 -->
+                <div class="project-sidebar">
+                    <div class="sidebar-title">
+                        <div class="sidebar-title-text">
+                            <i class="fas fa-history"></i> 最近活动
+                        </div>
+                        <button class="btn-icon">
+                            <i class="fas fa-ellipsis-h"></i>
+                        </button>
+                    </div>
+
+                    <div class="activity-list">
+                        <div class="activity-item">
+                            <div class="activity-icon">
+                                <i class="fas fa-plus"></i>
+                            </div>
+                            <div class="activity-content">
+                                <div class="activity-header">
+                                    <div class="activity-user">设计师 A</div>
+                                    <div class="activity-time">2小时前</div>
+                                </div>
+                                <div class="activity-text">创建了新设计 "产品展示"</div>
+                                <a href="#" class="activity-file">产品展示.psd</a>
+                            </div>
+                        </div>
+
+                        <div class="activity-item">
+                            <div class="activity-icon" style="background-color: var(--dopamine-blue);">
+                                <i class="fas fa-pencil-alt"></i>
+                            </div>
+                            <div class="activity-content">
+                                <div class="activity-header">
+                                    <div class="activity-user">设计师 B</div>
+                                    <div class="activity-time">5小时前</div>
+                                </div>
+                                <div class="activity-text">更新了 "移动端Banner" 的设计，调整了字体大小和产品位置</div>
+                                <a href="#" class="activity-file">移动端Banner_v2.psd</a>
+                            </div>
+                        </div>
+
+                        <div class="activity-item">
+                            <div class="activity-icon" style="background-color: var(--dopamine-purple);">
+                                <i class="fas fa-comment"></i>
+                            </div>
+                            <div class="activity-content">
+                                <div class="activity-header">
+                                    <div class="activity-user">市场经理</div>
+                                    <div class="activity-time">昨天</div>
+                                </div>
+                                <div class="activity-text">添加了评论："请在主Banner中突出618的折扣力度，可以使用更大的字号"</div>
+                            </div>
+                        </div>
+
+                        <div class="activity-item">
+                            <div class="activity-icon" style="background-color: var(--dopamine-yellow);">
+                                <i class="fas fa-upload"></i>
+                            </div>
+                            <div class="activity-content">
+                                <div class="activity-header">
+                                    <div class="activity-user">设计师 A</div>
+                                    <div class="activity-time">2天前</div>
+                                </div>
+                                <div class="activity-text">上传了新版本的 "主会场Banner"</div>
+                                <a href="#" class="activity-file">主会场Banner_v3.psd</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 创建设计资源模态框 -->
+    <div class="modal-overlay" id="createDesignModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">创建新设计</h3>
+                <div class="modal-close" id="closeModalBtn">
+                    <i class="fas fa-times"></i>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">设计名称</label>
+                    <input type="text" class="form-control" placeholder="输入设计名称">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">设计类型</label>
+                    <select class="form-control">
+                        <option value="">选择设计类型</option>
+                        <option value="banner">Banner</option>
+                        <option value="social">社交媒体</option>
+                        <option value="product">产品展示</option>
+                        <option value="mobile">移动端</option>
+                        <option value="other">其他</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">尺寸</label>
+                    <select class="form-control">
+                        <option value="">选择尺寸</option>
+                        <option value="1200x628">1200 × 628 px (横幅)</option>
+                        <option value="800x800">800 × 800 px (方形)</option>
+                        <option value="1080x1080">1080 × 1080 px (Instagram)</option>
+                        <option value="1080x1920">1080 × 1920 px (故事)</option>
+                        <option value="custom">自定义尺寸</option>
+                    </select>
+                </div>
+                <div class="form-group" id="customSizeGroup" style="display: none;">
+                    <div style="display: flex; gap: 8px;">
+                        <div style="flex: 1;">
+                            <label class="form-label">宽度 (px)</label>
+                            <input type="number" class="form-control" placeholder="宽度" min="1">
+                        </div>
+                        <div style="flex: 1;">
+                            <label class="form-label">高度 (px)</label>
+                            <input type="number" class="form-control" placeholder="高度" min="1">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">模板选择</label>
+                    <select class="form-control">
+                        <option value="">空白设计</option>
+                        <option value="template1">电商Banner模板</option>
+                        <option value="template2">社交媒体模板</option>
+                        <option value="template3">产品展示模板</option>
+                        <option value="master">从母版库选择...</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn modal-btn-outline" id="cancelModalBtn">取消</button>
+                <button class="modal-btn modal-btn-primary">创建设计</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 获取URL参数
+            const urlParams = new URLSearchParams(window.location.search);
+            const projectId = urlParams.get('id');
+            
+            // 如果有项目ID，更新页面标题
+            if (projectId) {
+                document.title = `${projectId} - CreativePro Studio`;
+                document.getElementById('projectTitle').textContent = projectId;
+            }
+            
+            // 模态框功能
+            const modalOverlay = document.getElementById('createDesignModal');
+            const createResourceBtn = document.getElementById('createResourceBtn');
+            const createResourceCard = document.getElementById('createResourceCard');
+            const closeModalBtn = document.getElementById('closeModalBtn');
+            const cancelModalBtn = document.getElementById('cancelModalBtn');
+            
+            // 打开模态框
+            function openModal() {
+                modalOverlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+            
+            // 关闭模态框
+            function closeModal() {
+                modalOverlay.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+            
+            // 绑定事件
+            createResourceBtn.addEventListener('click', openModal);
+            createResourceCard.addEventListener('click', openModal);
+            closeModalBtn.addEventListener('click', closeModal);
+            cancelModalBtn.addEventListener('click', closeModal);
+            
+            // 点击模态框外部关闭
+            modalOverlay.addEventListener('click', function(e) {
+                if (e.target === modalOverlay) {
+                    closeModal();
+                }
+            });
+            
+            // 自定义尺寸选项
+            const sizeSelect = document.querySelector('.modal-body select:nth-of-type(2)');
+            const customSizeGroup = document.getElementById('customSizeGroup');
+            
+            if (sizeSelect && customSizeGroup) {
+                sizeSelect.addEventListener('change', function() {
+                    if (this.value === 'custom') {
+                        customSizeGroup.style.display = 'block';
+                    } else {
+                        customSizeGroup.style.display = 'none';
+                    }
+                });
+            }
+            
+            // 设计资源卡片点击跳转到画布编辑器
+            const resourceCards = document.querySelectorAll('.resource-card');
+            
+            resourceCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    const resourceId = this.getAttribute('data-resource');
+                    const resourceTitle = this.querySelector('.resource-title').textContent;
+                    window.location.href = `pages/canvas-editor.html?id=${encodeURIComponent(resourceTitle)}&project=${encodeURIComponent(projectId)}`;
+                });
+            });
+        });
+    </script>
+</body>
+</html> 

@@ -65,6 +65,9 @@ export default {
         'normal': '1.5',
         'relaxed': '1.625',
         'loose': '2',
+      },
+      backgroundImage: {
+        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
       }
     },
   },

@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>项目组详情 - CreativePro Studio</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* 设计变量 */
+        :root {
+            --dopamine-orange: #F5E1D9;
+            --dopamine-pink: #FFB5C5;
+            --dopamine-mint: #B6E5D8;
+            --dopamine-blue: #97C1FF;
+            --dopamine-purple: #D5B3FF;
+            --dopamine-yellow: #FFE599;
+            --gray-50: #F9FAFB;
+            --gray-100: #F5F5F7;
+            --gray-200: #E5E5E7;
+            --gray-300: #D1D1D6;
+            --gray-400: #A1A1A6;
+            --gray-500: #86868B;
+            --gray-600: #636366;
+            --gray-700: #48484A;
+            --gray-800: #3A3A3C;
+            --gray-900: #1D1D1F;
+        }
+
+        /* 基础样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--gray-100);
+            color: var(--gray-900);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        button {
+            border: none;
+            background: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray-700);
+        }
+
+        button:hover {
+            color: var(--gray-900);
+        }
+
+        .btn {
+            border-radius: 20px;
+            padding: 0 16px;
+            height: 36px;
+            font-size: 14px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background-color: var(--dopamine-orange);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #FF7E45;
+            color: white;
+        }
+
+        .btn-outline {
+            border: 1px solid var(--gray-300);
+            background-color: white;
+        }
+
+        .btn-outline:hover {
+            background-color: var(--gray-100);
+        }
+
+        .btn i {
+            margin-right: 6px;
+        }
+
+        /* 布局组件 */
+        .container {
+            flex: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
+            width: 100%;
+        }
+
+        /* 项目组头部 */
+        .group-header {
+            margin-bottom: 32px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .group-banner {
+            background: linear-gradient(135deg, var(--dopamine-orange), #FF5E5E);
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 24px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 8px 24px rgba(255, 143, 94, 0.2);
+            position: relative;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: white;
+            background-color: rgba(255, 255, 255, 0.2);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            backdrop-filter: blur(4px);
+            transition: all 0.2s;
+        }
+
+        .back-button:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .back-button:active {
+            transform: translateY(0);
+        }
+
+        .group-details {
+            text-align: center;
+            flex: 1;
+        }
+
+        .group-icon-large {
+            width: 80px;
+            height: 80px;
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 32px;
+            color: white;
+            background-color: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(4px);
+        }
+
+        .group-title {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .group-meta {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+            margin-bottom: 16px;
+            font-size: 15px;
+            opacity: 0.9;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+        }
+
+        .meta-item i {
+            margin-right: 6px;
+        }
+
+        .group-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .banner-action {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border-radius: 20px;
+            padding: 0 16px;
+            height: 40px;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            backdrop-filter: blur(4px);
+        }
+
+        .banner-action:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            color: white;
+        }
+
+        .banner-action.primary {
+            background-color: white;
+            color: var(--dopamine-orange);
+        }
+
+        .banner-action.primary:hover {
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+
+        .banner-action i {
+            margin-right: 6px;
+        }
+
+        /* 标签和过滤器 */
+        .filter-section {
+            background-color: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 8px;
+        }
+
+        .filter-tab {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            color: var(--gray-600);
+            transition: all 0.2s;
+        }
+
+        .filter-tab:hover {
+            color: var(--gray-900);
+            background-color: var(--gray-100);
+        }
+
+        .filter-tab.active {
+            background-color: var(--dopamine-orange);
+            color: white;
+        }
+
+        .view-options {
+            display: flex;
+            gap: 8px;
+        }
+
+        .view-option {
+            width: 36px;
+            height: 36px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray-600);
+            transition: all 0.2s;
+        }
+
+        .view-option:hover {
+            color: var(--gray-900);
+            background-color: var(--gray-100);
+        }
+
+        .view-option.active {
+            background-color: var(--gray-100);
+            color: var(--dopamine-orange);
+        }
+
+        /* 项目网格 */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .project-card {
+            background-color: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            transition: transform 0.15s, box-shadow 0.15s;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            text-decoration: none;
+            color: inherit;
+            cursor: pointer;
+        }
+
+        .project-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .project-card:active {
+            transform: translateY(0);
+            transition: transform 0.1s;
+        }
+
+        .project-image {
+            height: 140px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .project-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .project-card:hover .project-image img {
+            transform: scale(1.05);
+        }
+
+        .project-badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background-color: var(--dopamine-orange);
+            color: white;
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        .project-info {
+            padding: 16px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .project-title {
+            font-size: 15px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .project-meta {
+            color: var(--gray-500);
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+
+        .project-contributors {
+            margin-top: auto;
+            display: flex;
+            align-items: center;
+        }
+
+        .contributor {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: var(--dopamine-blue);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 500;
+            margin-right: -6px;
+            border: 2px solid white;
+        }
+
+        .contributor:nth-child(2) {
+            background-color: var(--dopamine-pink);
+        }
+
+        .contributor:nth-child(3) {
+            background-color: var(--dopamine-yellow);
+        }
+
+        .more-contributors {
+            font-size: 13px;
+            color: var(--gray-500);
+            margin-left: 12px;
+        }
+
+        /* 分页控件 */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-top: 32px;
+        }
+
+        .page-item {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 14px;
+            color: var(--gray-700);
+            transition: all 0.2s;
+        }
+
+        .page-item:hover {
+            background-color: var(--gray-200);
+        }
+
+        .page-item.active {
+            background-color: var(--dopamine-orange);
+            color: white;
+        }
+
+        .page-nav {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 14px;
+            color: var(--gray-700);
+            transition: all 0.2s;
+        }
+
+        .page-nav:hover {
+            background-color: var(--gray-200);
+        }
+
+        .page-nav.disabled {
+            color: var(--gray-400);
+            cursor: not-allowed;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .group-banner {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .group-meta {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .filter-section {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .filter-tabs {
+                overflow-x: auto;
+                width: 100%;
+                padding-bottom: 8px;
+            }
+        }
+    </style>
+    <script src="navigation.js"></script>
+</head>
+<body>
+    <!-- 导航栏由navigation.js自动添加 -->
+    
+    <div class="container">
+        <div class="group-header">
+            <div class="group-banner" id="groupBanner">
+                <a href="welcome.html" class="back-button">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+                <div class="group-details">
+                    <div class="group-icon-large" id="groupIcon">
+                        <i class="fas fa-tags"></i>
+                    </div>
+                    <h1 class="group-title" id="groupTitle">项目组</h1>
+                    <div class="group-meta">
+                        <div class="meta-item">
+                            <i class="fas fa-layer-group"></i>
+                            <span id="projectCount">0 个项目</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-user"></i>
+                            <span>5 位成员</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-calendar"></i>
+                            <span>创建于 2025-05-18</span>
+                        </div>
+                    </div>
+                    <div class="group-actions">
+                        <button class="banner-action primary">
+                            <i class="fas fa-plus"></i> 添加项目
+                        </button>
+                        <button class="banner-action">
+                            <i class="fas fa-cog"></i> 管理
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="filter-section">
+            <div class="filter-tabs">
+                <button class="filter-tab active">全部</button>
+                <button class="filter-tab">进行中</button>
+                <button class="filter-tab">已完成</button>
+                <button class="filter-tab">审核中</button>
+            </div>
+            <div class="view-options">
+                <button class="view-option active">
+                    <i class="fas fa-th"></i>
+                </button>
+                <button class="view-option">
+                    <i class="fas fa-list"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="projects-grid" id="projectsContainer">
+            <!-- 项目卡片将通过JavaScript动态加载 -->
+        </div>
+
+        <div class="pagination">
+            <button class="page-nav disabled">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="page-item active">1</button>
+            <button class="page-item">2</button>
+            <button class="page-item">3</button>
+            <button class="page-nav">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 获取URL参数中的项目组ID
+            const urlParams = new URLSearchParams(window.location.search);
+            const groupId = urlParams.get('id');
+            
+            // 项目组数据
+            const groupData = {
+                '618': {
+                    title: '618活动',
+                    icon: 'fas fa-tags',
+                    color: '#F5E1D9',
+                    count: 42,
+                    projects: [
+                        {
+                            title: '618主会场Banner',
+                            image: 'https://images.pexels.com/photos/6621462/pexels-photo-6621462.jpeg',
+                            badge: '进行中',
+                            meta: '1200×628px · 12 个图层',
+                            contributors: ['D', '李', '王']
+                        },
+                        {
+                            title: '618限时秒杀',
+                            image: 'https://images.pexels.com/photos/5632402/pexels-photo-5632402.jpeg',
+                            badge: '审核中',
+                            meta: '800×800px · 8 个图层',
+                            contributors: ['D', '张']
+                        },
+                        {
+                            title: '618品牌日封面',
+                            image: 'https://images.pexels.com/photos/5632398/pexels-photo-5632398.jpeg',
+                            meta: '1080×1080px · 10 个图层',
+                            contributors: ['D', '李', '赵']
+                        },
+                        {
+                            title: '618直播预告',
+                            image: 'https://images.pexels.com/photos/5632397/pexels-photo-5632397.jpeg',
+                            badge: '已完成',
+                            meta: '1200×628px · 6 个图层',
+                            contributors: ['D', '王']
+                        }
+                    ]
+                },
+                'new-products': {
+                    title: '新品上市',
+                    icon: 'fas fa-star',
+                    color: '#FFB5C5',
+                    count: 17,
+                    projects: [
+                        {
+                            title: '玫瑰精华面霜',
+                            image: 'https://images.pexels.com/photos/5938440/pexels-photo-5938440.jpeg',
+                            badge: '进行中',
+                            meta: '800×800px · 7 个图层',
+                            contributors: ['D', '李']
+                        },
+                        {
+                            title: '樱花气垫',
+                            image: 'https://images.pexels.com/photos/5938221/pexels-photo-5938221.jpeg',
+                            badge: '已完成',
+                            meta: '800×800px · 5 个图层',
+                            contributors: ['D', '王', '赵']
+                        }
+                    ]
+                },
+                'potato-series': {
+                    title: '土豆泥系列',
+                    icon: 'fas fa-box',
+                    color: '#B6E5D8',
+                    count: 28,
+                    projects: [
+                        {
+                            title: '土豆泥卸妆膏',
+                            image: 'https://images.pexels.com/photos/4465125/pexels-photo-4465125.jpeg',
+                            badge: '进行中',
+                            meta: '800×800px · 8 个图层',
+                            contributors: ['D', '李', '王']
+                        },
+                        {
+                            title: '土豆泥面膜',
+                            image: 'https://images.pexels.com/photos/3785147/pexels-photo-3785147.jpeg',
+                            badge: '已完成',
+                            meta: '800×800px · 6 个图层',
+                            contributors: ['D', '张']
+                        }
+                    ]
+                },
+                'brand-assets': {
+                    title: '品牌资产',
+                    icon: 'fas fa-palette',
+                    color: '#97C1FF',
+                    count: 14,
+                    projects: [
+                        {
+                            title: '品牌标志',
+                            image: 'https://images.pexels.com/photos/5632386/pexels-photo-5632386.jpeg',
+                            meta: '2000×2000px · 4 个图层',
+                            contributors: ['D', '王']
+                        },
+                        {
+                            title: '社交媒体模板',
+                            image: 'https://images.pexels.com/photos/5632382/pexels-photo-5632382.jpeg',
+                            badge: '进行中',
+                            meta: '1080×1080px · 12 个图层',
+                            contributors: ['D', '李', '张']
+                        }
+                    ]
+                }
+            };
+            
+            // 设置默认组，如果没有找到匹配的ID
+            const currentGroup = groupData[groupId] || {
+                title: '未知项目组',
+                icon: 'fas fa-folder',
+                color: '#A1A1A6',
+                count: 0,
+                projects: []
+            };
+            
+            // 更新页面标题
+            document.title = `${currentGroup.title} - CreativePro Studio`;
+            
+            // 更新组信息
+            document.getElementById('groupTitle').textContent = currentGroup.title;
+            document.getElementById('groupIcon').innerHTML = `<i class="${currentGroup.icon}"></i>`;
+            document.getElementById('projectCount').textContent = `${currentGroup.count} 个项目`;
+            
+            // 设置banner颜色
+            const banner = document.getElementById('groupBanner');
+            banner.style.background = `linear-gradient(135deg, ${currentGroup.color}, ${getLighterColor(currentGroup.color)})`;
+            
+            // 动态加载项目
+            const projectsContainer = document.getElementById('projectsContainer');
+            
+            if (currentGroup.projects.length === 0) {
+                projectsContainer.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 48px 0;">
+                        <div style="font-size: 64px; color: var(--gray-300); margin-bottom: 16px;">
+                            <i class="fas fa-folder-open"></i>
+                        </div>
+                        <h3 style="font-size: 18px; margin-bottom: 8px; color: var(--gray-700);">暂无项目</h3>
+                        <p style="color: var(--gray-500);">点击"添加项目"开始创建</p>
+                    </div>
+                `;
+            } else {
+                projectsContainer.innerHTML = currentGroup.projects.map(project => `
+                    <a href="product-detail.html?id=${encodeURIComponent(project.title)}&group=${groupId}" class="project-card">
+                        <div class="project-image">
+                            <img src="${project.image}" alt="${project.title}">
+                            ${project.badge ? `<div class="project-badge">${project.badge}</div>` : ''}
+                        </div>
+                        <div class="project-info">
+                            <h3 class="project-title">${project.title}</h3>
+                            <p class="project-meta">${project.meta}</p>
+                            <div class="project-contributors">
+                                ${project.contributors.map((contributor, index) => `
+                                    <div class="contributor" style="background-color: ${getContributorColor(index)};">${contributor}</div>
+                                `).join('')}
+                                ${project.contributors.length > 3 ? `<div class="more-contributors">+${project.contributors.length - 3}人</div>` : ''}
+                            </div>
+                        </div>
+                    </a>
+                `).join('');
+            }
+            
+            // 获取较浅的颜色（用于渐变）
+            function getLighterColor(hexColor) {
+                // 简单处理：转换为HSL，增加亮度
+                return hexColor === '#F5E1D9' ? '#FF5E5E' :
+                       hexColor === '#FFB5C5' ? '#FF8FB0' :
+                       hexColor === '#B6E5D8' ? '#8ED5C5' :
+                       hexColor === '#97C1FF' ? '#6E9EE5' :
+                       '#A1A1A6';
+            }
+            
+            // 获取贡献者头像颜色
+            function getContributorColor(index) {
+                const colors = [
+                    'var(--dopamine-blue)', 
+                    'var(--dopamine-pink)', 
+                    'var(--dopamine-yellow)',
+                    'var(--dopamine-mint)',
+                    'var(--dopamine-purple)'
+                ];
+                return colors[index % colors.length];
+            }
+        });
+    </script>
+</body>
+</html> 

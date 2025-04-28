@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - 页面未找到 | CreativePro Studio</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* 设计变量 */
+        :root {
+            --dopamine-orange: #F5E1D9;
+            --dopamine-pink: #FFB5C5;
+            --dopamine-mint: #B6E5D8;
+            --dopamine-blue: #97C1FF;
+            --dopamine-purple: #D5B3FF;
+            --dopamine-yellow: #FFE599;
+            --gray-50: #F9FAFB;
+            --gray-100: #F5F5F7;
+            --gray-200: #E5E5E7;
+            --gray-300: #D1D1D6;
+            --gray-400: #A1A1A6;
+            --gray-500: #86868B;
+            --gray-600: #636366;
+            --gray-700: #48484A;
+            --gray-800: #3A3A3C;
+            --gray-900: #1D1D1F;
+        }
+
+        /* 基础样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--gray-100);
+            color: var(--gray-900);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 64px;
+            background-color: white;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            justify-content: center;
+        }
+
+        .logo {
+            font-weight: 600;
+            font-size: 16px;
+            color: var(--gray-900);
+            display: flex;
+            align-items: center;
+        }
+
+        .logo span {
+            color: var(--dopamine-orange);
+            margin-left: 2px;
+        }
+
+        .error-container {
+            max-width: 500px;
+            margin: 64px auto 0;
+        }
+
+        .error-icon {
+            font-size: 80px;
+            color: var(--dopamine-orange);
+            margin-bottom: 24px;
+        }
+
+        .error-title {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .error-message {
+            font-size: 16px;
+            color: var(--gray-600);
+            margin-bottom: 32px;
+            line-height: 1.5;
+        }
+
+        .btn {
+            border-radius: 20px;
+            padding: 0 16px;
+            height: 40px;
+            font-size: 14px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background-color: var(--dopamine-orange);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #FF7E45;
+            color: white;
+        }
+
+        .btn i {
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">
+            CreativePro <span>Studio</span>
+        </div>
+    </header>
+
+    <div class="error-container">
+        <div class="error-icon">
+            <i class="fas fa-file-circle-question"></i>
+        </div>
+        <h1 class="error-title">404 - 页面未找到</h1>
+        <p class="error-message">抱歉，您访问的页面不存在或可能已被移动。请检查网址是否正确，或返回首页继续浏览。</p>
+        <a href="/" class="btn btn-primary"><i class="fas fa-home"></i> 返回首页</a>
+    </div>
+</body>
+</html> 

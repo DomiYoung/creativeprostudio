@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CreativePro Studio - 项目蓝图</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css">
+    <style>
+        :root {
+            /* Apple 设计色彩系统 */
+            --blue: #007aff;
+            --indigo: #5856d6;
+            --purple: #af52de;
+            --pink: #ff2d55;
+            --red: #ff3b30;
+            --orange: #ff9500;
+            --yellow: #ffcc00;
+            --green: #34c759;
+            --mint: #00c7be;
+            --teal: #30b0c7;
+            --cyan: #32ade6;
+            --gray: #8e8e93;
+            --gray2: #aeaeb2;
+            --gray3: #c7c7cc;
+            --gray4: #d1d1d6;
+            --gray5: #e5e5ea;
+            --gray6: #f2f2f7;
+            
+            /* 间距 */
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+            --spacing-xxl: 48px;
+            
+            /* 圆角 */
+            --radius-sm: 6px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            
+            /* 字体大小 */
+            --font-xs: 12px;
+            --font-sm: 14px;
+            --font-md: 16px;
+            --font-lg: 20px;
+            --font-xl: 24px;
+            --font-xxl: 32px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--gray6);
+            color: #000;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        a {
+            text-decoration: none;
+            color: var(--blue);
+        }
+        
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* 侧边栏样式 */
+        .sidebar {
+            width: 280px;
+            background-color: var(--gray6);
+            border-right: 1px solid var(--gray5);
+            padding: var(--spacing-lg) 0;
+            overflow-y: auto;
+        }
+        
+        .sidebar-header {
+            padding: 0 var(--spacing-lg) var(--spacing-lg);
+            border-bottom: 1px solid var(--gray5);
+        }
+        
+        .sidebar-title {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            font-size: var(--font-md);
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .sidebar-title i {
+            color: var(--teal);
+        }
+        
+        .sidebar-subtitle {
+            font-size: var(--font-sm);
+            color: var(--gray);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .nav-section {
+            margin-top: var(--spacing-lg);
+            padding: 0 var(--spacing-lg);
+        }
+        
+        .nav-section-title {
+            font-size: var(--font-xs);
+            text-transform: uppercase;
+            color: var(--gray);
+            margin-bottom: var(--spacing-sm);
+            letter-spacing: 0.5px;
+        }
+        
+        .nav-list {
+            list-style: none;
+        }
+        
+        .nav-item {
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--radius-md);
+            color: var(--gray);
+            font-size: var(--font-sm);
+            transition: all 0.2s ease;
+        }
+        
+        .nav-link:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+            color: #000;
+        }
+        
+        .nav-link.active {
+            background-color: rgba(0, 184, 186, 0.1);
+            color: var(--teal);
+            font-weight: 500;
+        }
+        
+        .nav-link i {
+            margin-right: var(--spacing-sm);
+            width: 20px;
+            text-align: center;
+        }
+        
+        /* 主内容区样式 */
+        .main-content {
+            flex: 1;
+            padding: var(--spacing-xl);
+            overflow-y: auto;
+        }
+        
+        .header {
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .breadcrumbs {
+            display: flex;
+            align-items: center;
+            font-size: var(--font-sm);
+            color: var(--gray);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .breadcrumbs a {
+            color: var(--gray);
+        }
+        
+        .breadcrumbs a:hover {
+            color: var(--blue);
+        }
+        
+        .breadcrumbs i {
+            margin: 0 var(--spacing-xs);
+            font-size: 10px;
+        }
+        
+        .page-title {
+            font-size: var(--font-xl);
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .page-meta {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            color: var(--gray);
+            font-size: var(--font-sm);
+        }
+        
+        .page-meta span {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+        }
+        
+        /* 文档内容样式 */
+        .document-container {
+            background-color: white;
+            border-radius: var(--radius-lg);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: var(--spacing-xl);
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .document-content {
+            font-size: var(--font-md);
+            line-height: 1.6;
+        }
+        
+        .document-content h1 {
+            font-size: 1.8em;
+            margin-top: 1em;
+            margin-bottom: 0.8em;
+        }
+        
+        .document-content h2 {
+            font-size: 1.5em;
+            margin-top: 1.5em;
+            margin-bottom: 0.8em;
+            color: var(--teal);
+        }
+        
+        .document-content h3 {
+            font-size: 1.3em;
+            margin-top: 1.2em;
+            margin-bottom: 0.6em;
+            color: var(--gray);
+        }
+        
+        .document-content p {
+            margin-bottom: 1em;
+        }
+        
+        .document-content ul,
+        .document-content ol {
+            margin-bottom: 1em;
+            padding-left: 2em;
+        }
+        
+        .document-content li {
+            margin-bottom: 0.5em;
+        }
+        
+        .document-content pre {
+            background-color: var(--gray6);
+            padding: 1em;
+            border-radius: var(--radius-md);
+            overflow-x: auto;
+            margin-bottom: 1em;
+        }
+        
+        .document-content code {
+            font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-size: 0.9em;
+            background-color: var(--gray6);
+            padding: 0.2em 0.4em;
+            border-radius: var(--radius-sm);
+        }
+        
+        .document-content pre code {
+            padding: 0;
+            background-color: transparent;
+        }
+        
+        .document-content blockquote {
+            border-left: 4px solid var(--teal);
+            padding-left: 1em;
+            color: var(--gray);
+            margin-bottom: 1em;
+        }
+        
+        .document-content img {
+            max-width: 100%;
+            border-radius: var(--radius-md);
+        }
+        
+        .document-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1em;
+        }
+        
+        .document-content th,
+        .document-content td {
+            padding: 0.5em 0.75em;
+            border: 1px solid var(--gray5);
+        }
+        
+        .document-content th {
+            background-color: var(--gray6);
+            font-weight: 600;
+            text-align: left;
+        }
+        
+        /* 底部元素 */
+        .footer {
+            margin-top: var(--spacing-xxl);
+            padding-top: var(--spacing-lg);
+            border-top: 1px solid var(--gray5);
+            color: var(--gray);
+            font-size: var(--font-sm);
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid var(--gray5);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 侧边栏 -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-title">
+                    <i class="fas fa-lightbulb"></i>
+                    <span>项目蓝图</span>
+                </div>
+                <p class="sidebar-subtitle">AI赋能内容创作系统规划</p>
+            </div>
+            
+            <div class="nav-section">
+                <h3 class="nav-section-title">文档导航</h3>
+                <ul class="nav-list">
+                    <li class="nav-item">
+                        <a href="#vision" class="nav-link active">
+                            <i class="fas fa-bullseye"></i>
+                            项目愿景
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#principles" class="nav-link">
+                            <i class="fas fa-compass"></i>
+                            核心设计原则
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#architecture" class="nav-link">
+                            <i class="fas fa-sitemap"></i>
+                            系统架构
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#features" class="nav-link">
+                            <i class="fas fa-cogs"></i>
+                            核心功能
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#ui" class="nav-link">
+                            <i class="fas fa-palette"></i>
+                            用户界面设计
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#roadmap" class="nav-link">
+                            <i class="fas fa-map"></i>
+                            实施路线图
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#kpi" class="nav-link">
+                            <i class="fas fa-chart-line"></i>
+                            关键成功指标
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#future" class="nav-link">
+                            <i class="fas fa-rocket"></i>
+                            未来扩展方向
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#summary" class="nav-link">
+                            <i class="fas fa-clipboard-check"></i>
+                            总结
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </aside>
+        
+        <!-- 主内容区 -->
+        <main class="main-content">
+            <div class="header">
+                <div class="breadcrumbs">
+                    <a href="index.html">首页</a>
+                    <i class="fas fa-chevron-right"></i>
+                    <span>系统蓝图</span>
+                </div>
+                <h1 class="page-title">CreativePro Studio - 系统蓝图</h1>
+                <div class="page-meta">
+                    <span><i class="far fa-calendar"></i> 最近更新: 2025-04-28</span>
+                    <span><i class="far fa-user"></i> 系统架构组</span>
+                </div>
+            </div>
+            
+            <div class="document-container">
+                <div class="document-content">
+                    <section id="vision">
+                        <h2>1. 项目愿景</h2>
+                        <p>打造一个基于AI赋能的内容创作平台，通过简约直观的界面引导用户完成从素材管理到批量生成、个性化编辑及项目管理的全流程内容创作工作，大幅提升设计效率，让非专业设计人员也能创建专业水准的视觉内容。</p>
+                    </section>
+                    
+                    <section id="principles">
+                        <h2>2. 核心设计原则</h2>
+                        <ul>
+                            <li><strong>简约优先</strong>：减少决策点，突出核心功能，让用户专注于创作</li>
+                            <li><strong>上下文设计</strong>：用户不需记住工作流程，界面自然引导操作步骤</li>
+                            <li><strong>层级清晰</strong>：项目 &gt; 画布 &gt; 元素的逻辑层级贯穿整个系统</li>
+                            <li><strong>无形引导</strong>：帮助用户前进而不是指挥用户，营造自然流畅的体验</li>
+                        </ul>
+                    </section>
+                    
+                    <section id="architecture">
+                        <h2>3. 系统架构</h2>
+                        
+                        <h3>3.1 主要模块结构</h3>
+                        <pre><code>素材库系统 | 模板库系统 | 批量创建中心 | 编辑器 | 项目管理中心 | 导出系统</code></pre>
+                        
+                        <h3>3.2 工作流程设计</h3>
+                        <p>系统设计了清晰的线性工作流程：</p>
+                        <ol>
+                            <li><strong>浏览素材库</strong> → 2. <strong>选择母版</strong> → 3. <strong>批量创建</strong> → 4. <strong>个性化编辑</strong> → 5. <strong>查看项目</strong></li>
+                        </ol>
+                        <p>此流程通过直观的路线图展示，帮助用户理解整个创作过程。</p>
+                        
+                        <h3>3.3 数据流转</h3>
+                        <ul>
+                            <li>素材库 → 提供创作资源</li>
+                            <li>模板库 → 提供设计结构</li>
+                            <li>Excel数据 → 提供批量变量</li>
+                            <li>批量创建 → 生成初始内容</li>
+                            <li>编辑器 → 优化内容</li>
+                            <li>项目管理 → 组织和查看成果</li>
+                        </ul>
+                    </section>
+                    
+                    <section id="features">
+                        <h2>4. 核心功能详述</h2>
+                        
+                        <h3>4.1 素材库系统</h3>
+                        <p><strong>功能目标</strong>：提供集中化素材管理，让用户快速浏览和使用可用资源</p>
+                        <p><strong>核心特性</strong>：</p>
+                        <ul>
+                            <li>网格+侧边筛选器布局，提供直观的素材浏览体验</li>
+                            <li>素材卡片包含ID信息，便于Excel引用</li>
+                            <li>提供"复制ID"快捷操作</li>
+                            <li>支持高级搜索和分类过滤</li>
+                            <li>允许创建素材收藏集，方便批量工作</li>
+                        </ul>
+                        
+                        <h3>4.2 模板库系统</h3>
+                        <p><strong>功能目标</strong>：提供多样化设计模板，加速设计过程</p>
+                        <p><strong>核心特性</strong>：</p>
+                        <ul>
+                            <li>大图预览布局，直观展示模板效果</li>
+                            <li>显示可用变量和适用场景</li>
+                            <li>提供模板明细视图，展示所有可替换元素</li>
+                            <li>支持模板预览与实际素材组合效果</li>
+                            <li>提供"在Excel中使用"指引链接</li>
+                        </ul>
+                        
+                        <h3>4.3 批量创建中心</h3>
+                        <p><strong>功能目标</strong>：通过数据驱动实现批量内容生成，大幅提升效率</p>
+                        <p><strong>核心特性</strong>：</p>
+                        <ul>
+                            <li>分步引导式工作流，清晰展示创建阶段</li>
+                            <li>右侧边栏同步展示"常用素材"和"推荐模板"</li>
+                            <li>模板变量表格展示所需数据格式及示例</li>
+                            <li>一键生成并下载与所选模板匹配的Excel模板</li>
+                            <li>导入数据智能验证功能</li>
+                            <li>支持分批预览和创建</li>
+                        </ul>
+                        
+                        <h3>4.4 编辑器系统</h3>
+                        <p><strong>功能目标</strong>：提供精确控制，实现内容的个性化调整</p>
+                        <p><strong>核心特性</strong>：</p>
+                        <ul>
+                            <li>合并功能区设计，提供整洁界面</li>
+                            <li>左侧资源面板（素材库和模板库快速访问）</li>
+                            <li>右侧属性面板，提供精确控制</li>
+                            <li>顶部最小化工具栏，提供常用功能</li>
+                            <li>批量操作功能内置，支持统一调整</li>
+                        </ul>
+                        
+                        <h3>4.5 项目管理中心</h3>
+                        <p><strong>功能目标</strong>：高效管理和组织创建的内容</p>
+                        <p><strong>核心特性</strong>：</p>
+                        <ul>
+                            <li>文件夹式组织结构</li>
+                            <li>现代化设计的项目卡片</li>
+                            <li>状态徽章系统</li>
+                            <li>标签式筛选器和搜索功能</li>
+                            <li>支持网格/列表视图切换</li>
+                            <li>支持版本管理和回溯</li>
+                        </ul>
+                        
+                        <h3>4.6 导出系统</h3>
+                        <p><strong>功能目标</strong>：简化导出流程，满足不同使用场景</p>
+                        <p><strong>核心特性</strong>：</p>
+                        <ul>
+                            <li>三步导出流程：选择格式 → 选择目标 → 导出</li>
+                            <li>支持导出预设保存和应用</li>
+                            <li>批量导出进度直观显示</li>
+                            <li>多格式支持（图片、PDF、ZIP等）</li>
+                        </ul>
+                    </section>
+                    
+                    <section id="ui">
+                        <h2>5. 用户界面设计</h2>
+                        
+                        <h3>5.1 视觉风格</h3>
+                        <ul>
+                            <li><strong>排版</strong>：使用现代无衬线字体，保持清晰层级</li>
+                            <li><strong>颜色</strong>：主色调简化为主题色+中性灰，确保视觉焦点</li>
+                            <li><strong>圆角</strong>：统一为10px（大元素）和6px（小元素）</li>
+                            <li><strong>阴影</strong>：减少使用，仅用于创建微妙层次</li>
+                            <li><strong>交互状态</strong>：采用细微动效传达反馈</li>
+                            <li><strong>图标</strong>：使用统一的图标系统确保一致性</li>
+                        </ul>
+                        
+                        <h3>5.2 交互设计</h3>
+                        <ul>
+                            <li><strong>直观的视觉引导</strong>：使用图标和连接线清晰展示流程</li>
+                            <li><strong>简约的信息展示</strong>：精简文字，突出核心功能</li>
+                            <li><strong>明确的行动指引</strong>：每个步骤提供清晰的下一步操作</li>
+                            <li><strong>丰富的视觉反馈</strong>：状态徽章、进度条、动态效果提供操作反馈</li>
+                            <li><strong>自然的过渡动画</strong>：基于弹性曲线的过渡效果增强体验流畅度</li>
+                        </ul>
+                    </section>
+                    
+                    <section id="roadmap">
+                        <h2>6. 实施路线图</h2>
+                        
+                        <h3>6.1 第一阶段：基础构建（2个月）</h3>
+                        <ul>
+                            <li>完成素材库和模板库基础功能</li>
+                            <li>实现批量创建基础流程</li>
+                            <li>构建项目管理基础架构</li>
+                            <li>设计统一视觉风格</li>
+                        </ul>
+                        
+                        <h3>6.2 第二阶段：功能完善（2个月）</h3>
+                        <ul>
+                            <li>完善编辑器功能</li>
+                            <li>优化批量创建体验</li>
+                            <li>增强项目管理功能</li>
+                            <li>实现导出系统</li>
+                        </ul>
+                        
+                        <h3>6.3 第三阶段：体验优化（2个月）</h3>
+                        <ul>
+                            <li>优化系统整体流程</li>
+                            <li>增强模块间数据流转</li>
+                            <li>实现高级批量操作功能</li>
+                            <li>添加版本管理功能</li>
+                        </ul>
+                    </section>
+                    
+                    <section id="kpi">
+                        <h2>7. 关键成功指标</h2>
+                        
+                        <h3>7.1 效率指标</h3>
+                        <ul>
+                            <li>设计时间减少：传统设计工作流程时间减少80%</li>
+                            <li>批量处理能力：单次可处理100+设计项目</li>
+                            <li>学习曲线：新用户30分钟内掌握核心功能</li>
+                        </ul>
+                        
+                        <h3>7.2 质量指标</h3>
+                        <ul>
+                            <li>设计一致性：批量生成的设计保持95%以上的风格一致性</li>
+                            <li>版本控制：支持完整的设计版本历史和回溯</li>
+                            <li>错误减少：数据验证功能将错误率降低90%</li>
+                        </ul>
+                        
+                        <h3>7.3 用户体验指标</h3>
+                        <ul>
+                            <li>系统响应时间：核心操作响应时间&lt;200ms</li>
+                            <li>用户满意度：NPS评分&gt;60</li>
+                            <li>功能发现率：用户能在首次使用时发现80%的核心功能</li>
+                        </ul>
+                    </section>
+                    
+                    <section id="future">
+                        <h2>8. 未来扩展方向</h2>
+                        
+                        <h3>8.1 协作功能</h3>
+                        <ul>
+                            <li>添加多用户协作能力</li>
+                            <li>实现实时设计评审功能</li>
+                            <li>构建团队资源共享机制</li>
+                        </ul>
+                        
+                        <h3>8.2 AI增强功能</h3>
+                        <ul>
+                            <li>智能设计推荐</li>
+                            <li>自动布局优化</li>
+                            <li>内容自动生成</li>
+                        </ul>
+                        
+                        <h3>8.3 集成能力</h3>
+                        <ul>
+                            <li>与主流设计工具集成</li>
+                            <li>与内容管理系统对接</li>
+                            <li>与营销平台打通</li>
+                        </ul>
+                    </section>
+                    
+                    <section id="summary">
+                        <h2>9. 总结</h2>
+                        <p>AI赋能内容创作系统通过精心设计的工作流程和交互体验，将复杂的设计工作简化为直观的步骤。系统遵循"简约优先"、"上下文设计"、"层级清晰"和"无形引导"四大设计原则，为用户提供从素材管理、模板选择、批量创建到个性化编辑的全流程支持，大幅提升内容创作效率，同时保证设计质量和一致性。</p>
+                        <p>从浏览素材库到查看项目的线性工作流设计，不仅清晰展示了系统的使用路径，更通过精心的视觉引导和交互反馈，让用户能够自然地完成每一步操作，实现真正的"无形引导"体验。</p>
+                    </section>
+                </div>
+            </div>
+            
+            <div class="footer">
+                <div>© 2023-2025 CreativePro Studio</div>
+                <div>文档版本 1.0.0</div>
+            </div>
+        </main>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 导航链接点击事件
+            const navLinks = document.querySelectorAll('.nav-link');
+            
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // 移除所有活动状态
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    
+                    // 设置当前链接为活动状态
+                    this.classList.add('active');
+                    
+                    // 获取目标部分的ID
+                    const targetId = this.getAttribute('href').substring(1);
+                    const targetSection = document.getElementById(targetId);
+                    
+                    // 滚动到目标部分
+                    targetSection.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+            
+            // 滚动监听
+            window.addEventListener('scroll', function() {
+                const sections = document.querySelectorAll('.document-content section');
+                let currentSection = '';
+                
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.clientHeight;
+                    
+                    if (pageYOffset >= sectionTop - 200 && pageYOffset < sectionTop + sectionHeight - 200) {
+                        currentSection = section.getAttribute('id');
+                    }
+                });
+                
+                // 更新导航状态
+                if (currentSection) {
+                    navLinks.forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === `#${currentSection}`) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

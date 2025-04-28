@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UX设计 - CreativePro Studio</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="../styles/kimtrue-brand.css">
+    <style>
+        /* 设计变量 */
+        :root {
+            --dopamine-orange: #F5E1D9;
+            --dopamine-pink: #FFB5C5;
+            --dopamine-mint: #B6E5D8;
+            --dopamine-blue: #97C1FF;
+            --dopamine-purple: #D5B3FF;
+            --dopamine-yellow: #FFE599;
+            --gray-50: #F9FAFB;
+            --gray-100: #F5F5F7;
+            --gray-200: #E5E5E7;
+            --gray-300: #D1D1D6;
+            --gray-400: #A1A1A6;
+            --gray-500: #86868B;
+            --gray-600: #636366;
+            --gray-700: #48484A;
+            --gray-800: #3A3A3C;
+            --gray-900: #1D1D1F;
+            --ux-purple: #6C63FF;
+        }
+
+        /* 基础样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--gray-100);
+            color: var(--gray-900);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        button {
+            border: none;
+            background: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray-700);
+        }
+
+        button:hover {
+            color: var(--gray-900);
+        }
+
+        .btn {
+            border-radius: 6px;
+            padding: 0 12px;
+            height: 32px;
+            font-size: 13px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background-color: var(--ux-purple);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #5A52E0;
+            color: white;
+        }
+
+        .btn-outline {
+            border: 1px solid var(--gray-300);
+            background-color: white;
+        }
+
+        .btn-outline:hover {
+            background-color: var(--gray-100);
+        }
+
+        .btn i {
+            margin-right: 4px;
+        }
+
+        .btn-icon {
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            border-radius: 6px;
+        }
+
+        .btn-icon i {
+            margin-right: 0;
+        }
+
+        .btn-large {
+            height: 40px;
+            padding: 0 16px;
+            font-size: 14px;
+        }
+
+        /* 布局组件 */
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 24px;
+            width: 100%;
+        }
+
+        /* 顶部导航栏 */
+        .top-nav {
+            height: 56px;
+            background-color: white;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+        }
+
+        .top-nav-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-logo span {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            margin-left: 48px;
+        }
+
+        .nav-link {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--gray-600);
+            text-decoration: none;
+            position: relative;
+        }
+
+        .nav-link.active {
+            color: var(--gray-900);
+        }
+
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -17px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: var(--ux-purple);
+        }
+
+        .nav-link:hover {
+            color: var(--gray-900);
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: var(--ux-purple);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .home-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+        
+        .hero-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 48px 0;
+            background-color: white;
+            border-radius: 12px;
+            margin-bottom: 32px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+        
+        .hero-title {
+            font-size: 32px;
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+        
+        .hero-description {
+            font-size: 16px;
+            color: var(--gray-600);
+            max-width: 600px;
+            margin-bottom: 32px;
+        }
+        
+        .create-main-button {
+            background-color: var(--ux-purple);
+            color: white;
+            font-size: 16px;
+            font-weight: 500;
+            padding: 0 24px;
+            height: 48px;
+            border-radius: 24px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 16px rgba(108, 99, 255, 0.3);
+            margin-bottom: 32px;
+        }
+        
+        .create-main-button i {
+            margin-right: 8px;
+        }
+        
+        .resource-entries {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-bottom: 32px;
+            flex-wrap: wrap;
+        }
+        
+        .entry-card {
+            width: 240px;
+            background-color: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+        }
+        
+        .entry-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        }
+        
+        .entry-card-icon {
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: var(--ux-purple);
+            background: linear-gradient(135deg, rgba(108, 99, 255, 0.1), rgba(108, 99, 255, 0.05));
+        }
+        
+        .entry-card-content {
+            padding: 16px;
+            text-align: center;
+        }
+        
+        .entry-card-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .entry-card-description {
+            font-size: 13px;
+            color: var(--gray-600);
+        }
+        
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .section-title a {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--ux-purple);
+            text-decoration: none;
+        }
+        
+        .recent-projects {
+            margin-bottom: 32px;
+        }
+        
+        .projects-scroll {
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            padding-bottom: 16px;
+            scroll-behavior: smooth;
+        }
+        
+        .projects-scroll::-webkit-scrollbar {
+            height: 4px;
+        }
+        
+        .projects-scroll::-webkit-scrollbar-track {
+            background: var(--gray-100);
+            border-radius: 2px;
+        }
+        
+        .projects-scroll::-webkit-scrollbar-thumb {
+            background-color: var(--gray-300);
+            border-radius: 2px;
+        }
+        
+        .project-card {
+            min-width: 220px;
+            border-radius: 12px;
+            overflow: hidden;
+            background-color: white;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .project-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        
+        .project-card-image {
+            height: 124px;
+            width: 100%;
+            object-fit: cover;
+        }
+        
+        .project-card-content {
+            padding: 12px 16px;
+        }
+        
+        .project-card-title {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .project-card-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: var(--gray-500);
+        }
+        
+        .two-column-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .status-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+        
+        .status-card-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        
+        .status-card-content {
+            margin-bottom: 16px;
+            font-size: 14px;
+            color: var(--gray-600);
+        }
+        
+        /* 响应式样式 */
+        @media (max-width: 768px) {
+            .resource-entries {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .entry-card {
+                width: 100%;
+                max-width: 320px;
+            }
+            
+            .two-column-section {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <nav class="top-nav">
+        <div class="top-nav-container">
+            <div class="nav-left">
+                <div class="nav-logo">
+                    <span>
+                        <span style="color: #333;">Creative</span><span style="color: var(--ux-purple);">Pro</span>
+                    </span>
+                </div>
+                <div class="nav-links">
+                    <a href="../index.html" class="nav-link">首页</a>
+                    <a href="prototype-design.html" class="nav-link">原型设计</a>
+                    <a href="ux-design.html" class="nav-link active">UX</a>
+                    <a href="frontend.html" class="nav-link">前端</a>
+                    <a href="backend.html" class="nav-link">后端</a>
+                    <a href="database.html" class="nav-link">数据库</a>
+                    <a href="api.html" class="nav-link">API</a>
+                </div>
+            </div>
+            <div class="nav-right">
+                <button class="btn btn-outline">
+                    <i class="fas fa-bell"></i>
+                </button>
+                <div class="user-avatar">D</div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="home-container">
+        <div class="hero-section">
+            <h1 class="hero-title">用户体验设计中心</h1>
+            <p class="hero-description">打造卓越的用户体验，构建人性化的交互界面</p>
+            <div class="hero-actions" style="display: flex; gap: 16px;">
+                <button class="create-main-button" id="createButton">
+                    <i class="fas fa-plus"></i> 创建UX项目
+                </button>
+                <button class="create-main-button" style="background-color: white; color: var(--ux-purple); border: 1px solid var(--ux-purple); box-shadow: none;">
+                    <i class="fas fa-download"></i> 下载设计规范
+                </button>
+            </div>
+        </div>
+        
+        <div class="resource-entries">
+            <div class="entry-card">
+                <div class="entry-card-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="entry-card-content">
+                    <h3 class="entry-card-title">用户研究</h3>
+                    <p class="entry-card-description">用户画像与调研报告</p>
+                </div>
+            </div>
+            
+            <div class="entry-card">
+                <div class="entry-card-icon">
+                    <i class="fas fa-project-diagram"></i>
+                </div>
+                <div class="entry-card-content">
+                    <h3 class="entry-card-title">信息架构</h3>
+                    <p class="entry-card-description">结构规划与流程图</p>
+                </div>
+            </div>
+            
+            <div class="entry-card">
+                <div class="entry-card-icon">
+                    <i class="fas fa-bezier-curve"></i>
+                </div>
+                <div class="entry-card-content">
+                    <h3 class="entry-card-title">交互设计</h3>
+                    <p class="entry-card-description">用户行为与反馈</p>
+                </div>
+            </div>
+            
+            <div class="entry-card">
+                <div class="entry-card-icon">
+                    <i class="fas fa-universal-access"></i>
+                </div>
+                <div class="entry-card-content">
+                    <h3 class="entry-card-title">可访问性</h3>
+                    <p class="entry-card-description">无障碍设计规范</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="recent-projects">
+            <h2 class="section-title">
+                最近UX项目
+                <a href="#">查看全部</a>
+            </h2>
+            
+            <div class="projects-scroll">
+                <div class="project-card">
+                    <img src="https://via.placeholder.com/220x124" class="project-card-image" alt="项目预览">
+                    <div class="project-card-content">
+                        <h3 class="project-card-title">电商APP用户流程优化</h3>
+                        <div class="project-card-meta">
+                            <span>2小时前</span>
+                            <span>电商</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <img src="https://via.placeholder.com/220x124" class="project-card-image" alt="项目预览">
+                    <div class="project-card-content">
+                        <h3 class="project-card-title">企业管理后台重设计</h3>
+                        <div class="project-card-meta">
+                            <span>昨天</span>
+                            <span>企业级</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <img src="https://via.placeholder.com/220x124" class="project-card-image" alt="项目预览">
+                    <div class="project-card-content">
+                        <h3 class="project-card-title">数据可视化交互规范</h3>
+                        <div class="project-card-meta">
+                            <span>3天前</span>
+                            <span>分析工具</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <img src="https://via.placeholder.com/220x124" class="project-card-image" alt="项目预览">
+                    <div class="project-card-content">
+                        <h3 class="project-card-title">金融APP用户研究</h3>
+                        <div class="project-card-meta">
+                            <span>上周</span>
+                            <span>金融</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="two-column-section">
+            <div class="status-card">
+                <h3 class="status-card-title">UX指南</h3>
+                <p class="status-card-content">查看我们精心整理的用户体验指南，了解最佳实践和设计原则。</p>
+                <button class="btn btn-primary">查看指南</button>
+            </div>
+            
+            <div class="status-card">
+                <h3 class="status-card-title">可用性测试</h3>
+                <p class="status-card-content">获取真实用户对您产品的反馈，发现潜在的用户体验问题。</p>
+                <button class="btn btn-outline">开始测试</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 创建弹窗交互
+        document.getElementById('createButton').addEventListener('click', () => {
+            alert('创建UX项目功能即将上线');
+        });
+    </script>
+</body>
+</html> 

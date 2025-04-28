@@ -1,0 +1,1417 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CreativePro Studio API 文档浏览器</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            /* Apple 设计色彩系统 */
+            --blue: #007aff;
+            --indigo: #5856d6;
+            --purple: #af52de;
+            --pink: #ff2d55;
+            --red: #ff3b30;
+            --orange: #ff9500;
+            --yellow: #ffcc00;
+            --green: #34c759;
+            --mint: #00c7be;
+            --teal: #30b0c7;
+            --cyan: #32ade6;
+            --gray: #8e8e93;
+            --gray2: #aeaeb2;
+            --gray3: #c7c7cc;
+            --gray4: #d1d1d6;
+            --gray5: #e5e5ea;
+            --gray6: #f2f2f7;
+            
+            /* 品牌色 */
+            --brand-orange: #F5E1D9;
+            --brand-pink: #FFB5C5;
+            --mint-green: #B6E5D8;
+            --sky-blue: #97C1FF;
+            --soft-purple: #D5B3FF;
+            --cream-yellow: #FFE599;
+            
+            /* 间距 */
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+            --spacing-xxl: 48px;
+            
+            /* 圆角 */
+            --radius-sm: 6px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            
+            /* 字体大小 */
+            --font-xs: 12px;
+            --font-sm: 14px;
+            --font-md: 16px;
+            --font-lg: 20px;
+            --font-xl: 24px;
+            --font-xxl: 32px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--gray6);
+            color: #000;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        header {
+            background-color: white;
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-bottom: 1px solid var(--gray5);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 64px;
+            flex-shrink: 0;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+        
+        .logo-text {
+            font-size: var(--font-lg);
+            font-weight: 600;
+            color: var(--brand-orange);
+        }
+        
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background-color: var(--brand-orange);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        
+        .search-bar {
+            flex: 1;
+            max-width: 500px;
+            margin: 0 var(--spacing-lg);
+            position: relative;
+        }
+        
+        .search-bar input {
+            width: 100%;
+            padding: var(--spacing-sm) var(--spacing-lg);
+            padding-left: 36px;
+            border-radius: 8px;
+            border: none;
+            background-color: var(--gray6);
+            font-size: var(--font-md);
+            outline: none;
+        }
+        
+        .search-bar i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+        
+        .toolbar {
+            display: flex;
+            gap: var(--spacing-md);
+            align-items: center;
+        }
+        
+        .toolbar-btn {
+            background: none;
+            border: none;
+            color: var(--gray);
+            font-size: var(--font-lg);
+            cursor: pointer;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s;
+        }
+        
+        .toolbar-btn:hover {
+            background-color: var(--gray6);
+            color: var(--blue);
+        }
+        
+        main {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        .sidebar {
+            width: 280px;
+            background-color: white;
+            border-right: 1px solid var(--gray5);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        
+        .sidebar-header {
+            padding: var(--spacing-md);
+            border-bottom: 1px solid var(--gray5);
+            font-weight: 600;
+            color: var(--gray);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .sidebar-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: var(--spacing-md) 0;
+        }
+        
+        .api-category {
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .category-header {
+            padding: var(--spacing-xs) var(--spacing-md);
+            font-weight: 600;
+            color: var(--gray);
+            font-size: var(--font-sm);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+        
+        .category-header:hover {
+            color: var(--blue);
+        }
+        
+        .category-header i {
+            margin-right: var(--spacing-sm);
+            transition: transform 0.2s;
+        }
+        
+        .category-header.collapsed i {
+            transform: rotate(-90deg);
+        }
+        
+        .api-list {
+            list-style: none;
+        }
+        
+        .api-item {
+            padding: var(--spacing-xs) var(--spacing-md);
+            padding-left: var(--spacing-xl);
+            cursor: pointer;
+            font-size: var(--font-sm);
+            display: flex;
+            align-items: center;
+            border-left: 3px solid transparent;
+        }
+        
+        .api-item:hover {
+            background-color: var(--gray6);
+        }
+        
+        .api-item.active {
+            background-color: rgba(0, 122, 255, 0.1);
+            color: var(--blue);
+            border-left-color: var(--blue);
+        }
+        
+        .api-item .method {
+            font-size: var(--font-xs);
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-right: var(--spacing-sm);
+            min-width: 40px;
+            text-align: center;
+        }
+        
+        .api-item .method.get {
+            background-color: rgba(52, 199, 89, 0.1);
+            color: var(--green);
+        }
+        
+        .api-item .method.post {
+            background-color: rgba(0, 122, 255, 0.1);
+            color: var(--blue);
+        }
+        
+        .api-item .method.put {
+            background-color: rgba(255, 149, 0, 0.1);
+            color: var(--orange);
+        }
+        
+        .api-item .method.delete {
+            background-color: rgba(255, 45, 85, 0.1);
+            color: var(--red);
+        }
+        
+        .api-item .method.patch {
+            background-color: rgba(88, 86, 214, 0.1);
+            color: var(--indigo);
+        }
+        
+        .content-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: var(--spacing-lg);
+            background-color: white;
+        }
+        
+        .api-header {
+            margin-bottom: var(--spacing-lg);
+            padding-bottom: var(--spacing-md);
+            border-bottom: 1px solid var(--gray5);
+        }
+        
+        .api-title {
+            font-size: var(--font-xl);
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+        
+        .api-url {
+            font-family: "SF Mono", monospace;
+            font-size: var(--font-md);
+            color: var(--gray);
+            padding: var(--spacing-sm) var(--spacing-md);
+            background-color: var(--gray6);
+            border-radius: var(--radius-sm);
+            margin-bottom: var(--spacing-md);
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+        
+        .api-description {
+            color: var(--gray);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .tab-container {
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .tab-header {
+            display: flex;
+            border-bottom: 1px solid var(--gray5);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .tab {
+            padding: var(--spacing-sm) var(--spacing-md);
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--gray);
+            border-bottom: 2px solid transparent;
+        }
+        
+        .tab.active {
+            color: var(--blue);
+            border-bottom-color: var(--blue);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .section-title {
+            font-size: var(--font-lg);
+            font-weight: 600;
+            margin: var(--spacing-lg) 0 var(--spacing-md);
+            color: #1D1D1F;
+        }
+        
+        .section-subtitle {
+            font-size: var(--font-md);
+            font-weight: 500;
+            margin: var(--spacing-md) 0 var(--spacing-sm);
+            color: #1D1D1F;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: var(--spacing-md) 0;
+            font-size: var(--font-sm);
+        }
+        
+        th {
+            text-align: left;
+            padding: var(--spacing-sm) var(--spacing-md);
+            background-color: var(--gray6);
+            color: var(--gray);
+            font-weight: 500;
+        }
+        
+        td {
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-top: 1px solid var(--gray5);
+        }
+        
+        tr:hover td {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+        
+        .code-block {
+            background-color: #f6f8fa;
+            border-radius: var(--radius-sm);
+            padding: var(--spacing-md);
+            overflow-x: auto;
+            font-family: "SF Mono", monospace;
+            font-size: var(--font-sm);
+            margin: var(--spacing-md) 0;
+        }
+        
+        .code-block pre {
+            margin: 0;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: var(--font-xs);
+            font-weight: 500;
+            margin-right: var(--spacing-xs);
+        }
+        
+        .badge-required {
+            background-color: rgba(255, 45, 85, 0.1);
+            color: var(--red);
+        }
+        
+        .badge-optional {
+            background-color: rgba(88, 86, 214, 0.1);
+            color: var(--indigo);
+        }
+        
+        .badge-deprecated {
+            background-color: rgba(142, 142, 147, 0.1);
+            color: var(--gray);
+        }
+        
+        .status-code {
+            display: flex;
+            align-items: center;
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .status-badge {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: var(--spacing-sm);
+        }
+        
+        .status-badge.success {
+            background-color: var(--green);
+        }
+        
+        .status-badge.error {
+            background-color: var(--red);
+        }
+        
+        .status-badge.warning {
+            background-color: var(--yellow);
+        }
+        
+        .status-badge.info {
+            background-color: var(--blue);
+        }
+        
+        .status-text {
+            font-weight: 500;
+        }
+        
+        .warning-banner {
+            background-color: rgba(255, 204, 0, 0.1);
+            border-left: 4px solid var(--yellow);
+            padding: var(--spacing-md);
+            margin: var(--spacing-md) 0;
+            color: #8a6d00;
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 240px;
+            }
+            
+            .search-bar {
+                max-width: 200px;
+                margin: 0 var(--spacing-sm);
+            }
+        }
+        
+        /* 深色主题 */
+        body.dark-theme {
+            background-color: #1c1c1e;
+            color: #f5f5f7;
+        }
+        
+        body.dark-theme header,
+        body.dark-theme .sidebar,
+        body.dark-theme .content-area {
+            background-color: #2c2c2e;
+            border-color: #3c3c3e;
+        }
+        
+        body.dark-theme .sidebar-header,
+        body.dark-theme .api-header {
+            border-color: #3c3c3e;
+        }
+        
+        body.dark-theme .api-item:hover {
+            background-color: #3c3c3e;
+        }
+        
+        body.dark-theme .api-item.active {
+            background-color: rgba(10, 132, 255, 0.2);
+            color: var(--blue);
+            border-left-color: var(--blue);
+        }
+        
+        body.dark-theme .search-bar input {
+            background-color: #3c3c3e;
+            color: #f5f5f7;
+        }
+        
+        body.dark-theme .toolbar-btn {
+            color: #8e8e93;
+        }
+        
+        body.dark-theme .toolbar-btn:hover {
+            background-color: #3c3c3e;
+            color: var(--blue);
+        }
+        
+        body.dark-theme th {
+            background-color: #3c3c3e;
+            color: #8e8e93;
+        }
+        
+        body.dark-theme td {
+            border-color: #3c3c3e;
+        }
+        
+        body.dark-theme tr:hover td {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        
+        body.dark-theme .code-block {
+            background-color: #2a2a2c;
+            color: #e4e4e4;
+        }
+        
+        body.dark-theme .api-url {
+            background-color: #3c3c3e;
+        }
+        
+        body.dark-theme .tab.active {
+            color: var(--blue);
+            border-color: var(--blue);
+        }
+        
+        body.dark-theme .warning-banner {
+            background-color: rgba(255, 204, 0, 0.1);
+            border-left: 4px solid var(--yellow);
+            color: var(--yellow);
+        }
+        
+        body.dark-theme .team-role,
+        body.dark-theme .category-header:hover {
+            color: var(--blue);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <div class="logo-icon">
+                <i class="fas fa-code"></i>
+            </div>
+            <div class="logo-text">API 文档浏览器</div>
+        </div>
+        <div class="search-bar">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="搜索 API...">
+        </div>
+        <div class="toolbar">
+            <button class="toolbar-btn" title="切换主题">
+                <i class="fas fa-moon"></i>
+            </button>
+            <button class="toolbar-btn" title="下载文档">
+                <i class="fas fa-download"></i>
+            </button>
+        </div>
+    </header>
+    <main>
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <span>API 分类</span>
+                <button class="toolbar-btn" title="折叠所有">
+                    <i class="fas fa-compress-alt"></i>
+                </button>
+            </div>
+            <div class="sidebar-content" id="api-navigation">
+                <!-- API 导航将通过 JavaScript 动态生成 -->
+                <div class="warning-banner">
+                    <i class="fas fa-exclamation-triangle" style="margin-right: 8px;"></i>
+                    API 文档正在完善中，部分接口信息可能不完整。
+                </div>
+            </div>
+        </div>
+        <div class="content-area" id="api-content">
+            <!-- API 内容将通过 JavaScript 动态生成 -->
+            <div class="api-header">
+                <h1 class="api-title">CreativePro Studio API 文档</h1>
+                <p class="api-description">欢迎使用 CreativePro Studio API 文档浏览器。请从左侧选择接口查看详细信息。</p>
+            </div>
+            <div class="section-title">概述</div>
+            <p>CreativePro Studio API 遵循 RESTful 设计风格，提供批处理图片设计和审核的完整功能。所有接口返回标准 HTTP 状态码和 JSON 格式数据。</p>
+            
+            <div class="section-title">基本信息</div>
+            <table>
+                <tr>
+                    <td><strong>基础 URL</strong></td>
+                    <td><code>/api</code></td>
+                </tr>
+                <tr>
+                    <td><strong>认证方式</strong></td>
+                    <td>JWT Bearer Token</td>
+                </tr>
+                <tr>
+                    <td><strong>请求格式</strong></td>
+                    <td>JSON</td>
+                </tr>
+                <tr>
+                    <td><strong>响应格式</strong></td>
+                    <td>JSON</td>
+                </tr>
+            </table>
+            
+            <div class="section-title">通用响应结构</div>
+            <div class="section-subtitle">成功响应</div>
+            <div class="code-block">
+                <pre>{
+  "success": true,
+  "data": {
+    // 响应数据
+  },
+  "message": "操作成功"
+}</pre>
+            </div>
+            
+            <div class="section-subtitle">错误响应</div>
+            <div class="code-block">
+                <pre>{
+  "success": false,
+  "error": {
+    "code": "ERROR_CODE",
+    "message": "错误描述",
+    "details": {} // 可选的错误详情
+  }
+}</pre>
+            </div>
+            
+            <div class="section-title">状态码说明</div>
+            <table>
+                <tr>
+                    <th>状态码</th>
+                    <th>说明</th>
+                </tr>
+                <tr>
+                    <td><code>200 OK</code></td>
+                    <td>请求成功</td>
+                </tr>
+                <tr>
+                    <td><code>201 Created</code></td>
+                    <td>资源创建成功</td>
+                </tr>
+                <tr>
+                    <td><code>204 No Content</code></td>
+                    <td>请求成功但无返回内容</td>
+                </tr>
+                <tr>
+                    <td><code>400 Bad Request</code></td>
+                    <td>请求参数错误</td>
+                </tr>
+                <tr>
+                    <td><code>401 Unauthorized</code></td>
+                    <td>未授权（未提供有效的认证信息）</td>
+                </tr>
+                <tr>
+                    <td><code>403 Forbidden</code></td>
+                    <td>权限不足</td>
+                </tr>
+                <tr>
+                    <td><code>404 Not Found</code></td>
+                    <td>资源不存在</td>
+                </tr>
+                <tr>
+                    <td><code>409 Conflict</code></td>
+                    <td>资源冲突</td>
+                </tr>
+                <tr>
+                    <td><code>422 Unprocessable Entity</code></td>
+                    <td>请求格式正确但语义错误</td>
+                </tr>
+                <tr>
+                    <td><code>500 Internal Server Error</code></td>
+                    <td>服务器内部错误</td>
+                </tr>
+            </table>
+        </div>
+    </main>
+    
+    <script>
+        // API 数据
+        const apiData = {
+            "审核服务API": [
+                {
+                    id: "audit-task-list",
+                    title: "获取审核任务列表",
+                    description: "获取符合过滤条件的审核任务列表。",
+                    method: "GET",
+                    path: "/api/audit-tasks",
+                    queryParams: [
+                        { name: "page", type: "number", required: false, description: "页码，默认1" },
+                        { name: "pageSize", type: "number", required: false, description: "每页数量，默认20" },
+                        { name: "status", type: "string", required: false, description: "任务状态筛选(Pending/InProgress/Approved/Rejected/Cancelled)" },
+                        { name: "initiatorId", type: "string", required: false, description: "发起人ID筛选" },
+                        { name: "projectId", type: "string", required: false, description: "项目ID筛选" },
+                        { name: "searchText", type: "string", required: false, description: "搜索文本(标题、描述)" },
+                        { name: "sortBy", type: "string", required: false, description: "排序字段(createdAt/title/status/priority)" },
+                        { name: "sortDirection", type: "string", required: false, description: "排序方向(asc/desc)，默认desc" }
+                    ],
+                    responseExample: `{
+  "success": true,
+  "data": {
+    "items": [
+      {
+        "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "title": "产品图库更新审核",
+        "description": "更新公司产品图库的300张图片",
+        "status": "InProgress",
+        "currentNodeName": "设计主管审核",
+        "initiator": {
+          "id": "7fa85f64-5717-4562-b3fc-2c963f66afa7",
+          "name": "张三",
+          "avatar": "https://example.com/avatars/user1.jpg"
+        },
+        "project": {
+          "id": "5fa85f64-5717-4562-b3fc-2c963f66afa8",
+          "name": "2023产品图库更新"
+        },
+        "totalItems": 300,
+        "processedItems": 150,
+        "priority": 3,
+        "createdAt": "2023-05-20T08:30:00Z",
+        "dueDate": "2023-05-25T17:00:00Z"
+      }
+    ],
+    "totalCount": 45,
+    "page": 1,
+    "pageSize": 20
+  }
+}`
+                },
+                {
+                    id: "audit-task-create",
+                    title: "创建审核任务",
+                    description: "创建新的审核任务。",
+                    method: "POST",
+                    path: "/api/audit-tasks",
+                    requestBody: `{
+  "title": "产品图库更新审核",
+  "description": "更新公司产品图库的300张图片",
+  "projectId": "5fa85f64-5717-4562-b3fc-2c963f66afa8",
+  "batchTaskId": "9fa85f64-5717-4562-b3fc-2c963f66afa9",
+  "auditFlowId": "1fa85f64-5717-4562-b3fc-2c963f66afa1",
+  "batchTaskItemIds": [
+    "8fa85f64-5717-4562-b3fc-2c963f66afb1",
+    "8fa85f64-5717-4562-b3fc-2c963f66afb2"
+  ],
+  "priority": 3,
+  "dueDate": "2023-05-25T17:00:00Z",
+  "enableFeishuIntegration": true
+}`,
+                    responseExample: `{
+  "success": true,
+  "data": {
+    "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "title": "产品图库更新审核",
+    "status": "Pending",
+    "message": "审核任务已创建"
+  }
+}`
+                },
+                {
+                    id: "audit-task-detail",
+                    title: "获取审核任务详情",
+                    description: "获取审核任务的详细信息。",
+                    method: "GET",
+                    path: "/api/audit-tasks/{id}",
+                    pathParams: [
+                        { name: "id", type: "string", description: "审核任务ID" }
+                    ],
+                    responseExample: `{
+  "success": true,
+  "data": {
+    "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "title": "产品图库更新审核",
+    "description": "更新公司产品图库的300张图片",
+    "status": "InProgress",
+    "currentNodeId": "node1",
+    "currentNodeName": "设计主管审核",
+    "auditFlow": {
+      "id": "1fa85f64-5717-4562-b3fc-2c963f66afa1",
+      "name": "产品设计审核流程"
+    },
+    "initiator": {
+      "id": "7fa85f64-5717-4562-b3fc-2c963f66afa7",
+      "name": "张三",
+      "avatar": "https://example.com/avatars/user1.jpg",
+      "email": "zhangsan@example.com"
+    },
+    "project": {
+      "id": "5fa85f64-5717-4562-b3fc-2c963f66afa8",
+      "name": "2023产品图库更新",
+      "description": "公司2023年产品图库的更新计划"
+    },
+    "batchTask": {
+      "id": "9fa85f64-5717-4562-b3fc-2c963f66afa9",
+      "name": "产品图片批量处理",
+      "totalItems": 300
+    },
+    "statistics": {
+      "totalItems": 300,
+      "pendingItems": 150,
+      "approvedItems": 120,
+      "rejectedItems": 30
+    },
+    "priority": 3,
+    "createdAt": "2023-05-20T08:30:00Z",
+    "updatedAt": "2023-05-21T14:20:00Z",
+    "dueDate": "2023-05-25T17:00:00Z",
+    "feishuIntegration": {
+      "enabled": true,
+      "externalTaskId": "feishu_task_12345",
+      "syncStatus": "Synced",
+      "lastSyncAt": "2023-05-21T14:30:00Z"
+    }
+  }
+}`
+                },
+                {
+                    id: "audit-task-submit",
+                    title: "提交审核结果",
+                    description: "提交审核任务的审核结果。",
+                    method: "POST",
+                    path: "/api/audit-tasks/{id}/submit",
+                    pathParams: [
+                        { name: "id", type: "string", description: "审核任务ID" }
+                    ],
+                    requestBody: `{
+  "approved": true,
+  "comments": "整体效果良好，符合品牌规范",
+  "itemResults": [
+    {
+      "auditItemId": "8fa85f64-5717-4562-b3fc-2c963f66afb1",
+      "approved": true,
+      "feedback": null,
+      "annotations": []
+    },
+    {
+      "auditItemId": "8fa85f64-5717-4562-b3fc-2c963f66afb2",
+      "approved": false,
+      "feedback": "图片分辨率过低，需要提供更高清晰度的版本",
+      "annotations": [
+        {
+          "type": "rectangle",
+          "position": {
+            "x": 100,
+            "y": 150,
+            "width": 200,
+            "height": 100
+          },
+          "style": {
+            "strokeColor": "#ff3b30",
+            "strokeWidth": 2,
+            "fillColor": "rgba(255, 59, 48, 0.2)"
+          },
+          "content": "这个区域模糊"
+        }
+      ]
+    }
+  ]
+}`,
+                    responseExample: `{
+  "success": true,
+  "data": {
+    "status": "InProgress",
+    "nextNodeName": "品牌经理审核",
+    "message": "审核结果已提交"
+  }
+}`
+                },
+                {
+                    id: "audit-task-cancel",
+                    title: "取消审核任务",
+                    description: "取消审核任务。",
+                    method: "DELETE",
+                    path: "/api/audit-tasks/{id}",
+                    pathParams: [
+                        { name: "id", type: "string", description: "审核任务ID" }
+                    ],
+                    responseExample: `{
+  "success": true,
+  "data": {
+    "message": "审核任务已取消"
+  }
+}`
+                }
+            ],
+            "批处理系统API": [
+                {
+                    id: "batch-task-list",
+                    title: "获取批处理任务列表",
+                    description: "获取批处理任务列表。",
+                    method: "GET",
+                    path: "/api/batches",
+                    queryParams: [
+                        { name: "status", type: "string", required: false, description: "任务状态" },
+                        { name: "templateId", type: "string", required: false, description: "模板ID" },
+                        { name: "createdBy", type: "string", required: false, description: "创建者ID" },
+                        { name: "dateFrom", type: "string", required: false, description: "创建日期范围(起始)" },
+                        { name: "dateTo", type: "string", required: false, description: "创建日期范围(结束)" },
+                        { name: "page", type: "number", required: false, description: "页码" },
+                        { name: "pageSize", type: "number", required: false, description: "每页数量" },
+                        { name: "sort", type: "string", required: false, description: "排序参数" }
+                    ],
+                    responseExample: `{
+  "success": true,
+  "data": [
+    {
+      "id": "batch-001",
+      "name": "6月促销海报批处理",
+      "description": "6月促销活动全品类海报生成",
+      "status": "completed",
+      "progress": 100,
+      "template": {
+        "id": "tmpl-001",
+        "name": "产品海报模板A"
+      },
+      "itemsCount": 120,
+      "successCount": 120,
+      "failedCount": 0,
+      "createdAt": "2023-05-28T10:00:00Z",
+      "completedAt": "2023-05-28T10:15:30Z",
+      "createdBy": "user-789"
+    }
+  ],
+  "error": null,
+  "meta": {
+    "page": 1,
+    "pageSize": 20,
+    "totalItems": 45,
+    "totalPages": 3
+  }
+}`
+                },
+                {
+                    id: "batch-task-create",
+                    title: "创建批处理任务",
+                    description: "创建新的批处理任务。",
+                    method: "POST",
+                    path: "/api/batches",
+                    requestBody: `{
+  "name": "6月促销海报批处理",
+  "description": "6月促销活动全品类海报生成",
+  "templateId": "tmpl-001",
+  "items": [
+    {
+      "variables": {
+        "productImage": "asset-001",
+        "productName": "清新洁面乳",
+        "price": "¥129"
+      }
+    },
+    {
+      "variables": {
+        "productImage": "asset-002",
+        "productName": "滋润面霜",
+        "price": "¥199"
+      }
+    }
+  ],
+  "outputFormat": "image/jpeg",
+  "outputQuality": 90,
+  "outputNamingPattern": "{{productName}}_{{date}}"
+}`,
+                    responseExample: `{
+  "success": true,
+  "data": {
+    "id": "batch-002",
+    "name": "6月促销海报批处理",
+    "status": "pending",
+    "message": "批处理任务已创建并加入队列"
+  }
+}`
+                }
+            ],
+            "素材服务API": [
+                {
+                    id: "assets-list",
+                    title: "获取素材列表",
+                    description: "获取素材列表。",
+                    method: "GET",
+                    path: "/api/assets",
+                    queryParams: [
+                        { name: "category", type: "string", required: false, description: "素材分类" },
+                        { name: "tags", type: "string", required: false, description: "标签（逗号分隔）" },
+                        { name: "format", type: "string", required: false, description: "素材格式" },
+                        { name: "query", type: "string", required: false, description: "搜索关键词" },
+                        { name: "page", type: "number", required: false, description: "页码" },
+                        { name: "pageSize", type: "number", required: false, description: "每页数量" },
+                        { name: "sort", type: "string", required: false, description: "排序参数" }
+                    ],
+                    responseExample: `{
+  "success": true,
+  "data": [
+    {
+      "id": "asset-001",
+      "name": "产品图片A",
+      "description": "产品正面高清照片",
+      "category": "product",
+      "format": "image/jpeg",
+      "tags": ["产品", "电子产品", "高清"],
+      "fileSize": 2048000,
+      "dimensions": {
+        "width": 1200,
+        "height": 800
+      },
+      "thumbnailUrl": "https://assets.example.com/thumbs/asset-001.jpg",
+      "downloadUrl": "https://assets.example.com/files/asset-001.jpg",
+      "createdAt": "2023-05-20T14:30:00Z",
+      "updatedAt": "2023-05-20T14:30:00Z",
+      "createdBy": "user-123"
+    }
+  ],
+  "error": null,
+  "meta": {
+    "page": 1,
+    "pageSize": 20,
+    "totalItems": 156,
+    "totalPages": 8
+  }
+}`
+                },
+                {
+                    id: "asset-upload",
+                    title: "上传素材",
+                    description: "上传新的素材。",
+                    method: "POST",
+                    path: "/api/assets",
+                    note: "请求体使用 multipart/form-data 格式，包含文件数据和元数据JSON",
+                    responseExample: `{
+  "success": true,
+  "data": {
+    "id": "asset-002",
+    "name": "产品图片B",
+    "uploadStatus": "processing",
+    "uploadUrl": "https://assets.example.com/upload/session-xyz"
+  },
+  "error": null,
+  "meta": {
+    "timestamp": "2023-06-15T08:35:12Z"
+  }
+}`
+                }
+            ],
+            "模板服务API": [
+                {
+                    id: "templates-list",
+                    title: "获取模板列表",
+                    description: "获取设计模板列表。",
+                    method: "GET",
+                    path: "/api/templates",
+                    queryParams: [
+                        { name: "category", type: "string", required: false, description: "模板分类" },
+                        { name: "tags", type: "string", required: false, description: "标签（逗号分隔）" },
+                        { name: "format", type: "string", required: false, description: "输出格式" },
+                        { name: "query", type: "string", required: false, description: "搜索关键词" },
+                        { name: "page", type: "number", required: false, description: "页码" },
+                        { name: "pageSize", type: "number", required: false, description: "每页数量" },
+                        { name: "sort", type: "string", required: false, description: "排序参数" }
+                    ],
+                    responseExample: `{
+  "success": true,
+  "data": [
+    {
+      "id": "tmpl-001",
+      "name": "产品海报模板A",
+      "description": "标准产品展示海报",
+      "category": "poster",
+      "format": "image/jpeg",
+      "tags": ["海报", "产品展示", "电商"],
+      "thumbnailUrl": "https://templates.example.com/thumbs/tmpl-001.jpg",
+      "previewUrl": "https://templates.example.com/previews/tmpl-001.jpg",
+      "variables": [
+        {
+          "name": "productImage",
+          "type": "image",
+          "required": true
+        },
+        {
+          "name": "productName",
+          "type": "text",
+          "required": true,
+          "maxLength": 50
+        },
+        {
+          "name": "price",
+          "type": "text",
+          "required": true
+        }
+      ],
+      "createdAt": "2023-04-10T09:15:00Z",
+      "updatedAt": "2023-04-15T11:20:00Z",
+      "createdBy": "user-456"
+    }
+  ],
+  "meta": {
+    "page": 1,
+    "pageSize": 20,
+    "totalItems": 87,
+    "totalPages": 5
+  }
+}`
+                }
+            ]
+        };
+
+        // 生成左侧导航菜单
+        function generateApiNavigation() {
+            const navigationEl = document.getElementById('api-navigation');
+            
+            Object.entries(apiData).forEach(([category, apis]) => {
+                const categoryEl = document.createElement('div');
+                categoryEl.className = 'api-category';
+                
+                const headerEl = document.createElement('div');
+                headerEl.className = 'category-header';
+                headerEl.innerHTML = `<i class="fas fa-chevron-down"></i> ${category}`;
+                
+                const apiListEl = document.createElement('ul');
+                apiListEl.className = 'api-list';
+                
+                apis.forEach(api => {
+                    const apiItemEl = document.createElement('li');
+                    apiItemEl.className = 'api-item';
+                    apiItemEl.dataset.id = api.id;
+                    apiItemEl.innerHTML = `
+                        <span class="method ${api.method.toLowerCase()}">${api.method}</span>
+                        <span>${api.title}</span>
+                    `;
+                    
+                    apiItemEl.addEventListener('click', () => {
+                        document.querySelectorAll('.api-item').forEach(item => {
+                            item.classList.remove('active');
+                        });
+                        apiItemEl.classList.add('active');
+                        showApiDetail(api);
+                    });
+                    
+                    apiListEl.appendChild(apiItemEl);
+                });
+                
+                headerEl.addEventListener('click', () => {
+                    headerEl.classList.toggle('collapsed');
+                    apiListEl.style.display = headerEl.classList.contains('collapsed') ? 'none' : 'block';
+                });
+                
+                categoryEl.appendChild(headerEl);
+                categoryEl.appendChild(apiListEl);
+                navigationEl.appendChild(categoryEl);
+            });
+        }
+        
+        // 显示API详情
+        function showApiDetail(api) {
+            const contentEl = document.getElementById('api-content');
+            
+            contentEl.innerHTML = `
+                <div class="api-header">
+                    <h1 class="api-title">
+                        <span class="method ${api.method.toLowerCase()}">${api.method}</span>
+                        ${api.title}
+                    </h1>
+                    <div class="api-url"><code>${api.path}</code></div>
+                    <p class="api-description">${api.description}</p>
+                </div>
+                
+                <div class="tab-container">
+                    <div class="tab-header">
+                        <div class="tab active" data-tab="parameters">参数</div>
+                        <div class="tab" data-tab="responses">响应</div>
+                        <div class="tab" data-tab="examples">示例</div>
+                    </div>
+                    
+                    <div class="tab-content active" data-tab="parameters">
+                        ${renderParameters(api)}
+                    </div>
+                    
+                    <div class="tab-content" data-tab="responses">
+                        <div class="section-subtitle">响应示例</div>
+                        <div class="code-block">
+                            <pre>${api.responseExample}</pre>
+                        </div>
+                    </div>
+                    
+                    <div class="tab-content" data-tab="examples">
+                        <div class="section-subtitle">请求示例</div>
+                        ${api.requestBody ? `
+                        <div class="section-subtitle">请求体</div>
+                        <div class="code-block">
+                            <pre>${api.requestBody}</pre>
+                        </div>
+                        ` : ''}
+                        
+                        <div class="section-subtitle">cURL 示例</div>
+                        <div class="code-block">
+                            <pre>${generateCurlExample(api)}</pre>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // 绑定标签切换事件
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                    
+                    tab.classList.add('active');
+                    document.querySelector(`.tab-content[data-tab="${tab.dataset.tab}"]`).classList.add('active');
+                });
+            });
+        }
+        
+        // 渲染参数部分
+        function renderParameters(api) {
+            let html = '';
+            
+            if (api.pathParams && api.pathParams.length > 0) {
+                html += `
+                    <div class="section-subtitle">路径参数</div>
+                    <table>
+                        <tr>
+                            <th>参数名</th>
+                            <th>类型</th>
+                            <th>描述</th>
+                        </tr>
+                        ${api.pathParams.map(param => `
+                            <tr>
+                                <td>${param.name}</td>
+                                <td>${param.type}</td>
+                                <td>${param.description}</td>
+                            </tr>
+                        `).join('')}
+                    </table>
+                `;
+            }
+            
+            if (api.queryParams && api.queryParams.length > 0) {
+                html += `
+                    <div class="section-subtitle">查询参数</div>
+                    <table>
+                        <tr>
+                            <th>参数名</th>
+                            <th>类型</th>
+                            <th>必填</th>
+                            <th>描述</th>
+                        </tr>
+                        ${api.queryParams.map(param => `
+                            <tr>
+                                <td>${param.name}</td>
+                                <td>${param.type}</td>
+                                <td>${param.required ? '<span class="badge badge-required">必填</span>' : '<span class="badge badge-optional">可选</span>'}</td>
+                                <td>${param.description}</td>
+                            </tr>
+                        `).join('')}
+                    </table>
+                `;
+            }
+            
+            if (api.requestBody) {
+                html += `
+                    <div class="section-subtitle">请求体</div>
+                    ${api.note ? `<p><em>${api.note}</em></p>` : ''}
+                    <div class="code-block">
+                        <pre>${api.requestBody}</pre>
+                    </div>
+                `;
+            }
+            
+            return html;
+        }
+        
+        // 生成cURL示例
+        function generateCurlExample(api) {
+            let curlExample = `curl -X ${api.method} "${api.path}"`;
+            
+            if (api.queryParams && api.queryParams.length > 0) {
+                const queryString = api.queryParams
+                    .filter(p => p.required)
+                    .map(p => `${p.name}=value`)
+                    .join('&');
+                    
+                if (queryString) {
+                    curlExample += `?${queryString}`;
+                }
+            }
+            
+            curlExample += ` \\\n  -H "Authorization: Bearer YOUR_TOKEN" \\\n  -H "Content-Type: application/json"`;
+            
+            if (api.requestBody && api.method !== 'GET') {
+                curlExample += ` \\\n  -d '${api.requestBody}'`;
+            }
+            
+            return curlExample;
+        }
+        
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            generateApiNavigation();
+            
+            // 绑定搜索功能
+            const searchInput = document.querySelector('.search-bar input');
+            searchInput.addEventListener('input', (e) => {
+                const searchText = e.target.value.toLowerCase().trim();
+                
+                if (!searchText) {
+                    document.querySelectorAll('.api-item').forEach(item => {
+                        item.style.display = 'flex';
+                    });
+                    document.querySelectorAll('.api-category').forEach(category => {
+                        category.style.display = 'block';
+                    });
+                    return;
+                }
+                
+                let foundCategories = new Set();
+                
+                // 搜索API
+                document.querySelectorAll('.api-item').forEach(item => {
+                    const apiId = item.dataset.id;
+                    let found = false;
+                    
+                    // 在全部API数据中搜索
+                    Object.entries(apiData).forEach(([category, apis]) => {
+                        const api = apis.find(a => a.id === apiId);
+                        if (api) {
+                            if (
+                                api.title.toLowerCase().includes(searchText) ||
+                                api.path.toLowerCase().includes(searchText) ||
+                                api.method.toLowerCase().includes(searchText) ||
+                                api.description.toLowerCase().includes(searchText)
+                            ) {
+                                found = true;
+                                foundCategories.add(category);
+                            }
+                        }
+                    });
+                    
+                    item.style.display = found ? 'flex' : 'none';
+                });
+                
+                // 隐藏空分类
+                document.querySelectorAll('.api-category').forEach(categoryEl => {
+                    const categoryHeader = categoryEl.querySelector('.category-header').textContent.trim();
+                    categoryEl.style.display = foundCategories.has(categoryHeader) ? 'block' : 'none';
+                });
+            });
+            
+            // 切换主题按钮
+            const themeButton = document.querySelector('.toolbar-btn[title="切换主题"]');
+            themeButton.addEventListener('click', () => {
+                document.body.classList.toggle('dark-theme');
+                const icon = themeButton.querySelector('i');
+                if (document.body.classList.contains('dark-theme')) {
+                    icon.classList.remove('fa-moon');
+                    icon.classList.add('fa-sun');
+                } else {
+                    icon.classList.remove('fa-sun');
+                    icon.classList.add('fa-moon');
+                }
+            });
+            
+            // 折叠全部按钮
+            const collapseButton = document.querySelector('.toolbar-btn[title="折叠所有"]');
+            collapseButton.addEventListener('click', () => {
+                const headers = document.querySelectorAll('.category-header');
+                const isAllCollapsed = Array.from(headers).every(h => h.classList.contains('collapsed'));
+                
+                headers.forEach(header => {
+                    const apiList = header.nextElementSibling;
+                    
+                    if (isAllCollapsed) {
+                        header.classList.remove('collapsed');
+                        apiList.style.display = 'block';
+                    } else {
+                        header.classList.add('collapsed');
+                        apiList.style.display = 'none';
+                    }
+                });
+                
+                const icon = collapseButton.querySelector('i');
+                if (isAllCollapsed) {
+                    icon.classList.remove('fa-expand-alt');
+                    icon.classList.add('fa-compress-alt');
+                } else {
+                    icon.classList.remove('fa-compress-alt');
+                    icon.classList.add('fa-expand-alt');
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

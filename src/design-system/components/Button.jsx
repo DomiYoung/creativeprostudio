@@ -1,133 +1,95 @@
 import React from 'react';
-import styled from '@emotion/styled';
-import { colors } from '../tokens/colors';
-import { typography } from '../tokens/typography';
-import { spacing } from '../tokens/spacing';
+import { cva } from 'class-variance-authority';
+import { motion } from 'framer-motion';
+import clsx from 'clsx';
 
-// 按钮变体样式映射
-const buttonVariants = {
-  // 主要按钮 - 蓝色背景白色文字
-  primary: {
-    background: colors.brand.primary,
-    color: colors.neutral.white,
-    border: 'none',
-    hover: {
-      background: '#0071EB', // 稍深的蓝色
+// 定义按钮变体
+const buttonVariants = cva(
+  // 基础样式
+  "inline-flex items-center justify-center rounded-lg font-medium transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-50",
+  {
+    variants: {
+      // 按钮风格
+      variant: {
+        primary: "bg-purple text-white hover:bg-purple/90 focus-visible:ring-purple/50",
+        secondary: "bg-gray5 text-gray hover:bg-gray4 focus-visible:ring-gray/30",
+        outline: "border border-gray3 bg-white text-gray hover:bg-gray6 focus-visible:ring-gray/20",
+        ghost: "bg-transparent text-gray hover:bg-gray6 hover:text-gray",
+        link: "bg-transparent text-blue underline-offset-4 hover:underline p-0 height-auto",
+      },
+      // 按钮尺寸
+      size: {
+        xs: "text-xs px-2 py-1",
+        sm: "text-sm px-3 py-2",
+        md: "text-md px-4 py-2",
+        lg: "text-lg px-5 py-2.5",
+        xl: "text-xl px-6 py-3",
+      },
+      // 按钮是否占满父元素宽度
+      fullWidth: {
+        true: "w-full",
+      },
+      // 按钮是否有禁用状态
+      disabled: {
+        true: "opacity-50 cursor-not-allowed",
+      },
+      // 按钮是否有图标
+      hasIcon: {
+        true: "gap-2",
+      },
     },
-    active: {
-      background: '#0062CC', // 更深的蓝色
+    // 默认值
+    defaultVariants: {
+      variant: "primary",
+      size: "md",
+      fullWidth: false,
+      disabled: false,
+      hasIcon: false,
     },
-  },
-  
-  // 次要按钮 - 透明背景蓝色边框和文字
-  secondary: {
-    background: 'transparent',
-    color: colors.brand.primary,
-    border: `1px solid ${colors.brand.primary}`,
-    hover: {
-      background: 'rgba(0, 122, 255, 0.05)',
-    },
-    active: {
-      background: 'rgba(0, 122, 255, 0.1)',
-    },
-  },
-  
-  // 文本按钮 - 无背景无边框蓝色文字
-  text: {
-    background: 'transparent',
-    color: colors.brand.primary,
-    border: 'none',
-    hover: {
-      background: 'rgba(0, 122, 255, 0.05)',
-    },
-    active: {
-      background: 'rgba(0, 122, 255, 0.1)',
-    },
-  },
-};
-
-// 按钮尺寸映射
-const buttonSizes = {
-  small: {
-    padding: `${spacing.space[1]} ${spacing.space[3]}`,
-    fontSize: typography.fontSize.sm,
-    borderRadius: spacing.borderRadius.md,
-  },
-  medium: {
-    padding: `${spacing.space[2]} ${spacing.space[4]}`,
-    fontSize: typography.fontSize.base,
-    borderRadius: spacing.borderRadius.md,
-  },
-  large: {
-    padding: `${spacing.space[3]} ${spacing.space[6]}`,
-    fontSize: typography.fontSize.lg,
-    borderRadius: spacing.borderRadius.lg,
-  },
-};
-
-// 样式化按钮组件
-const StyledButton = styled.button`
-  font-family: ${typography.fontFamily.base};
-  font-weight: ${typography.fontWeight.medium};
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: ${spacing.space[2]};
-  transition: all 0.2s ease;
-  cursor: pointer;
-  white-space: nowrap;
-  outline: none;
-  
-  /* 应用变体样式 */
-  background: ${props => buttonVariants[props.variant].background};
-  color: ${props => buttonVariants[props.variant].color};
-  border: ${props => buttonVariants[props.variant].border};
-  
-  /* 应用尺寸样式 */
-  padding: ${props => buttonSizes[props.size].padding};
-  font-size: ${props => buttonSizes[props.size].fontSize};
-  border-radius: ${props => buttonSizes[props.size].borderRadius};
-  
-  /* 禁用状态 */
-  opacity: ${props => (props.disabled ? 0.5 : 1)};
-  cursor: ${props => (props.disabled ? 'not-allowed' : 'pointer')};
-  
-  /* 悬停状态 */
-  &:hover:not(:disabled) {
-    background: ${props => buttonVariants[props.variant].hover.background};
   }
-  
-  /* 激活状态 */
-  &:active:not(:disabled) {
-    background: ${props => buttonVariants[props.variant].active.background};
-    transform: translateY(1px);
-  }
-  
-  /* 聚焦状态 */
-  &:focus-visible {
-    box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.3);
-  }
-`;
+);
 
-const Button = ({
-  variant = 'primary',
-  size = 'medium',
+const Button = React.forwardRef(({
   children,
-  icon,
-  disabled = false,
+  className,
+  variant,
+  size,
+  fullWidth,
+  disabled,
+  leftIcon,
+  rightIcon,
+  onClick,
+  type = "button",
   ...props
-}) => {
+}, ref) => {
+  const hasIcon = Boolean(leftIcon || rightIcon);
+
   return (
-    <StyledButton
-      variant={variant}
-      size={size}
+    <motion.button
+      ref={ref}
+      type={type}
+      className={clsx(
+        buttonVariants({
+          variant,
+          size,
+          fullWidth,
+          disabled,
+          hasIcon,
+          className,
+        })
+      )}
+      onClick={disabled ? undefined : onClick}
       disabled={disabled}
+      whileTap={!disabled ? { scale: 0.97 } : undefined}
       {...props}
     >
-      {icon && <span className="button-icon">{icon}</span>}
+      {leftIcon && <span className="inline-flex">{leftIcon}</span>}
       {children}
-    </StyledButton>
+      {rightIcon && <span className="inline-flex">{rightIcon}</span>}
+    </motion.button>
   );
-};
+});
+
+Button.displayName = "Button";
 
 export default Button; 

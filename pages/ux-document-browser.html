@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UX 文档中心 - CreativePro Studio</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css">
+    <style>
+        :root {
+            /* Apple 设计色彩系统 */
+            --blue: #007aff;
+            --indigo: #5856d6;
+            --purple: #af52de;
+            --pink: #ff2d55;
+            --red: #ff3b30;
+            --orange: #ff9500;
+            --yellow: #ffcc00;
+            --green: #34c759;
+            --mint: #00c7be;
+            --teal: #30b0c7;
+            --cyan: #32ade6;
+            --gray: #8e8e93;
+            --gray2: #aeaeb2;
+            --gray3: #c7c7cc;
+            --gray4: #d1d1d6;
+            --gray5: #e5e5ea;
+            --gray6: #f2f2f7;
+            
+            /* 间距 */
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+            --spacing-xxl: 48px;
+            
+            /* 圆角 */
+            --radius-sm: 6px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            
+            /* 字体大小 */
+            --font-xs: 12px;
+            --font-sm: 14px;
+            --font-md: 16px;
+            --font-lg: 20px;
+            --font-xl: 24px;
+            --font-xxl: 32px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--gray6);
+            color: #000;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        a {
+            text-decoration: none;
+            color: var(--blue);
+        }
+        
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* 侧边栏样式 */
+        .sidebar {
+            width: 280px;
+            background-color: var(--gray6);
+            border-right: 1px solid var(--gray5);
+            padding: var(--spacing-lg) 0;
+            overflow-y: auto;
+        }
+        
+        .sidebar-header {
+            padding: 0 var(--spacing-lg) var(--spacing-lg);
+            border-bottom: 1px solid var(--gray5);
+        }
+        
+        .sidebar-title {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            font-size: var(--font-md);
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .sidebar-title i {
+            color: var(--purple);
+        }
+        
+        .sidebar-subtitle {
+            font-size: var(--font-sm);
+            color: var(--gray);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background-color: white;
+            border-radius: var(--radius-md);
+            padding: var(--spacing-sm) var(--spacing-md);
+            border: 1px solid var(--gray4);
+        }
+        
+        .search-bar i {
+            color: var(--gray2);
+            margin-right: var(--spacing-sm);
+        }
+        
+        .search-input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: var(--font-sm);
+            background: transparent;
+        }
+        
+        .nav-section {
+            margin-top: var(--spacing-lg);
+            padding: 0 var(--spacing-lg);
+        }
+        
+        .nav-section-title {
+            font-size: var(--font-xs);
+            text-transform: uppercase;
+            color: var(--gray);
+            margin-bottom: var(--spacing-sm);
+            letter-spacing: 0.5px;
+        }
+        
+        .nav-list {
+            list-style: none;
+        }
+        
+        .nav-item {
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--radius-md);
+            color: var(--gray);
+            font-size: var(--font-sm);
+            transition: all 0.2s ease;
+        }
+        
+        .nav-link:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+            color: #000;
+        }
+        
+        .nav-link.active {
+            background-color: rgba(175, 82, 222, 0.1);
+            color: var(--purple);
+            font-weight: 500;
+        }
+        
+        .nav-link i {
+            margin-right: var(--spacing-sm);
+            width: 20px;
+            text-align: center;
+        }
+        
+        /* 主内容区样式 */
+        .main-content {
+            flex: 1;
+            padding: var(--spacing-xl);
+            overflow-y: auto;
+        }
+        
+        .header {
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .breadcrumbs {
+            display: flex;
+            align-items: center;
+            font-size: var(--font-sm);
+            color: var(--gray);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .breadcrumbs a {
+            color: var(--gray);
+        }
+        
+        .breadcrumbs a:hover {
+            color: var(--blue);
+        }
+        
+        .breadcrumbs i {
+            margin: 0 var(--spacing-xs);
+            font-size: 10px;
+        }
+        
+        .page-title {
+            font-size: var(--font-xl);
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .page-meta {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            color: var(--gray);
+            font-size: var(--font-sm);
+        }
+        
+        .page-meta span {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+        }
+        
+        .document-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-xxl);
+        }
+        
+        .document-card {
+            background-color: white;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .document-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        
+        .document-header {
+            padding: var(--spacing-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(175, 82, 222, 0.08);
+        }
+        
+        .document-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: var(--purple);
+        }
+        
+        .document-body {
+            padding: var(--spacing-lg);
+        }
+        
+        .document-title {
+            font-size: var(--font-md);
+            font-weight: 600;
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .document-description {
+            font-size: var(--font-sm);
+            color: var(--gray);
+            margin-bottom: var(--spacing-md);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .document-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: var(--font-xs);
+            color: var(--gray2);
+        }
+        
+        .document-preview {
+            background-color: white;
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-xl);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .preview-title {
+            font-size: var(--font-lg);
+            font-weight: 600;
+        }
+        
+        .preview-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+        
+        .preview-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: var(--gray6);
+            color: var(--gray);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .preview-btn:hover {
+            background-color: var(--gray5);
+            color: #000;
+        }
+        
+        .markdown-content {
+            font-size: var(--font-md);
+            line-height: 1.6;
+        }
+        
+        .markdown-content h1,
+        .markdown-content h2,
+        .markdown-content h3,
+        .markdown-content h4,
+        .markdown-content h5,
+        .markdown-content h6 {
+            margin-top: 1.5em;
+            margin-bottom: 0.75em;
+        }
+        
+        .markdown-content h1 {
+            font-size: 1.8em;
+        }
+        
+        .markdown-content h2 {
+            font-size: 1.5em;
+        }
+        
+        .markdown-content h3 {
+            font-size: 1.3em;
+        }
+        
+        .markdown-content p {
+            margin-bottom: 1em;
+        }
+        
+        .markdown-content ul,
+        .markdown-content ol {
+            margin-bottom: 1em;
+            padding-left: 2em;
+        }
+        
+        .markdown-content li {
+            margin-bottom: 0.5em;
+        }
+        
+        .markdown-content pre {
+            background-color: var(--gray6);
+            padding: 1em;
+            border-radius: var(--radius-md);
+            overflow-x: auto;
+            margin-bottom: 1em;
+        }
+        
+        .markdown-content code {
+            font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-size: 0.9em;
+            background-color: var(--gray6);
+            padding: 0.2em 0.4em;
+            border-radius: var(--radius-sm);
+        }
+        
+        .markdown-content pre code {
+            padding: 0;
+            background-color: transparent;
+        }
+        
+        .markdown-content blockquote {
+            border-left: 4px solid var(--gray5);
+            padding-left: 1em;
+            color: var(--gray);
+            margin-bottom: 1em;
+        }
+        
+        .markdown-content img {
+            max-width: 100%;
+            border-radius: var(--radius-md);
+        }
+        
+        .markdown-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1em;
+        }
+        
+        .markdown-content th,
+        .markdown-content td {
+            padding: 0.5em 0.75em;
+            border: 1px solid var(--gray5);
+        }
+        
+        .markdown-content th {
+            background-color: var(--gray6);
+            font-weight: 600;
+            text-align: left;
+        }
+        
+        /* 底部元素 */
+        .footer {
+            margin-top: var(--spacing-xxl);
+            padding-top: var(--spacing-lg);
+            border-top: 1px solid var(--gray5);
+            color: var(--gray);
+            font-size: var(--font-sm);
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid var(--gray5);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 侧边栏 -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-title">
+                    <i class="fas fa-sitemap"></i>
+                    <span>UX 文档中心</span>
+                </div>
+                <p class="sidebar-subtitle">浏览用户体验相关的设计文档</p>
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" class="search-input" placeholder="搜索文档...">
+                </div>
+            </div>
+            
+            <div class="nav-section">
+                <h3 class="nav-section-title">UI 组件</h3>
+                <ul class="nav-list">
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-document="画布">
+                            <i class="fas fa-pencil-ruler"></i>
+                            画布
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-document="母版库">
+                            <i class="fas fa-layer-group"></i>
+                            母版库
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-document="素材库">
+                            <i class="fas fa-images"></i>
+                            素材库
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="nav-section">
+                <h3 class="nav-section-title">用户流程</h3>
+                <ul class="nav-list">
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-document="用户旅程地图">
+                            <i class="fas fa-map"></i>
+                            用户旅程地图
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="nav-section">
+                <h3 class="nav-section-title">页面设计</h3>
+                <ul class="nav-list">
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-document="项目详情页面">
+                            <i class="fas fa-file-alt"></i>
+                            项目详情页面
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-document="批量创建页面">
+                            <i class="fas fa-copy"></i>
+                            批量创建页面
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-document="批量处理中心">
+                            <i class="fas fa-tasks"></i>
+                            批量处理中心
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="nav-section">
+                <h3 class="nav-section-title">系统管理</h3>
+                <ul class="nav-list">
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-document="审核管理系统">
+                            <i class="fas fa-shield-alt"></i>
+                            审核管理系统
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </aside>
+        
+        <!-- 主内容区 -->
+        <main class="main-content">
+            <div class="header">
+                <div class="breadcrumbs">
+                    <a href="index.html">首页</a>
+                    <i class="fas fa-chevron-right"></i>
+                    <span>UX 文档中心</span>
+                </div>
+                <h1 class="page-title">用户体验设计文档</h1>
+                <div class="page-meta">
+                    <span><i class="far fa-folder"></i> 8 个文档</span>
+                    <span><i class="far fa-clock"></i> 最近更新: 2025-04-27</span>
+                </div>
+            </div>
+            
+            <div class="document-grid">
+                <div class="document-card" data-document="画布">
+                    <div class="document-header">
+                        <div class="document-icon">
+                            <i class="fas fa-pencil-ruler"></i>
+                        </div>
+                    </div>
+                    <div class="document-body">
+                        <h3 class="document-title">画布</h3>
+                        <p class="document-description">用于设计和编辑创意内容的交互式工作区，支持多种创作工具。</p>
+                        <div class="document-meta">
+                            <span>510 行</span>
+                            <span>17KB</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="document-card" data-document="母版库">
+                    <div class="document-header">
+                        <div class="document-icon">
+                            <i class="fas fa-layer-group"></i>
+                        </div>
+                    </div>
+                    <div class="document-body">
+                        <h3 class="document-title">母版库</h3>
+                        <p class="document-description">提供可重用的模板和布局，确保设计一致性和高效创作。</p>
+                        <div class="document-meta">
+                            <span>503 行</span>
+                            <span>17KB</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="document-card" data-document="素材库">
+                    <div class="document-header">
+                        <div class="document-icon">
+                            <i class="fas fa-images"></i>
+                        </div>
+                    </div>
+                    <div class="document-body">
+                        <h3 class="document-title">素材库</h3>
+                        <p class="document-description">管理和组织设计资源，包括图像、图标和其他可重用元素。</p>
+                        <div class="document-meta">
+                            <span>530 行</span>
+                            <span>18KB</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="document-card" data-document="用户旅程地图">
+                    <div class="document-header">
+                        <div class="document-icon">
+                            <i class="fas fa-map"></i>
+                        </div>
+                    </div>
+                    <div class="document-body">
+                        <h3 class="document-title">用户旅程地图</h3>
+                        <p class="document-description">可视化用户与产品的交互流程，识别痛点和优化机会。</p>
+                        <div class="document-meta">
+                            <span>261 行</span>
+                            <span>8.7KB</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="document-card" data-document="审核管理系统">
+                    <div class="document-header">
+                        <div class="document-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                    </div>
+                    <div class="document-body">
+                        <h3 class="document-title">审核管理系统</h3>
+                        <p class="document-description">内容审核和管理工具，确保发布内容符合规范和标准。</p>
+                        <div class="document-meta">
+                            <span>288 行</span>
+                            <span>8.4KB</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="document-card" data-document="项目详情页面">
+                    <div class="document-header">
+                        <div class="document-icon">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                    </div>
+                    <div class="document-body">
+                        <h3 class="document-title">项目详情页面</h3>
+                        <p class="document-description">展示项目完整信息和状态的界面，支持项目管理功能。</p>
+                        <div class="document-meta">
+                            <span>263 行</span>
+                            <span>7.8KB</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="document-card" data-document="批量创建页面">
+                    <div class="document-header">
+                        <div class="document-icon">
+                            <i class="fas fa-copy"></i>
+                        </div>
+                    </div>
+                    <div class="document-body">
+                        <h3 class="document-title">批量创建页面</h3>
+                        <p class="document-description">高效创建多个设计内容的工具，支持模板和数据导入。</p>
+                        <div class="document-meta">
+                            <span>251 行</span>
+                            <span>7.0KB</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="document-card" data-document="批量处理中心">
+                    <div class="document-header">
+                        <div class="document-icon">
+                            <i class="fas fa-tasks"></i>
+                        </div>
+                    </div>
+                    <div class="document-body">
+                        <h3 class="document-title">批量处理中心</h3>
+                        <p class="document-description">集中管理和处理多个任务的控制中心，提高工作效率。</p>
+                        <div class="document-meta">
+                            <span>210 行</span>
+                            <span>6.6KB</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="document-preview" id="documentPreview" style="display: none;">
+                <div class="preview-header">
+                    <h2 class="preview-title" id="previewTitle">文档标题</h2>
+                    <div class="preview-actions">
+                        <div class="preview-btn" id="closePreview">
+                            <i class="fas fa-times"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="markdown-content" id="markdownContent">
+                    <!-- 这里会动态加载Markdown内容 -->
+                    <p>请点击左侧菜单或上方卡片查看文档内容</p>
+                </div>
+            </div>
+            
+            <div class="footer">
+                <div>© 2023-2024 CreativePro Studio</div>
+                <div>版本 1.0.0</div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const documentCards = document.querySelectorAll('.document-card');
+            const navLinks = document.querySelectorAll('.nav-link');
+            const documentPreview = document.getElementById('documentPreview');
+            const previewTitle = document.getElementById('previewTitle');
+            const markdownContent = document.getElementById('markdownContent');
+            const closePreview = document.getElementById('closePreview');
+            
+            // 模拟markdown文档内容，实际项目中可通过AJAX从服务器获取
+            const mdContents = {
+                "画布": "# 画布设计文档\n\n## 概述\n\n画布是CreativePro Studio的核心编辑组件，为用户提供灵活的创意空间。\n\n## 主要功能\n\n- 多层级编辑与管理\n- 智能对齐与分布\n- 实时协作编辑\n- 历史记录与版本控制\n\n## 设计规范\n\n### 颜色系统\n\n- 主色调：#6C63FF\n- 背景：白色或透明网格\n- 选中状态：蓝色边框\n\n### 工具栏\n\n工具栏包含以下功能组：\n\n1. 基础工具（选择、移动、缩放）\n2. 绘图工具（形状、线条、笔刷）\n3. 文本工具\n4. 编辑工具（复制、粘贴、删除）",
+                
+                "母版库": "# 母版库设计文档\n\n## 概述\n\n母版库是预设模板的集合，帮助用户快速创建高质量的设计。\n\n## 主要功能\n\n- 模板分类与筛选\n- 模板预览与详情\n- 收藏与最近使用\n- 自定义模板创建\n\n## 设计规范\n\n### 布局\n\n- 网格式布局，响应式设计\n- 卡片式模板展示\n- 详情页左右分栏设计\n\n### 交互模式\n\n1. 悬停显示操作\n2. 点击进入详情\n3. 使用按钮直接应用到画布",
+                
+                "素材库": "# 素材库设计文档\n\n## 概述\n\n素材库提供丰富的设计资源，包括图片、图标、插画等。\n\n## 主要功能\n\n- 素材分类与标签\n- 搜索与筛选\n- 收藏与下载\n- 上传自定义素材\n\n## 设计规范\n\n### 列表视图\n\n- 网格布局，可调整大小\n- 悬停预览效果\n- 快速操作菜单\n\n### 详情视图\n\n- 大图预览\n- 相关素材推荐\n- 使用历史记录",
+                
+                "用户旅程地图": "# 用户旅程地图设计文档\n\n## 概述\n\n用户旅程地图是可视化用户体验流程的工具，帮助优化产品设计。\n\n## 主要功能\n\n- 创建多场景旅程图\n- 添加用户情绪曲线\n- 标注关键触点与痛点\n- 协作与分享\n\n## 设计规范\n\n### 视觉效果\n\n- 简洁的线条与图标\n- 色彩标识不同情绪状态\n- 时间线式布局\n\n### 交互方式\n\n- 拖放式编辑\n- 缩放与平移\n- 点击弹窗查看详情",
+                
+                "审核管理系统": "# 审核管理系统设计文档\n\n## 概述\n\n审核管理系统用于内容审核流程控制，确保发布内容合规。\n\n## 主要功能\n\n- 审核任务分配\n- 内容快速审核\n- 审核历史与统计\n- 审核规则配置\n\n## 设计规范\n\n### 界面布局\n\n- 三栏式布局：任务列表、内容预览、审核操作\n- 状态明确的标识系统\n- 批量操作工具栏\n\n### 操作流程\n\n1. 接收任务\n2. 预览内容\n3. 审核决策\n4. 添加批注\n5. 提交结果",
+                
+                "项目详情页面": "# 项目详情页面设计文档\n\n## 概述\n\n项目详情页面展示项目的完整信息、进度和相关资源。\n\n## 主要功能\n\n- 项目基本信息显示\n- 团队成员与权限\n- 文件与资源管理\n- 评论与反馈\n\n## 设计规范\n\n### 页面结构\n\n- 顶部项目头部信息\n- 标签页导航\n- 主内容区域\n- 右侧活动与状态\n\n### 视觉风格\n\n- 简洁大气的卡片式设计\n- 明确的层级与分组\n- 重要信息突出显示",
+                
+                "批量创建页面": "# 批量创建页面设计文档\n\n## 概述\n\n批量创建功能允许用户快速创建多个相似设计，提高工作效率。\n\n## 主要功能\n\n- Excel数据导入\n- 模板与变量配置\n- 预览与编辑\n- 批量输出设置\n\n## 设计规范\n\n### 流程设计\n\n1. 选择模板\n2. 导入数据\n3. 映射字段\n4. 预览效果\n5. 执行创建\n\n### 界面组件\n\n- 步骤指示器\n- 数据预览表格\n- 映射配置界面\n- 批量预览轮播",
+                
+                "批量处理中心": "# 批量处理中心设计文档\n\n## 概述\n\n批量处理中心用于管理和监控大量任务的执行，提供集中控制。\n\n## 主要功能\n\n- 任务队列管理\n- 执行状态监控\n- 结果预览与处理\n- 错误处理与重试\n\n## 设计规范\n\n### 界面布局\n\n- 左侧任务列表\n- 中央详情区\n- 右侧操作面板\n\n### 状态展示\n\n- 清晰的状态图标\n- 进度条与计数器\n- 状态过滤器与分组"
+            };
+            
+            // 点击文档卡片事件
+            documentCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    const docName = this.getAttribute('data-document');
+                    showDocumentPreview(docName);
+                    
+                    // 同步更新左侧导航栏的激活状态
+                    navLinks.forEach(link => {
+                        if (link.getAttribute('data-document') === docName) {
+                            link.classList.add('active');
+                        } else {
+                            link.classList.remove('active');
+                        }
+                    });
+                });
+            });
+            
+            // 点击导航链接事件
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const docName = this.getAttribute('data-document');
+                    showDocumentPreview(docName);
+                    
+                    // 更新激活状态
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+            
+            // 关闭预览
+            closePreview.addEventListener('click', function() {
+                documentPreview.style.display = 'none';
+                navLinks.forEach(link => link.classList.remove('active'));
+            });
+            
+            // 显示文档预览
+            function showDocumentPreview(docName) {
+                if (mdContents[docName]) {
+                    previewTitle.textContent = docName;
+                    markdownContent.innerHTML = marked.parse(mdContents[docName]);
+                    documentPreview.style.display = 'block';
+                    
+                    // 应用Prism.js语法高亮
+                    Prism.highlightAllUnder(markdownContent);
+                    
+                    // 滚动到顶部
+                    documentPreview.scrollTop = 0;
+                }
+            }
+            
+            // 搜索功能
+            const searchInput = document.querySelector('.search-input');
+            searchInput.addEventListener('input', function() {
+                const query = this.value.toLowerCase();
+                
+                documentCards.forEach(card => {
+                    const title = card.querySelector('.document-title').textContent.toLowerCase();
+                    const description = card.querySelector('.document-description').textContent.toLowerCase();
+                    
+                    if (title.includes(query) || description.includes(query)) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+                
+                navLinks.forEach(link => {
+                    const text = link.textContent.trim().toLowerCase();
+                    
+                    if (text.includes(query)) {
+                        link.parentElement.style.display = 'block';
+                    } else {
+                        link.parentElement.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html> 
