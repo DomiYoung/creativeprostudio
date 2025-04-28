@@ -1,0 +1,154 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* 主色调系统 */
+    --primary: #F5E1D9;
+    --primary-rgb: 245, 225, 217;
+    --primary-light: rgba(245, 225, 217, 0.2);
+    --primary-dark: #E8D5C8;
+    --secondary: #EADCD3;
+    
+    /* Apple 设计色彩系统（调整为更柔和的色调） */
+    --blue: #94B6D2;
+    --indigo: #A9A8D9;
+    --purple: #C9A8D3;
+    --pink: #E3A8B7;
+    --red: #D98E8E;
+    --orange: #E8C3A5;
+    --yellow: #E8D5A5;
+    --green: #A5C9BB;
+    --mint: #A5C9C6;
+    --teal: #A5C3C9;
+    --cyan: #A8C9E3;
+    --gray: #968D87;
+    --gray2: #B5ADA8;
+    --gray3: #C7C0BD;
+    --gray4: #D6D0CC;
+    --gray5: #E6DED9;
+    --gray6: #F5F0EC;
+    
+    /* 间距 */
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+    --spacing-xl: 32px;
+    --spacing-xxl: 48px;
+    
+    /* 圆角 */
+    --radius-sm: 6px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+    
+    /* 字体大小 */
+    --font-xs: 12px;
+    --font-sm: 14px;
+    --font-md: 16px;
+    --font-lg: 20px;
+    --font-xl: 24px;
+    --font-xxl: 32px;
+    
+    /* 阴影 */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.03);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.03);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.02);
+  }
+  
+  body {
+    @apply bg-[var(--gray6)] text-[#4A4A4A] leading-normal antialiased;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+  }
+}
+
+@layer components {
+  .container {
+    @apply max-w-[1200px] mx-auto;
+  }
+  
+  .card {
+    @apply bg-white rounded-lg overflow-hidden shadow-sm transition duration-300 ease-in-out cursor-pointer flex flex-col h-full relative hover:translate-y-[-4px] hover:shadow-md active:translate-y-[-2px] active:shadow-sm;
+  }
+  
+  .card-header {
+    @apply p-2xl flex justify-center items-center;
+  }
+  
+  .icon-container {
+    @apply w-16 h-16 rounded-2xl flex justify-center items-center text-3xl transition-transform duration-300 ease-in-out;
+  }
+  
+  .card:hover .icon-container {
+    @apply scale-110;
+  }
+  
+  .card-body {
+    @apply p-lg flex-grow flex flex-col;
+  }
+  
+  .card-title {
+    @apply text-lg font-semibold mb-xs;
+  }
+  
+  .card-description {
+    @apply text-gray text-sm mb-lg flex-grow;
+  }
+  
+  .card-meta {
+    @apply flex justify-between items-center text-xs text-gray2;
+  }
+  
+  .meta-count {
+    @apply flex items-center gap-xs;
+  }
+  
+  .section-title {
+    @apply text-lg font-semibold my-xl text-gray pb-sm border-b border-gray5;
+  }
+  
+  /* 图标容器背景色 */
+  .system-blueprint-icon {
+    @apply bg-indigo bg-opacity-20 text-indigo;
+  }
+  
+  .prototype-icon {
+    @apply bg-blue bg-opacity-20 text-blue;
+  }
+  
+  .ux-icon {
+    @apply bg-purple bg-opacity-20 text-purple;
+  }
+  
+  .frontend-icon {
+    @apply bg-orange bg-opacity-20 text-orange;
+  }
+  
+  .backend-icon {
+    @apply bg-green bg-opacity-20 text-green;
+  }
+  
+  .database-icon {
+    @apply bg-teal bg-opacity-20 text-teal;
+  }
+  
+  .api-icon {
+    @apply bg-pink bg-opacity-20 text-pink;
+  }
+  
+  .project-icon {
+    @apply bg-yellow bg-opacity-20 text-yellow;
+  }
+}
+
+@layer utilities {
+  .new-badge {
+    @apply absolute top-sm right-sm bg-red text-white px-2 py-0.5 rounded-full text-xs font-semibold;
+  }
+  
+  .updated-badge {
+    @apply absolute top-sm right-sm bg-green text-white px-2 py-0.5 rounded-full text-xs font-semibold;
+  }
+} 
