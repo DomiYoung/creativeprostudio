@@ -56,6 +56,20 @@
     --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.03);
     --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.03);
     --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.02);
+    
+    /* Add dopamine design color variables */
+    --dopamine-orange: #F5E1D9;
+    --dopamine-orange-light: rgba(255, 143, 94, 0.1);
+    --dopamine-pink: #FFB5C5;
+    --dopamine-mint: #B6E5D8;
+    --dopamine-blue: #97C1FF;
+    --dopamine-purple: #D5B3FF;
+    --dopamine-yellow: #FFE599;
+    
+    /* Animation durations */
+    --animation-fast: 150ms;
+    --animation-normal: 250ms;
+    --animation-slow: 350ms;
   }
   
   body {

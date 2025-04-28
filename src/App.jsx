@@ -1,4 +1,5 @@
 import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
 import Button from './design-system/components/Button';
 import Card from './design-system/components/Card';
@@ -7,6 +8,14 @@ import { colors } from './design-system/tokens/colors';
 import { navigationItems, cardExamples } from './data/sampleData';
 import styled from '@emotion/styled';
 import { spacing } from './design-system/tokens/spacing';
+import MasterLibrary from './pages/MasterLibrary';
+import BatchCenter from './pages/BatchCenter';
+import BatchDetail from './pages/BatchDetail';
+import UiGuidelines from './pages/UiGuidelines';
+import ApiSpecification from './pages/ApiSpecification';
+import DatabaseDesign from './pages/DatabaseDesign';
+import InteractionGuidelines from './pages/InteractionGuidelines';
+import ProjectReport from './pages/ProjectReport';
 
 // 应用容器
 const AppContainer = styled.div`
@@ -50,74 +59,20 @@ const Footer = styled.footer`
 
 function App() {
   return (
-    <AppContainer>
-      <Navigation 
-        title="CreativePro Studio"
-        items={navigationItems}
-        activeIndex={0}
-        elevated
-        right={
-          <Button
-            variant="primary"
-            size="small"
-          >
-            文档中心
-          </Button>
-        }
-      />
-      
-      <MainContent>
-        <PageTitle>产品设计文档中心</PageTitle>
-        
-        <Card
-          title="欢迎使用CreativePro Studio产品文档中心"
-          bordered
-          elevated
-          fullWidth
-          footer={
-            <Button 
-              variant="primary"
-            >
-              开始浏览
-            </Button>
-          }
-        >
-          <p>此系统集成了所有产品设计相关文档，包括前后端概要设计、详细设计方案、UX设计规范以及项目蓝图。</p>
-          <p>使用左侧导航或下方卡片浏览不同分类的文档内容。</p>
-        </Card>
-        
-        <CardGrid>
-          {cardExamples.map(card => (
-            <Card 
-              key={card.id}
-              title={card.title}
-              bordered
-              elevated
-              rounded
-              interactive
-              footerDivider
-              footer={
-                <>
-                  <span>{card.footer}</span>
-                  <Button 
-                    variant="text"
-                    size="small"
-                  >
-                    查看详情
-                  </Button>
-                </>
-              }
-            >
-              {card.content}
-            </Card>
-          ))}
-        </CardGrid>
-      </MainContent>
-      
-      <Footer>
-        © 2025 CreativePro Studio. 符合Apple Human Interface Guidelines设计规范
-      </Footer>
-    </AppContainer>
+    <Router>
+      <div className="app">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/doccenter" element={<DocCenter />} />
+          <Route path="/database-design" element={<DatabaseDesign />} />
+          <Route path="/api-specification" element={<ApiSpecification />} />
+          <Route path="/ui-guidelines" element={<UiGuidelines />} />
+          <Route path="/interaction-guidelines" element={<InteractionGuidelines />} />
+          <Route path="/project-report" element={<ProjectReport />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 

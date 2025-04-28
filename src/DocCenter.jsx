@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Button, ThemeProvider, useTheme } from './design-system';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
-// 文档卡片组件
+// 文档卡片组件 - 基于Apple Human Interface Guidelines原则改进
 const DocCard = ({ title, description, icon, iconBg, iconColor, date, type, badgeType, onClick }) => {
   const { colorMode } = useTheme();
   const isDark = colorMode === 'dark';
@@ -12,7 +13,7 @@ const DocCard = ({ title, description, icon, iconBg, iconColor, date, type, badg
     <motion.div
       whileHover={{ 
         y: -8, 
-        transition: { duration: 0.4, ease: [0.2, 0.65, 0.3, 0.9] } 
+        transition: { duration: 0.3, ease: [0.2, 0.65, 0.3, 0.9] } 
       }}
       className="h-full"
       onHoverStart={() => setIsHovered(true)}
@@ -101,7 +102,7 @@ const systemDesignDocs = [
     date: "2025-04-27",
     type: "规划文档",
     badgeType: "new",
-    path: "/pages/system-blueprint.html"
+    path: "/document/project-blueprint"
   },
   {
     title: "页面原型",
@@ -112,7 +113,7 @@ const systemDesignDocs = [
     date: "2025-04-22",
     type: "交互原型",
     badgeType: "updated",
-    path: "/pages/prototype-design.html"
+    path: "/prototype"
   },
   {
     title: "UX 设计",
@@ -123,7 +124,18 @@ const systemDesignDocs = [
     date: "2025-04-25",
     type: "设计规范",
     badgeType: "new",
-    path: "/pages/ux-document-browser.html"
+    path: "/document/ux-document-browser.html"
+  },
+  {
+    title: "设计系统",
+    description: "CreativePro Studio的完整设计系统，包含组件规范、色彩系统、排版规则和交互模式。",
+    icon: "fa-palette",
+    iconBg: "bg-pink/20",
+    iconColor: "var(--pink)",
+    date: "2025-04-29",
+    type: "设计资源",
+    badgeType: "new",
+    path: "/showcase"
   }
 ];
 
@@ -137,7 +149,7 @@ const techDocs = [
     date: "2025-04-27",
     type: "服务架构",
     badgeType: "new",
-    path: "/pages/backend-document-browser.html"
+    path: "/document/backend-architecture"
   },
   {
     title: "数据库设计",
@@ -148,10 +160,10 @@ const techDocs = [
     date: "2025-04-27",
     type: "数据结构",
     badgeType: "new",
-    path: "/pages/database-document-browser.html"
+    path: "/database-design"
   },
   {
-    title: "API文档",
+    title: "API规范",
     description: "API接口文档，详细记录接口定义、参数规范、认证机制和错误处理，支持前后端协作开发。",
     icon: "fa-plug",
     iconBg: "bg-pink/20",
@@ -159,7 +171,7 @@ const techDocs = [
     date: "2025-04-27",
     type: "接口规范",
     badgeType: "new",
-    path: "/pages/api-document-browser.html"
+    path: "/api-specification"
   },
   {
     title: "前端架构设计",
@@ -170,22 +182,33 @@ const techDocs = [
     date: "2025-04-27",
     type: "组件库",
     badgeType: "new",
-    path: "/pages/frontend-document-browser.html"
+    path: "/document/frontend-architecture"
   },
   {
     title: "前端UI规范",
     description: "前端UI规范文档，提供UI规范、技术选型和代码示例，帮助开发团队快速构建界面。",
-    icon: "fa-code",
-    iconBg: "bg-orange/20",
-    iconColor: "var(--orange)",
+    icon: "fa-paint-brush",
+    iconBg: "bg-purple/20",
+    iconColor: "var(--purple)",
     date: "2025-04-28",
     type: "UI规范",
     badgeType: "new",
-    path: "/pages/frontend-ui-document-browser.html"
+    path: "/ui-guidelines"
   }
 ];
 
 const projectDocs = [
+  {
+    title: "项目进展汇报",
+    description: "CreativePro Studio项目第一季度进展汇报，包含完成情况、挑战与计划",
+    icon: "fa-chart-line",
+    iconBg: "bg-teal/20",
+    iconColor: "var(--teal)",
+    date: "2025-06-20",
+    type: "汇报文档",
+    badgeType: "new",
+    path: "/project-report"
+  },
   {
     title: "项目执行计划",
     description: "详细的项目计划文档，包含里程碑、任务分配、资源安排和风险管理策略，确保项目按期交付。",
@@ -210,7 +233,101 @@ const projectDocs = [
   }
 ];
 
-// 主题切换按钮
+// 直接访问产品功能
+const productEntries = [
+  {
+    title: "画布编辑器",
+    description: "功能强大的可视化编辑工具，支持精确像素控制、图层管理和实时预览，让创意无限展现。",
+    icon: "fa-crop-alt",
+    iconBg: "bg-teal/20",
+    iconColor: "var(--teal)",
+    date: "2025-04-30",
+    type: "核心功能",
+    badgeType: "new",
+    path: "/canvas-editor"
+  },
+  {
+    title: "母版库",
+    description: "管理和使用设计母版，实现一次设计多处应用，保持品牌设计一致性和高效内容生产。",
+    icon: "fa-layer-group",
+    iconBg: "bg-green/20",
+    iconColor: "var(--green)",
+    date: "2025-04-30",
+    type: "设计资源",
+    badgeType: "new",
+    path: "/master-library"
+  },
+  {
+    title: "批量处理中心",
+    description: "一次性处理多个设计项目，批量应用样式、替换元素和导出资源，显著提升工作效率。",
+    icon: "fa-th-large",
+    iconBg: "bg-blue/20",
+    iconColor: "var(--blue)",
+    date: "2025-04-30",
+    type: "效率工具",
+    badgeType: "new",
+    path: "/batch-center"
+  },
+  {
+    title: "素材库",
+    description: "集中管理所有设计素材，包括产品图片、品牌元素、背景和装饰元素，便于快速查找和使用。",
+    icon: "fa-images",
+    iconBg: "bg-purple/20",
+    iconColor: "var(--purple)",
+    date: "2025-04-30",
+    type: "资源中心",
+    badgeType: "new",
+    path: "/asset-library"
+  },
+  {
+    title: "项目管理",
+    description: "管理所有创意项目，跟踪进度、分配任务和审核设计，提供完整的项目生命周期管理。",
+    icon: "fa-tasks",
+    iconBg: "bg-orange/20",
+    iconColor: "var(--orange)",
+    date: "2025-04-30",
+    type: "项目工具",
+    badgeType: "new",
+    path: "/projects"
+  },
+  {
+    title: "创建批量任务",
+    description: "快速创建新的批量处理任务，设置母版和变量，一次性生成多个设计变体。",
+    icon: "fa-plus-circle",
+    iconBg: "bg-indigo/20",
+    iconColor: "var(--indigo)",
+    date: "2025-04-30",
+    type: "快捷操作",
+    badgeType: "new",
+    path: "/batch-create"
+  }
+];
+
+// 系统设计文档
+const systemDocs = [
+  {
+    title: "UI设计规范",
+    description: "前端UI设计原则与组件规范",
+    icon: "fas fa-palette",
+    iconClass: "ui-icon",
+    date: "2025-04-30",
+    isNew: false,
+    meta: { icon: "fas fa-book", text: "设计系统" },
+    link: "/ui-guidelines"
+  },
+  {
+    title: "交互设计规范",
+    description: "用户交互体验与反馈机制指南",
+    icon: "fas fa-hand-pointer",
+    iconClass: "interaction-icon",
+    date: "2025-05-28",
+    isNew: true,
+    meta: { icon: "fas fa-book", text: "设计系统" },
+    link: "/interaction-guidelines"
+  },
+];
+
+// 主题切换按钮 - 基于Apple Human Interface Guidelines改进
 const ThemeToggle = () => {
   const { colorMode, toggleColorMode } = useTheme();
   
@@ -232,7 +349,7 @@ const ThemeToggle = () => {
   );
 };
 
-// 背景图案组件
+// 背景图案组件 - 优化视觉层次感
 const BackgroundPattern = ({ isDark }) => {
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
@@ -247,75 +364,46 @@ const BackgroundPattern = ({ isDark }) => {
         bg-gradient-to-r from-purple/30 to-indigo/20 blur-3xl"></div>
       <div className="absolute bottom-20 right-10 w-96 h-96 rounded-full opacity-20 
         bg-gradient-to-r from-teal/30 to-blue/20 blur-3xl"></div>
-      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 
-        w-[120vh] h-[120vh] rounded-full opacity-10 
-        bg-gradient-to-r from-yellow/10 to-orange/10 blur-3xl"></div>
       
-      {/* 网格线 */}
-      <div className={`absolute inset-0 
-        bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(to_right,rgba(255,255,255,0.03)_1px,transparent_1px)] 
-        bg-[size:72px_72px]`}></div>
-        
-      {/* 苹果风格装饰斑点 */}
-      <div className="absolute top-0 right-0 opacity-20 w-1/3 h-1/3 bg-gradient-to-b from-purple/20 to-transparent rounded-full blur-3xl"></div>
-      <div className="absolute bottom-0 left-0 opacity-20 w-1/3 h-1/3 bg-gradient-to-t from-indigo/20 to-transparent rounded-full blur-3xl"></div>
+      {/* 增加微妙的格子图案 */}
+      <div className={`absolute inset-0 ${
+        isDark ? 'opacity-5' : 'opacity-10'
+      }`} style={{ 
+        backgroundImage: `radial-gradient(circle at 1px 1px, ${isDark ? '#fff' : '#000'} 1px, transparent 0)`,
+        backgroundSize: '40px 40px' 
+      }}></div>
     </div>
   );
 };
 
-// 高端装饰性标题
+// 改进的标题组件 - 基于SF Pro Display设计风格
 const FancyTitle = ({ text, subtitle }) => {
   const { colorMode } = useTheme();
   const isDark = colorMode === 'dark';
   
   return (
-    <div className="relative">
-      <motion.div 
-        className={`absolute -top-3 left-1/2 transform -translate-x-1/2 
-                   text-7xl font-bold opacity-5 tracking-wider whitespace-nowrap
-                   ${isDark ? 'text-white' : 'text-gray'}`}
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 0.05, y: 0 }}
-        transition={{ duration: 1, delay: 0.3 }}
-      >
-        CREATIVEPRO
-      </motion.div>
-      
+    <div className="text-center mb-16 relative z-10">
       <motion.h1 
-        className={`text-4xl md:text-5xl font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-800'} tracking-tight relative z-10`}
-        initial={{ opacity: 0, y: -20 }}
+        className={`text-4xl sm:text-5xl font-bold tracking-tight mb-4 ${
+          isDark ? 'text-white' : 'text-gray-900'
+        }`}
+        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
+        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
       >
-        {text}
-        <motion.span 
-          className={`ml-2 px-2 py-1 text-sm align-text-top font-medium rounded
-          ${isDark ? 'bg-purple/30 text-purple-300' : 'bg-primary-light/80 text-indigo'}`}
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.6, duration: 0.4 }}
-        >
-          2025
-        </motion.span>
+        <span className="inline-block">CreativePro Studio</span>{" "}
+        <span className={`inline-block ${
+          isDark ? 'text-primary/90' : 'text-teal'
+        }`}>文档中心</span>
       </motion.h1>
       
-      <motion.div
-        className="w-24 h-1 mx-auto mb-6 rounded-full"
-        style={{ 
-          background: isDark ? 
-            'linear-gradient(90deg, var(--purple) 0%, var(--indigo) 100%)' : 
-            'linear-gradient(90deg, var(--indigo) 0%, var(--blue) 100%)'
-        }}
-        initial={{ width: 0 }}
-        animate={{ width: 96 }}
-        transition={{ duration: 0.8, delay: 0.3 }}
-      ></motion.div>
-      
       <motion.p 
-        className={`max-w-3xl mx-auto ${isDark ? 'text-gray-300' : 'text-gray'} text-lg leading-relaxed`}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.4, duration: 0.6 }}
+        className={`max-w-2xl mx-auto text-md md:text-lg ${
+          isDark ? 'text-gray-300' : 'text-gray'
+        }`}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
       >
         {subtitle}
       </motion.p>
@@ -323,175 +411,153 @@ const FancyTitle = ({ text, subtitle }) => {
   );
 };
 
-// 高端小标题
+// 改进的分区标题组件 - 更符合Apple设计的排版规则
 const SectionTitle = ({ title, isDark }) => {
   return (
-    <div className="relative mb-12">
-      <h2 className={`text-2xl font-bold mb-3 pb-3 inline-block relative
-        ${isDark ? 'text-white' : 'text-gray-800'}`}
-      >
-        {title}
-        <div className="absolute bottom-0 left-0 w-full h-0.5 rounded-full bg-gradient-to-r from-purple/80 to-transparent"></div>
-      </h2>
-    </div>
+    <motion.h2 
+      className={`text-lg sm:text-xl font-semibold pb-3 mb-6 border-b ${
+        isDark ? 'text-gray-100 border-gray-700' : 'text-gray border-gray5'
+      }`}
+      initial={{ opacity: 0, y: 15 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+    >
+      {title}
+    </motion.h2>
   );
 };
 
-// 文档中心主页
+// 滚动提示组件 - 符合Apple HIG的微交互设计
+const ScrollIndicator = ({ isDark }) => {
+  return (
+    <motion.div 
+      className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-20"
+      initial={{ opacity: 1, y: 0 }}
+      animate={{ opacity: [0.4, 0.8, 0.4], y: [0, 8, 0] }}
+      transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+    >
+      <div className={`w-8 h-12 rounded-full border-2 flex items-start justify-center p-2 ${
+        isDark ? 'border-gray-500 bg-gray-800/30 backdrop-blur-md' : 
+                'border-gray3 bg-white/30 backdrop-blur-md'
+      }`}>
+        <motion.div 
+          className={`w-1 h-2 rounded-full ${
+            isDark ? 'bg-gray-400' : 'bg-gray2'
+          }`}
+          animate={{ y: [0, 4, 0] }}
+          transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+        />
+      </div>
+    </motion.div>
+  );
+};
+
+// 主文档中心组件 - 架构优化
 const DocCenter = () => {
+  const navigate = useNavigate();
   const { colorMode } = useTheme();
   const isDark = colorMode === 'dark';
-  const [scrolled, setScrolled] = useState(false);
+  const [showScrollIndicator, setShowScrollIndicator] = useState(true);
   
+  // 监听滚动事件
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
+      if (window.scrollY > 200) {
+        setShowScrollIndicator(false);
+      } else {
+        setShowScrollIndicator(true);
+      }
     };
     
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
   
+  // 卡片点击处理
   const handleCardClick = (path) => {
-    // 实际环境中应该使用路由跳转，这里暂时使用window.location
-    console.log(`跳转到: ${path}`);
-    // window.location.href = path;
+    navigate(path);
   };
   
-  // 容器动画
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: { 
-      opacity: 1,
-      transition: { 
-        staggerChildren: 0.1,
-        delayChildren: 0.3
-      }
-    }
-  };
-  
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { 
-      opacity: 1, 
-      y: 0,
-      transition: { duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }
-    }
+  // 渲染卡片网格
+  const renderDocGrid = (docArray) => {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <AnimatePresence>
+          {docArray.map((doc, index) => (
+            <motion.div
+              key={doc.title}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ 
+                duration: 0.5, 
+                delay: index * 0.1,
+                ease: [0.16, 1, 0.3, 1]
+              }}
+            >
+              <DocCard 
+                {...doc}
+                onClick={() => handleCardClick(doc.path)}
+              />
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </div>
+    );
   };
   
   return (
-    <div className={`min-h-screen relative overflow-hidden ${
-      isDark ? 'text-gray-100' : 'text-gray-800'
+    <div className={`min-h-screen relative pb-16 pt-12 ${
+      isDark ? 'text-gray-100' : 'text-gray-900'
     }`}>
       <BackgroundPattern isDark={isDark} />
       <ThemeToggle />
       
-      {/* 页面头部装饰浮动栏 */}
-      <motion.div 
-        className={`fixed top-0 left-0 right-0 h-16 backdrop-blur-lg z-20 transition-all duration-500 ${
-          scrolled ? (isDark ? 'bg-gray-900/70' : 'bg-white/70') : 'bg-transparent'
-        }`}
-        initial={{ y: -100 }}
-        animate={{ y: scrolled ? 0 : -100 }}
-        transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
-      >
-        <div className="container mx-auto h-full flex items-center justify-between px-6">
-          <div className="flex items-center">
-            <div className={`w-8 h-8 rounded-lg mr-3 flex items-center justify-center 
-              ${isDark ? 'bg-purple/20' : 'bg-indigo/20'}`}>
-              <i className={`fas fa-book text-sm ${isDark ? 'text-purple-300' : 'text-indigo'}`}></i>
-            </div>
-            <span className={`font-medium ${isDark ? 'text-white' : 'text-gray-800'}`}>CreativePro 文档中心</span>
-          </div>
-          <div className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray'}`}>
-            内容创作平台 · 2025版
-          </div>
-        </div>
-      </motion.div>
-      
-      <div className="container mx-auto py-20 px-6 relative z-10">
-        <header className="text-center mb-24">
-          <FancyTitle 
-            text="CreativePro Studio 文档中心"
-            subtitle="集成设计、开发和文档资源，提供完整的产品设计解决方案"
-          />
-        </header>
+      <div className="container mx-auto px-4 sm:px-6 lg:max-w-6xl relative z-10">
+        <FancyTitle 
+          text="CreativePro Studio 文档中心" 
+          subtitle="集成设计、开发和文档资源，提供完整的产品设计解决方案" 
+        />
         
-        <motion.section
-          className="mb-28"
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-        >
+        <section className="mb-16">
           <SectionTitle title="系统规划与设计" isDark={isDark} />
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {systemDesignDocs.map((doc, index) => (
-              <motion.div key={index} variants={itemVariants}>
-                <DocCard 
-                  {...doc} 
-                  onClick={() => handleCardClick(doc.path)}
-                />
-              </motion.div>
-            ))}
-          </div>
-        </motion.section>
+          {renderDocGrid(systemDesignDocs)}
+        </section>
         
-        <motion.section
-          className="mb-28"
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-        >
+        <section className="mb-16">
+          <SectionTitle title="产品功能快速入口" isDark={isDark} />
+          {renderDocGrid(productEntries)}
+        </section>
+        
+        <section className="mb-16">
           <SectionTitle title="技术实现与文档" isDark={isDark} />
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {techDocs.map((doc, index) => (
-              <motion.div key={index} variants={itemVariants}>
-                <DocCard 
-                  {...doc} 
-                  onClick={() => handleCardClick(doc.path)}
-                />
-              </motion.div>
-            ))}
-          </div>
-        </motion.section>
+          {renderDocGrid(techDocs)}
+        </section>
         
-        <motion.section
-          className="mb-28"
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-        >
+        <section className="mb-16">
           <SectionTitle title="项目管理与资源" isDark={isDark} />
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {projectDocs.map((doc, index) => (
-              <motion.div key={index} variants={itemVariants}>
-                <DocCard 
-                  {...doc} 
-                  onClick={() => handleCardClick(doc.path)}
-                />
-              </motion.div>
-            ))}
-          </div>
-        </motion.section>
+          {renderDocGrid(projectDocs)}
+        </section>
         
-        <motion.footer 
-          className={`text-center mt-28 pt-12 relative ${isDark ? 'text-gray-400' : 'text-gray'}`}
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.3, duration: 0.8 }}
-        >
-          <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-1/3 h-px bg-gradient-to-r from-transparent via-gray-300/40 to-transparent"></div>
-          <p className="mb-2">© 2025 CreativePro Studio</p>
-          <p className="text-sm opacity-70">AI赋能内容创作平台 | 版权所有: @domiyoung___</p>
-        </motion.footer>
+        <section className="mb-16">
+          <SectionTitle title="系统设计与规范" isDark={isDark} />
+          {renderDocGrid(systemDocs)}
+        </section>
+        
+        <footer className={`text-center mt-20 py-8 border-t ${
+          isDark ? 'border-gray-700/50 text-gray-400' : 'border-gray5 text-gray2'
+        }`}>
+          <p>© 2025 CreativePro Studio | AI赋能内容创作平台 | 版权所有</p>
+        </footer>
       </div>
+      
+      {showScrollIndicator && <ScrollIndicator isDark={isDark} />}
     </div>
   );
 };
 
+// 导出带主题的文档中心组件
 const DocCenterWithTheme = () => (
   <ThemeProvider>
     <DocCenter />
