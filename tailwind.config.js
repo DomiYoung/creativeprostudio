@@ -60,12 +60,18 @@ export default {
         'lg': '24px',
         'xl': '32px',
         '2xl': '48px',
+      },
+      lineHeight: {
+        'normal': '1.5',
+        'relaxed': '1.625',
+        'loose': '2',
       }
     },
   },
-  // 在Tailwind CSS 4中，需要显式配置核心插件
   corePlugins: {
+    preflight: true,
     fontFamily: true,
+    lineHeight: true,
   },
   plugins: [],
 } 

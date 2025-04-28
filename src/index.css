@@ -14,21 +14,21 @@
     /* Apple 设计色彩系统（调整为更柔和的色调） */
     --blue: #94B6D2;
     --indigo: #A9A8D9;
-    --purple: #C9A8D3;
-    --pink: #E3A8B7;
-    --red: #D98E8E;
-    --orange: #E8C3A5;
-    --yellow: #E8D5A5;
-    --green: #A5C9BB;
-    --mint: #A5C9C6;
-    --teal: #A5C3C9;
-    --cyan: #A8C9E3;
-    --gray: #968D87;
-    --gray2: #B5ADA8;
-    --gray3: #C7C0BD;
-    --gray4: #D6D0CC;
-    --gray5: #E6DED9;
-    --gray6: #F5F0EC;
+    --purple: '#C9A8D3';
+    --pink: '#E3A8B7';
+    --red: '#D98E8E';
+    --orange: '#E8C3A5';
+    --yellow: '#E8D5A5';
+    --green: '#A5C9BB';
+    --mint: '#A5C9C6';
+    --teal: '#A5C3C9';
+    --cyan: '#A8C9E3';
+    --gray: '#968D87';
+    --gray2: '#B5ADA8';
+    --gray3: '#C7C0BD';
+    --gray4: '#D6D0CC';
+    --gray5: '#E6DED9';
+    --gray6: '#F5F0EC';
     
     /* 间距 */
     --spacing-xs: 4px;
