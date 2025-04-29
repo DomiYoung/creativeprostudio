@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>后端架构设计 - CreativePro Studio</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary: #F5E1D9;
+            --secondary: #FFB5C5;
+            --accent: #B6E5D8;
+            --text-primary: #1D1D1F;
+            --text-secondary: #86868B;
+            --background: #F9FAFB;
+            --border: #E5E5E7;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+            --radius-sm: 6px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background-color: var(--background);
+            padding: var(--spacing-lg);
+        }
+        
+        .document-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            padding: var(--spacing-xl);
+        }
+        
+        .document-header {
+            margin-bottom: var(--spacing-xl);
+            text-align: center;
+            position: relative;
+        }
+        
+        .document-title {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: var(--spacing-md);
+            color: var(--text-primary);
+        }
+        
+        .document-subtitle {
+            font-size: 16px;
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .metadata {
+            display: flex;
+            justify-content: center;
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+        
+        .metadata-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+        
+        .toc {
+            background-color: rgba(182, 229, 216, 0.2);
+            padding: var(--spacing-lg);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .toc-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: var(--spacing-md);
+            color: var(--text-primary);
+        }
+        
+        .toc-list {
+            list-style-type: none;
+        }
+        
+        .toc-item {
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .toc-link {
+            text-decoration: none;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            transition: all 0.2s;
+        }
+        
+        .toc-link:hover {
+            color: #0066CC;
+        }
+        
+        .section {
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .section-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: var(--spacing-md);
+            color: var(--text-primary);
+            padding-bottom: var(--spacing-sm);
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .subsection {
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .subsection-title {
+            font-size: 20px;
+            font-weight: 500;
+            margin-bottom: var(--spacing-md);
+            color: var(--text-primary);
+        }
+        
+        p {
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .diagram {
+            max-width: 100%;
+            margin: var(--spacing-lg) 0;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+        }
+        
+        .architecture-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: var(--spacing-md);
+            margin: var(--spacing-lg) 0;
+        }
+        
+        .architecture-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-md);
+            transition: all 0.3s;
+        }
+        
+        .architecture-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-3px);
+        }
+        
+        .architecture-icon {
+            font-size: 32px;
+            margin-bottom: var(--spacing-sm);
+            color: #0066CC;
+            text-align: center;
+        }
+        
+        .architecture-name {
+            font-weight: 500;
+            margin-bottom: var(--spacing-sm);
+            text-align: center;
+        }
+        
+        .architecture-description {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        
+        .code-block {
+            background-color: #2A2F38;
+            color: white;
+            padding: var(--spacing-md);
+            border-radius: var(--radius-md);
+            font-family: "SF Mono", SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            overflow-x: auto;
+            margin: var(--spacing-md) 0;
+            font-size: 14px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: var(--spacing-md) 0;
+        }
+        
+        th, td {
+            padding: var(--spacing-sm) var(--spacing-md);
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        th {
+            font-weight: 500;
+            background-color: #F5F5F7;
+        }
+        
+        tr:hover {
+            background-color: #F9F9FB;
+        }
+    </style>
+</head>
+<body>
+    <div class="document-container">
+        <header class="document-header">
+            <h1 class="document-title">后端架构设计</h1>
+            <p class="document-subtitle">CreativePro Studio 后端服务与技术实现</p>
+            <div class="metadata">
+                <div class="metadata-item">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>最后更新：2025-04-27</span>
+                </div>
+                <div class="metadata-item">
+                    <i class="fas fa-user"></i>
+                    <span>作者：后端开发团队</span>
+                </div>
+                <div class="metadata-item">
+                    <i class="fas fa-code-branch"></i>
+                    <span>版本：1.0.0</span>
+                </div>
+            </div>
+        </header>
+        
+        <nav class="toc">
+            <h2 class="toc-title">目录</h2>
+            <ul class="toc-list">
+                <li class="toc-item">
+                    <a href="#overview" class="toc-link">
+                        <i class="fas fa-sitemap"></i>
+                        <span>1. 总体架构</span>
+                    </a>
+                </li>
+                <li class="toc-item">
+                    <a href="#microservices" class="toc-link">
+                        <i class="fas fa-cubes"></i>
+                        <span>2. 微服务架构</span>
+                    </a>
+                </li>
+                <li class="toc-item">
+                    <a href="#data" class="toc-link">
+                        <i class="fas fa-database"></i>
+                        <span>3. 数据流与存储</span>
+                    </a>
+                </li>
+                <li class="toc-item">
+                    <a href="#security" class="toc-link">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>4. 安全架构</span>
+                    </a>
+                </li>
+                <li class="toc-item">
+                    <a href="#deployment" class="toc-link">
+                        <i class="fas fa-rocket"></i>
+                        <span>5. 部署与运维</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        
+        <section id="overview" class="section">
+            <h2 class="section-title">1. 总体架构</h2>
+            <p>CreativePro Studio 后端采用基于云原生的微服务架构，具有高可扩展性、高可用性和高弹性。系统架构如下图所示：</p>
+            
+            <img src="https://via.placeholder.com/900x500" alt="后端总体架构图" class="diagram">
+            
+            <p>核心架构特点：</p>
+            <ul>
+                <li><strong>微服务</strong>：基于领域驱动设计的服务拆分，每个服务专注于特定业务能力</li>
+                <li><strong>API网关</strong>：统一的API入口，负责路由、限流、认证等横切关注点</li>
+                <li><strong>消息驱动</strong>：事件驱动架构，提高系统的解耦性和可扩展性</li>
+                <li><strong>数据分区</strong>：基于业务边界的数据隔离，各服务拥有独立数据存储</li>
+                <li><strong>容器化</strong>：所有服务采用容器部署，便于管理和扩缩容</li>
+                <li><strong>弹性设计</strong>：内置熔断、限流、重试等弹性机制</li>
+                <li><strong>可观测性</strong>：完整的日志、监控、追踪能力</li>
+            </ul>
+        </section>
+        
+        <section id="microservices" class="section">
+            <h2 class="section-title">2. 微服务架构</h2>
+            
+            <div class="subsection">
+                <h3 class="subsection-title">2.1 服务划分</h3>
+                <p>系统按照业务能力和领域模型划分为以下微服务：</p>
+                
+                <div class="architecture-grid">
+                    <div class="architecture-card">
+                        <div class="architecture-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="architecture-name">用户服务</div>
+                        <div class="architecture-description">
+                            负责用户账户管理、认证、授权、个人设置等用户相关功能。集成SSO单点登录，支持多种认证方式。
+                        </div>
+                    </div>
+                    
+                    <div class="architecture-card">
+                        <div class="architecture-icon">
+                            <i class="fas fa-project-diagram"></i>
+                        </div>
+                        <div class="architecture-name">项目服务</div>
+                        <div class="architecture-description">
+                            管理设计项目的创建、更新、删除，以及项目元数据、版本控制和协作机制。
+                        </div>
+                    </div>
+                    
+                    <div class="architecture-card">
+                        <div class="architecture-icon">
+                            <i class="fas fa-layer-group"></i>
+                        </div>
+                        <div class="architecture-name">模板服务</div>
+                        <div class="architecture-description">
+                            负责母版模板的管理、复用和版本控制，支持模板层级关系和权限控制。
+                        </div>
+                    </div>
+                    
+                    <div class="architecture-card">
+                        <div class="architecture-icon">
+                            <i class="fas fa-images"></i>
+                        </div>
+                        <div class="architecture-name">素材服务</div>
+                        <div class="architecture-description">
+                            管理设计素材的上传、存储、检索、分类和处理，支持多种素材类型和格式转换。
+                        </div>
+                    </div>
+                    
+                    <div class="architecture-card">
+                        <div class="architecture-icon">
+                            <i class="fas fa-tasks"></i>
+                        </div>
+                        <div class="architecture-name">批处理服务</div>
+                        <div class="architecture-description">
+                            负责批量设计任务的调度、执行和状态管理，支持大规模并行处理。
+                        </div>
+                    </div>
+                    
+                    <div class="architecture-card">
+                        <div class="architecture-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <div class="architecture-name">AI服务</div>
+                        <div class="architecture-description">
+                            提供智能图像处理、内容生成、设计建议等AI功能，集成第三方AI服务。
+                        </div>
+                    </div>
+                    
+                    <div class="architecture-card">
+                        <div class="architecture-icon">
+                            <i class="fas fa-bell"></i>
+                        </div>
+                        <div class="architecture-name">通知服务</div>
+                        <div class="architecture-description">
+                            处理系统内的消息通知、实时提醒和事件分发，支持多种通知渠道。
+                        </div>
+                    </div>
+                    
+                    <div class="architecture-card">
+                        <div class="architecture-icon">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <div class="architecture-name">搜索服务</div>
+                        <div class="architecture-description">
+                            提供全文检索、向量搜索等高级搜索能力，支持多维度和跨领域搜索。
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="subsection">
+                <h3 class="subsection-title">2.2 服务通信</h3>
+                <p>服务间通信采用以下模式：</p>
+                <ul>
+                    <li><strong>同步通信</strong>：基于REST或gRPC的直接服务调用</li>
+                    <li><strong>异步通信</strong>：基于消息队列的事件驱动模式</li>
+                    <li><strong>流式通信</strong>：基于WebSocket的实时数据传输</li>
+                </ul>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>通信模式</th>
+                            <th>适用场景</th>
+                            <th>技术实现</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>同步RPC</td>
+                            <td>需要即时响应的交互</td>
+                            <td>RESTful API, gRPC</td>
+                        </tr>
+                        <tr>
+                            <td>异步消息</td>
+                            <td>非即时响应、解耦场景</td>
+                            <td>Kafka, RabbitMQ</td>
+                        </tr>
+                        <tr>
+                            <td>发布/订阅</td>
+                            <td>一对多事件通知</td>
+                            <td>Kafka Topics</td>
+                        </tr>
+                        <tr>
+                            <td>API聚合</td>
+                            <td>客户端接口优化</td>
+                            <td>API Gateway, GraphQL</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        
+        <section id="data" class="section">
+            <h2 class="section-title">3. 数据流与存储</h2>
+            
+            <div class="subsection">
+                <h3 class="subsection-title">3.1 数据存储策略</h3>
+                <p>系统采用多模式数据存储策略，根据数据特性选择最合适的存储方案：</p>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>数据类型</th>
+                            <th>存储方案</th>
+                            <th>适用服务</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>结构化业务数据</td>
+                            <td>PostgreSQL</td>
+                            <td>用户服务、项目服务</td>
+                        </tr>
+                        <tr>
+                            <td>大规模媒体文件</td>
+                            <td>对象存储 (S3)</td>
+                            <td>素材服务</td>
+                        </tr>
+                        <tr>
+                            <td>全文检索数据</td>
+                            <td>Elasticsearch</td>
+                            <td>搜索服务</td>
+                        </tr>
+                        <tr>
+                            <td>缓存数据</td>
+                            <td>Redis</td>
+                            <td>全局服务</td>
+                        </tr>
+                        <tr>
+                            <td>时序数据</td>
+                            <td>InfluxDB</td>
+                            <td>监控服务</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="subsection">
+                <h3 class="subsection-title">3.2 数据流处理</h3>
+                <p>系统内的数据流处理架构如下：</p>
+                <img src="https://via.placeholder.com/800x400" alt="数据流处理架构图" class="diagram">
+                
+                <p>主要数据流包括：</p>
+                <ul>
+                    <li><strong>素材处理流</strong>：素材上传→格式检查→预处理→元数据提取→存储</li>
+                    <li><strong>批量设计流</strong>：模板选择→变量配置→批量渲染→质量检查→导出</li>
+                    <li><strong>协作编辑流</strong>：变更捕获→冲突检测→合并→分发→持久化</li>
+                </ul>
+            </div>
+        </section>
+        
+        <section id="security" class="section">
+            <h2 class="section-title">4. 安全架构</h2>
+            
+            <div class="subsection">
+                <h3 class="subsection-title">4.1 认证与授权</h3>
+                <p>系统采用多级安全防护机制：</p>
+                <ul>
+                    <li><strong>身份认证</strong>：基于OAuth 2.0/OpenID Connect的认证机制</li>
+                    <li><strong>令牌管理</strong>：JWT令牌，包含身份和权限信息</li>
+                    <li><strong>权限控制</strong>：基于RBAC（角色基础访问控制）模型</li>
+                    <li><strong>API保护</strong>：API网关层的请求验证和限流</li>
+                </ul>
+            </div>
+            
+            <div class="subsection">
+                <h3 class="subsection-title">4.2 数据安全</h3>
+                <p>数据安全保障措施：</p>
+                <ul>
+                    <li><strong>传输加密</strong>：全链路TLS加密</li>
+                    <li><strong>存储加密</strong>：敏感数据加密存储</li>
+                    <li><strong>数据分类</strong>：按安全等级分类存储和处理</li>
+                    <li><strong>访问审计</strong>：所有数据访问操作记录和审计</li>
+                </ul>
+            </div>
+        </section>
+        
+        <section id="deployment" class="section">
+            <h2 class="section-title">5. 部署与运维</h2>
+            
+            <div class="subsection">
+                <h3 class="subsection-title">5.1 容器化部署</h3>
+                <p>所有服务采用Docker容器化，通过Kubernetes进行编排和管理：</p>
+                <div class="code-block">
+<pre># 服务部署示例 (deployment.yaml)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: template-service
+  namespace: creativepro
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: template-service
+  template:
+    metadata:
+      labels:
+        app: template-service
+    spec:
+      containers:
+      - name: template-service
+        image: registry.creativepro.studio/template-service:v1.2.3
+        ports:
+        - containerPort: 8080
+        resources:
+          limits:
+            cpu: "1"
+            memory: "1Gi"
+          requests:
+            cpu: "500m"
+            memory: "512Mi"
+        livenessProbe:
+          httpGet:
+            path: /actuator/health/liveness
+            port: 8080
+          initialDelaySeconds: 60
+        readinessProbe:
+          httpGet:
+            path: /actuator/health/readiness
+            port: 8080
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: "production"
+        - name: KAFKA_BOOTSTRAP_SERVERS
+          valueFrom:
+            configMapKeyRef:
+              name: kafka-config
+              key: bootstrap-servers</pre>
+                </div>
+            </div>
+            
+            <div class="subsection">
+                <h3 class="subsection-title">5.2 可观测性</h3>
+                <p>系统内置全面的可观测性机制：</p>
+                <ul>
+                    <li><strong>日志收集</strong>：集中式日志收集和分析（ELK stack）</li>
+                    <li><strong>监控指标</strong>：Prometheus+Grafana监控生产指标</li>
+                    <li><strong>分布式追踪</strong>：Jaeger/Zipkin追踪服务调用链路</li>
+                    <li><strong>告警系统</strong>：基于阈值和异常模式的自动告警</li>
+                </ul>
+            </div>
+            
+            <div class="subsection">
+                <h3 class="subsection-title">5.3 持续集成与部署</h3>
+                <p>基于GitOps的CI/CD流程：</p>
+                <img src="https://via.placeholder.com/800x300" alt="CI/CD流程图" class="diagram">
+                <ul>
+                    <li><strong>自动化构建</strong>：代码提交触发自动构建流程</li>
+                    <li><strong>自动化测试</strong>：单元测试、集成测试、端到端测试</li>
+                    <li><strong>自动化部署</strong>：经过测试的代码自动部署到环境</li>
+                    <li><strong>蓝绿部署</strong>：无停机更新生产环境</li>
+                </ul>
+            </div>
+        </section>
+    </div>
+</body>
+</html> 

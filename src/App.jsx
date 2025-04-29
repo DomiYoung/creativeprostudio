@@ -27,6 +27,7 @@ import ProductConcept from './components/ProductConcept';
 import LifecycleFlow from './components/LifecycleFlow';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
+import { ThemeProvider } from './design-system';
 
 // 创建Chakra UI主题
 const theme = extendTheme({
@@ -500,25 +501,28 @@ function App() {
     <ChakraProvider theme={theme} resetCSS={false}>
       <Router>
         <div className="app">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/doccenter" element={<DocCenter />} />
-            <Route path="/database-design" element={<DatabaseDesign />} />
-            <Route path="/api-specification" element={<ApiSpecification />} />
-            <Route path="/ui-guidelines" element={<UiGuidelines />} />
-            <Route path="/interaction-guidelines" element={<InteractionGuidelines />} />
-            <Route path="/project-report" element={<ProjectReport />} />
-            <Route path="/project-blueprint" element={<ProjectBlueprint />} />
-            <Route path="/frontend-design" element={<FrontendGuide />} />
-            <Route path="/backend-design" element={<BackendDesign />} />
-            <Route path="/master-library" element={<MasterLibrary />} />
-            <Route path="/batch-center" element={<BatchCenter />} />
-            <Route path="/batch-detail" element={<BatchDetail />} />
-            <Route path="/home-page" element={<PrototypeDesign />} />
-            <Route path="/product-concept" element={<ProductConcept />} />
-            <Route path="/lifecycle-flow" element={<LifecycleFlow />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          {/* Wrap all routes with the ThemeProvider */}
+          <ThemeProvider>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/doccenter" element={<DocCenter />} />
+              <Route path="/database-design" element={<DatabaseDesign />} />
+              <Route path="/api-specification" element={<ApiSpecification />} />
+              <Route path="/ui-guidelines" element={<UiGuidelines />} />
+              <Route path="/interaction-guidelines" element={<InteractionGuidelines />} />
+              <Route path="/project-report" element={<ProjectReport />} />
+              <Route path="/project-blueprint" element={<ProjectBlueprint />} />
+              <Route path="/frontend-design" element={<FrontendGuide />} />
+              <Route path="/backend-design" element={<BackendDesign />} />
+              <Route path="/master-library" element={<MasterLibrary />} />
+              <Route path="/batch-center" element={<BatchCenter />} />
+              <Route path="/batch-detail" element={<BatchDetail />} />
+              <Route path="/home-page" element={<PrototypeDesign />} />
+              <Route path="/product-concept" element={<ProductConcept />} />
+              <Route path="/lifecycle-flow" element={<LifecycleFlow />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </ThemeProvider>
         </div>
       </Router>
     </ChakraProvider>

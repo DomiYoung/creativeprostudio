@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>前端架构设计 - CreativePro Studio</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary: #F5E1D9;
+            --secondary: #FFB5C5;
+            --accent: #B6E5D8;
+            --text-primary: #1D1D1F;
+            --text-secondary: #86868B;
+            --background: #F9FAFB;
+            --border: #E5E5E7;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+            --radius-sm: 6px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background-color: var(--background);
+            padding: var(--spacing-lg);
+        }
+        
+        .document-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            padding: var(--spacing-xl);
+        }
+        
+        .document-header {
+            margin-bottom: var(--spacing-xl);
+            text-align: center;
+            position: relative;
+        }
+        
+        .document-title {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: var(--spacing-md);
+            color: var(--text-primary);
+        }
+        
+        .document-subtitle {
+            font-size: 16px;
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .metadata {
+            display: flex;
+            justify-content: center;
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+        
+        .metadata-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+        
+        .toc {
+            background-color: rgba(245, 225, 217, 0.2);
+            padding: var(--spacing-lg);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .toc-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: var(--spacing-md);
+            color: var(--text-primary);
+        }
+        
+        .toc-list {
+            list-style-type: none;
+        }
+        
+        .toc-item {
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .toc-link {
+            text-decoration: none;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            transition: all 0.2s;
+        }
+        
+        .toc-link:hover {
+            color: #0066CC;
+        }
+        
+        .section {
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .section-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: var(--spacing-md);
+            color: var(--text-primary);
+            padding-bottom: var(--spacing-sm);
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .subsection {
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .subsection-title {
+            font-size: 20px;
+            font-weight: 500;
+            margin-bottom: var(--spacing-md);
+            color: var(--text-primary);
+        }
+        
+        p {
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .technology-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: var(--spacing-md);
+            margin: var(--spacing-lg) 0;
+        }
+        
+        .technology-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-md);
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .technology-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-3px);
+        }
+        
+        .technology-icon {
+            font-size: 32px;
+            margin-bottom: var(--spacing-sm);
+            color: #0066CC;
+        }
+        
+        .technology-name {
+            font-weight: 500;
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .technology-description {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        
+        .component-example {
+            background-color: #F5F5F7;
+            border-radius: var(--radius-md);
+            padding: var(--spacing-lg);
+            margin: var(--spacing-lg) 0;
+        }
+        
+        .code-block {
+            background-color: #2A2F38;
+            color: white;
+            padding: var(--spacing-md);
+            border-radius: var(--radius-md);
+            font-family: "SF Mono", SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            overflow-x: auto;
+            margin: var(--spacing-md) 0;
+        }
+        
+        .diagram {
+            max-width: 100%;
+            margin: var(--spacing-lg) 0;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+        }
+    </style>
+</head>
+<body>
+    <div class="document-container">
+        <header class="document-header">
+            <h1 class="document-title">前端架构设计</h1>
+            <p class="document-subtitle">CreativePro Studio 前端组件库与实现文档</p>
+            <div class="metadata">
+                <div class="metadata-item">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>最后更新：2025-04-27</span>
+                </div>
+                <div class="metadata-item">
+                    <i class="fas fa-user"></i>
+                    <span>作者：前端开发团队</span>
+                </div>
+                <div class="metadata-item">
+                    <i class="fas fa-code-branch"></i>
+                    <span>版本：1.0.0</span>
+                </div>
+            </div>
+        </header>
+        
+        <nav class="toc">
+            <h2 class="toc-title">目录</h2>
+            <ul class="toc-list">
+                <li class="toc-item">
+                    <a href="#overview" class="toc-link">
+                        <i class="fas fa-sitemap"></i>
+                        <span>1. 架构概述</span>
+                    </a>
+                </li>
+                <li class="toc-item">
+                    <a href="#technologies" class="toc-link">
+                        <i class="fas fa-laptop-code"></i>
+                        <span>2. 技术栈选型</span>
+                    </a>
+                </li>
+                <li class="toc-item">
+                    <a href="#components" class="toc-link">
+                        <i class="fas fa-cubes"></i>
+                        <span>3. 组件库设计</span>
+                    </a>
+                </li>
+                <li class="toc-item">
+                    <a href="#state" class="toc-link">
+                        <i class="fas fa-database"></i>
+                        <span>4. 状态管理策略</span>
+                    </a>
+                </li>
+                <li class="toc-item">
+                    <a href="#performance" class="toc-link">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>5. 性能优化方案</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        
+        <section id="overview" class="section">
+            <h2 class="section-title">1. 架构概述</h2>
+            <p>CreativePro Studio 前端架构采用组件化、模块化设计，以 React 生态系统为核心，构建高性能、可扩展的用户界面。架构设计遵循以下核心原则：</p>
+            <ul>
+                <li>组件化：将UI拆分为独立、可复用的组件</li>
+                <li>分层架构：清晰的关注点分离，职责明确</li>
+                <li>状态管理：集中式状态管理，提高可维护性</li>
+                <li>响应式：适应不同设备和屏幕尺寸</li>
+                <li>性能优化：代码分割、懒加载等技术提升性能</li>
+            </ul>
+            <img src="https://via.placeholder.com/800x400" alt="前端架构图" class="diagram">
+        </section>
+        
+        <section id="technologies" class="section">
+            <h2 class="section-title">2. 技术栈选型</h2>
+            <p>根据项目需求与特点，我们精心选择了以下技术栈：</p>
+            
+            <div class="technology-grid">
+                <div class="technology-card">
+                    <div class="technology-icon">
+                        <i class="fab fa-react"></i>
+                    </div>
+                    <div class="technology-name">React</div>
+                    <div class="technology-description">用于构建用户界面的 JavaScript 库</div>
+                </div>
+                
+                <div class="technology-card">
+                    <div class="technology-icon">
+                        <i class="fas fa-road"></i>
+                    </div>
+                    <div class="technology-name">React Router</div>
+                    <div class="technology-description">React 应用程序的声明式路由</div>
+                </div>
+                
+                <div class="technology-card">
+                    <div class="technology-icon">
+                        <i class="fas fa-atom"></i>
+                    </div>
+                    <div class="technology-name">Emotion</div>
+                    <div class="technology-description">CSS-in-JS 解决方案</div>
+                </div>
+                
+                <div class="technology-card">
+                    <div class="technology-icon">
+                        <i class="fas fa-wind"></i>
+                    </div>
+                    <div class="technology-name">Framer Motion</div>
+                    <div class="technology-description">React 动画库</div>
+                </div>
+                
+                <div class="technology-card">
+                    <div class="technology-icon">
+                        <i class="fas fa-box"></i>
+                    </div>
+                    <div class="technology-name">Vite</div>
+                    <div class="technology-description">现代前端构建工具</div>
+                </div>
+                
+                <div class="technology-card">
+                    <div class="technology-icon">
+                        <i class="fas fa-vial"></i>
+                    </div>
+                    <div class="technology-name">Vitest</div>
+                    <div class="technology-description">Vite 驱动的单元测试框架</div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="components" class="section">
+            <h2 class="section-title">3. 组件库设计</h2>
+            
+            <div class="subsection">
+                <h3 class="subsection-title">3.1 组件分类</h3>
+                <p>我们的组件库采用原子设计系统，将组件分为以下几类：</p>
+                <ul>
+                    <li><strong>原子组件</strong>：最基本的UI元素，如按钮、输入框、图标等</li>
+                    <li><strong>分子组件</strong>：由多个原子组件组合而成，如表单控件、卡片等</li>
+                    <li><strong>有机体组件</strong>：功能完整的UI部分，如导航栏、模态框等</li>
+                    <li><strong>模板组件</strong>：页面级组件布局</li>
+                    <li><strong>页面组件</strong>：完整的页面实现</li>
+                </ul>
+            </div>
+            
+            <div class="subsection">
+                <h3 class="subsection-title">3.2 组件示例</h3>
+                <div class="component-example">
+                    <h4>Button 组件</h4>
+                    <p>多功能按钮组件，支持多种变体和状态。</p>
+                    <div class="code-block">
+<pre>// Button.jsx
+import React from 'react';
+import styled from '@emotion/styled';
+import { colors, spacing, radii } from '../tokens';
+
+const StyledButton = styled.button`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: ${props => props.size === 'sm' ? spacing.space[2] : spacing.space[3]} ${props => props.size === 'sm' ? spacing.space[3] : spacing.space[4]};
+  border-radius: ${radii.md};
+  font-weight: 500;
+  transition: all 0.2s;
+  cursor: pointer;
+  
+  ${props => getVariantStyles(props)}
+`;
+
+const Button = ({ 
+  children, 
+  variant = 'primary', 
+  size = 'md', 
+  disabled = false,
+  ...props 
+}) => {
+  return (
+    <StyledButton
+      variant={variant}
+      size={size}
+      disabled={disabled}
+      {...props}
+    >
+      {children}
+    </StyledButton>
+  );
+};
+
+export default Button;</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="state" class="section">
+            <h2 class="section-title">4. 状态管理策略</h2>
+            <p>CreativePro Studio 采用分层状态管理策略，根据状态的作用范围选择不同的管理方式：</p>
+            
+            <div class="subsection">
+                <h3 class="subsection-title">4.1 组件内部状态</h3>
+                <p>使用 React 的 useState 和 useReducer 钩子管理组件内部状态。</p>
+            </div>
+            
+            <div class="subsection">
+                <h3 class="subsection-title">4.2 跨组件共享状态</h3>
+                <p>使用 React Context API 和 自定义钩子，实现特定功能域内的状态共享。</p>
+            </div>
+            
+            <div class="subsection">
+                <h3 class="subsection-title">4.3 全局应用状态</h3>
+                <p>使用状态管理库管理复杂的全局状态，包括：</p>
+                <ul>
+                    <li>用户认证状态</li>
+                    <li>主题配置</li>
+                    <li>全局通知系统</li>
+                    <li>系统配置</li>
+                </ul>
+            </div>
+        </section>
+        
+        <section id="performance" class="section">
+            <h2 class="section-title">5. 性能优化方案</h2>
+            
+            <div class="subsection">
+                <h3 class="subsection-title">5.1 代码分割</h3>
+                <p>使用 React.lazy 和 Suspense 实现组件懒加载，减小初始加载体积。</p>
+            </div>
+            
+            <div class="subsection">
+                <h3 class="subsection-title">5.2 虚拟化长列表</h3>
+                <p>使用虚拟化技术高效渲染长列表，减少DOM节点数量。</p>
+            </div>
+            
+            <div class="subsection">
+                <h3 class="subsection-title">5.3 资源优化</h3>
+                <p>图片懒加载、资源压缩、CDN加速等措施提升加载速度。</p>
+            </div>
+            
+            <div class="subsection">
+                <h3 class="subsection-title">5.4 缓存策略</h3>
+                <p>实现数据缓存和请求优化，减少不必要的网络请求。</p>
+            </div>
+        </section>
+    </div>
+</body>
+</html> 
