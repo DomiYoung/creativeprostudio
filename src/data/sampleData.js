@@ -1,11 +1,11 @@
 // 示例数据，用于演示设计系统组件
 export const navigationItems = [
-  { label: '首页', href: '#home' },
-  { label: '前端概设', href: '#frontend-design' },
-  { label: '后端概设', href: '#backend-design' },
-  { label: '详细设计', href: '#detailed-design' },
-  { label: 'UX设计', href: '#ux-design' },
-  { label: '项目蓝图', href: '#project-blueprint' }
+  { label: '首页', href: '/' },
+  { label: '前端概设', href: '/frontend-design' },
+  { label: '后端概设', href: '/backend-design' },
+  { label: '详细设计', href: '/detailed-design' },
+  { label: 'UX设计', href: '/ui-guidelines' },
+  { label: '项目蓝图', href: '/project-blueprint' }
 ];
 
 export const cardExamples = [

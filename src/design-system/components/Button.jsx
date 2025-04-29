@@ -1,133 +1,156 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import { colors } from '../tokens/colors';
-import { typography } from '../tokens/typography';
-import { spacing } from '../tokens/spacing';
+import { motion } from 'framer-motion';
+import colors from '../tokens/colors';
+import spacing from '../tokens/spacing';
+import typography from '../tokens/typography';
 
-// 按钮变体样式映射
-const buttonVariants = {
-  // 主要按钮 - 蓝色背景白色文字
-  primary: {
-    background: colors.brand.primary,
-    color: colors.neutral.white,
-    border: 'none',
-    hover: {
-      background: '#0071EB', // 稍深的蓝色
-    },
-    active: {
-      background: '#0062CC', // 更深的蓝色
-    },
-  },
-  
-  // 次要按钮 - 透明背景蓝色边框和文字
-  secondary: {
-    background: 'transparent',
-    color: colors.brand.primary,
-    border: `1px solid ${colors.brand.primary}`,
-    hover: {
-      background: 'rgba(0, 122, 255, 0.05)',
-    },
-    active: {
-      background: 'rgba(0, 122, 255, 0.1)',
-    },
-  },
-  
-  // 文本按钮 - 无背景无边框蓝色文字
-  text: {
-    background: 'transparent',
-    color: colors.brand.primary,
-    border: 'none',
-    hover: {
-      background: 'rgba(0, 122, 255, 0.05)',
-    },
-    active: {
-      background: 'rgba(0, 122, 255, 0.1)',
-    },
-  },
-};
-
-// 按钮尺寸映射
-const buttonSizes = {
-  small: {
-    padding: `${spacing.space[1]} ${spacing.space[3]}`,
-    fontSize: typography.fontSize.sm,
-    borderRadius: spacing.borderRadius.md,
-  },
-  medium: {
-    padding: `${spacing.space[2]} ${spacing.space[4]}`,
-    fontSize: typography.fontSize.base,
-    borderRadius: spacing.borderRadius.md,
-  },
-  large: {
-    padding: `${spacing.space[3]} ${spacing.space[6]}`,
-    fontSize: typography.fontSize.lg,
-    borderRadius: spacing.borderRadius.lg,
-  },
-};
-
-// 样式化按钮组件
-const StyledButton = styled.button`
-  font-family: ${typography.fontFamily.base};
-  font-weight: ${typography.fontWeight.medium};
+// 基础按钮组件 - 按照Apple设计风格
+const StyledButton = styled(motion.button)`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: ${spacing.space[2]};
+  gap: 8px;
+  border-radius: ${props => props.pill ? spacing.borderRadius.pill : spacing.borderRadius.md};
+  font-family: ${typography.fontFamily.base};
+  font-weight: ${typography.fontWeight.semibold};
+  font-size: ${props => typography.fontSize[props.size === 'lg' ? 'body' : props.size === 'sm' ? 'footnote' : 'subhead']};
   transition: all 0.2s ease;
   cursor: pointer;
-  white-space: nowrap;
-  outline: none;
+  padding: ${props => 
+    props.size === 'lg' ? '12px 24px' : 
+    props.size === 'sm' ? '6px 16px' : 
+    '8px 20px'};
+  width: ${props => props.fullWidth ? '100%' : 'auto'};
   
-  /* 应用变体样式 */
-  background: ${props => buttonVariants[props.variant].background};
-  color: ${props => buttonVariants[props.variant].color};
-  border: ${props => buttonVariants[props.variant].border};
-  
-  /* 应用尺寸样式 */
-  padding: ${props => buttonSizes[props.size].padding};
-  font-size: ${props => buttonSizes[props.size].fontSize};
-  border-radius: ${props => buttonSizes[props.size].borderRadius};
+  /* 根据变体设置样式 */
+  ${props => {
+    const isDark = props.theme?.colorMode === 'dark';
+    
+    switch(props.variant) {
+      case 'primary':
+        return `
+          background-color: ${isDark ? colors.primary.dark : colors.primary.light};
+          color: white;
+          border: none;
+          
+          &:hover {
+            background-color: ${isDark ? '#097CEC' : '#0071EB'};
+          }
+          
+          &:active {
+            background-color: ${isDark ? '#0868C6' : '#0062CC'};
+          }
+        `;
+      
+      case 'secondary':
+        return `
+          background-color: ${isDark ? colors.gray[800] : colors.gray[100]};
+          color: ${isDark ? colors.gray[100] : colors.gray[900]};
+          border: none;
+          
+          &:hover {
+            background-color: ${isDark ? colors.gray[700] : colors.gray[200]};
+          }
+          
+          &:active {
+            background-color: ${isDark ? colors.gray[600] : colors.gray[300]};
+          }
+        `;
+      
+      case 'outline':
+        return `
+          background-color: transparent;
+          color: ${isDark ? colors.primary.dark : colors.primary.light};
+          border: 1px solid ${isDark ? colors.primary.dark : colors.primary.light};
+          
+          &:hover {
+            background-color: ${isDark ? 'rgba(10, 132, 255, 0.1)' : 'rgba(0, 122, 255, 0.1)'};
+          }
+          
+          &:active {
+            background-color: ${isDark ? 'rgba(10, 132, 255, 0.2)' : 'rgba(0, 122, 255, 0.2)'};
+          }
+        `;
+        
+      case 'ghost':
+        return `
+          background-color: transparent;
+          color: ${isDark ? colors.gray[100] : colors.gray[900]};
+          border: none;
+          
+          &:hover {
+            background-color: ${isDark ? colors.gray[800] : colors.gray[100]};
+          }
+          
+          &:active {
+            background-color: ${isDark ? colors.gray[700] : colors.gray[200]};
+          }
+        `;
+        
+      case 'destructive':
+        return `
+          background-color: ${colors.semantic.error};
+          color: white;
+          border: none;
+          
+          &:hover {
+            background-color: #E02F25;
+          }
+          
+          &:active {
+            background-color: #C0271F;
+          }
+        `;
+      
+      default:
+        return '';
+    }
+  }}
   
   /* 禁用状态 */
-  opacity: ${props => (props.disabled ? 0.5 : 1)};
-  cursor: ${props => (props.disabled ? 'not-allowed' : 'pointer')};
-  
-  /* 悬停状态 */
-  &:hover:not(:disabled) {
-    background: ${props => buttonVariants[props.variant].hover.background};
-  }
-  
-  /* 激活状态 */
-  &:active:not(:disabled) {
-    background: ${props => buttonVariants[props.variant].active.background};
-    transform: translateY(1px);
-  }
-  
-  /* 聚焦状态 */
-  &:focus-visible {
-    box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.3);
-  }
+  ${props => props.disabled && `
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+  `}
 `;
 
-const Button = ({
-  variant = 'primary',
-  size = 'medium',
+// Button组件
+const Button = React.forwardRef(({
   children,
-  icon,
+  variant = 'primary',
+  size = 'md',
+  fullWidth = false,
   disabled = false,
+  pill = false,
+  leftIcon,
+  rightIcon,
+  onClick,
+  type = "button",
   ...props
-}) => {
+}, ref) => {
   return (
     <StyledButton
+      ref={ref}
+      as={motion.button}
+      type={type}
       variant={variant}
       size={size}
+      fullWidth={fullWidth}
       disabled={disabled}
+      pill={pill}
+      onClick={disabled ? undefined : onClick}
+      whileTap={!disabled ? { scale: 0.97 } : undefined}
       {...props}
     >
-      {icon && <span className="button-icon">{icon}</span>}
+      {leftIcon && <span>{leftIcon}</span>}
       {children}
+      {rightIcon && <span>{rightIcon}</span>}
     </StyledButton>
   );
-};
+});
+
+Button.displayName = "Button";
 
 export default Button; 

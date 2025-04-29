@@ -1,104 +1,165 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import { colors } from '../tokens/colors';
-import { spacing } from '../tokens/spacing';
-import { typography } from '../tokens/typography';
+import { motion } from 'framer-motion';
+import colors from '../tokens/colors';
+import spacing from '../tokens/spacing';
+import typography from '../tokens/typography';
 
-// 卡片容器
-const CardContainer = styled.div`
-  background-color: ${colors.background.primary};
-  border-radius: ${props => props.rounded ? spacing.borderRadius.lg : spacing.borderRadius.md};
-  box-shadow: ${props => props.elevated ? spacing.shadows.md : 'none'};
-  border: ${props => props.bordered ? `1px solid ${colors.neutral.gray10}` : 'none'};
+// 基础卡片容器 - 符合Apple设计风格
+const CardContainer = styled(motion.div)`
+  background-color: ${props => {
+    const isDark = props.theme?.colorMode === 'dark';
+    switch (props.variant) {
+      case 'colored':
+        return isDark ? colors.gray[800] : colors.gray[50];
+      case 'transparent':
+        return 'transparent';
+      default:
+        return isDark ? colors.ui.card.dark : colors.ui.card.light;
+    }
+  }};
+  
+  border-radius: ${props => {
+    switch (props.rounded) {
+      case 'none': return spacing.borderRadius.none;
+      case 'sm': return spacing.borderRadius.xs;
+      case 'md': return spacing.borderRadius.sm;
+      case 'lg': return spacing.borderRadius.md; // iOS标准圆角
+      case 'xl': return spacing.borderRadius.lg;
+      case 'full': return spacing.borderRadius.pill;
+      default: return spacing.borderRadius.md;
+    }
+  }};
+  
+  border: ${props => {
+    const isDark = props.theme?.colorMode === 'dark';
+    return props.bordered 
+      ? `1px solid ${isDark ? colors.ui.border.dark : colors.ui.border.light}` 
+      : 'none';
+  }};
+  
+  box-shadow: ${props => {
+    const isDark = props.theme?.colorMode === 'dark';
+    switch (props.shadow) {
+      case 'none': return 'none';
+      case 'sm': return isDark ? spacing.shadows.dark.sm : spacing.shadows.sm;
+      case 'md': return isDark ? spacing.shadows.dark.md : spacing.shadows.md;
+      case 'lg': return isDark ? spacing.shadows.dark.lg : spacing.shadows.lg;
+      case 'xl': return isDark ? spacing.shadows.dark.xl : spacing.shadows.xl;
+      default: return isDark ? spacing.shadows.dark.md : spacing.shadows.md;
+    }
+  }};
+  
+  padding: ${props => {
+    switch (props.padding) {
+      case 'none': return '0';
+      case 'sm': return spacing.space[3]; // 12px
+      case 'md': return spacing.space[4]; // 16px
+      case 'lg': return spacing.component.card; // 24px
+      case 'xl': return spacing.space[8]; // 32px
+      default: return spacing.component.card;
+    }
+  }};
+  
   overflow: hidden;
   transition: all 0.2s ease;
-  width: ${props => props.fullWidth ? '100%' : 'auto'};
   
-  /* 悬停效果 */
-  &:hover {
-    ${props => props.interactive && `
-      transform: translateY(-2px);
-      box-shadow: ${spacing.shadows.lg};
-    `}
-  }
+  /* 交互样式 */
+  ${props => props.interactive && `
+    cursor: pointer;
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: ${props.theme?.colorMode === 'dark' 
+        ? spacing.shadows.dark.lg 
+        : spacing.shadows.lg};
+    }
+  `}
 `;
 
-// 卡片头部
-const CardHeader = styled.div`
-  padding: ${spacing.space[4]};
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-bottom: ${props => props.divider ? `1px solid ${colors.neutral.gray10}` : 'none'};
-`;
-
-// 卡片标题
-const CardTitle = styled.h3`
-  margin: 0;
+const CardTitle = styled.div`
   font-family: ${typography.fontFamily.display};
   font-weight: ${typography.fontWeight.semibold};
-  font-size: ${typography.fontSize.lg};
-  color: ${colors.neutral.gray1};
+  font-size: ${typography.fontSize.title3};
+  color: ${props => {
+    const isDark = props.theme?.colorMode === 'dark';
+    return isDark ? colors.ui.text.primary.dark : colors.ui.text.primary.light;
+  }};
+  margin-bottom: ${spacing.space[4]};
 `;
 
-// 卡片内容
-const CardContent = styled.div`
-  padding: ${spacing.space[4]};
+const CardBody = styled.div`
+  color: ${props => {
+    const isDark = props.theme?.colorMode === 'dark';
+    return isDark ? colors.ui.text.primary.dark : colors.ui.text.primary.light;
+  }};
 `;
 
-// 卡片底部
 const CardFooter = styled.div`
-  padding: ${spacing.space[4]};
-  display: flex;
-  align-items: center;
-  justify-content: ${props => props.align || 'flex-end'};
-  gap: ${spacing.space[3]};
-  border-top: ${props => props.divider ? `1px solid ${colors.neutral.gray10}` : 'none'};
-  background-color: ${colors.background.secondary};
+  margin-top: ${spacing.space[4]};
+  padding-top: ${spacing.space[4]};
+  border-top: 1px solid ${props => {
+    const isDark = props.theme?.colorMode === 'dark';
+    return isDark ? colors.ui.border.dark : colors.ui.border.light;
+  }};
+  color: ${props => {
+    const isDark = props.theme?.colorMode === 'dark';
+    return isDark ? colors.ui.text.secondary.dark : colors.ui.text.secondary.light;
+  }};
 `;
 
-const Card = ({
+// Card组件
+const Card = React.forwardRef(({
   children,
-  title,
-  extra,
-  footer,
-  footerAlign,
-  bordered = true,
-  elevated = false,
-  rounded = false,
+  variant = 'default',
+  bordered = false,
+  shadow = 'md',
+  rounded = 'lg',
   interactive = false,
-  fullWidth = false,
-  headerDivider = true,
-  footerDivider = true,
-  className,
+  padding = 'md',
+  title,
+  footer,
+  titleClassName,
+  bodyClassName,
+  footerClassName,
+  onClick,
   ...props
-}) => {
+}, ref) => {
+  const isClickable = Boolean(onClick) || interactive;
+  
   return (
-    <CardContainer 
+    <CardContainer
+      ref={ref}
+      as={motion.div}
+      variant={variant}
       bordered={bordered}
-      elevated={elevated}
+      shadow={shadow}
       rounded={rounded}
+      padding={padding}
       interactive={interactive}
-      fullWidth={fullWidth}
-      className={className}
+      onClick={onClick}
+      whileHover={isClickable ? { scale: 1.02 } : undefined}
+      whileTap={isClickable ? { scale: 0.98 } : undefined}
       {...props}
     >
       {title && (
-        <CardHeader divider={headerDivider}>
-          <CardTitle>{title}</CardTitle>
-          {extra && <div>{extra}</div>}
-        </CardHeader>
+        <CardTitle className={titleClassName}>
+          {title}
+        </CardTitle>
       )}
-      <CardContent>
+      
+      <CardBody className={bodyClassName}>
         {children}
-      </CardContent>
+      </CardBody>
+      
       {footer && (
-        <CardFooter divider={footerDivider} align={footerAlign}>
+        <CardFooter className={footerClassName}>
           {footer}
         </CardFooter>
       )}
     </CardContainer>
   );
-};
+});
+
+Card.displayName = "Card";
 
 export default Card; 

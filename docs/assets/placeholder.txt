@@ -1,0 +1,7 @@
+此文件为占位文件，请添加以下图片资源：
+
+1. logo.png - 批处理审核系统标志
+2. preview-dashboard.png - 审核中心界面预览
+3. preview-detail.png - 审核详情界面预览
+
+完成后可删除此文件。 
