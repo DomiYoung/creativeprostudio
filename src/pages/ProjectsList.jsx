@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Card, ThemeProvider, useTheme } from '../design-system';
+import { Card, useTheme } from '../design-system';
 import { useNavigate } from 'react-router-dom';
 
 const ProjectCard = ({ title, description, date, status, onClick }) => {
@@ -252,10 +252,4 @@ const ProjectsList = () => {
   );
 };
 
-const ProjectsListWithTheme = () => (
-  <ThemeProvider>
-    <ProjectsList />
-  </ThemeProvider>
-);
-
-export default ProjectsListWithTheme; 
+export default ProjectsList; 

@@ -609,11 +609,5 @@ const DocCenter = () => {
   );
 };
 
-// 导出带主题的文档中心组件
-const DocCenterWithTheme = () => (
-  <ThemeProvider>
-    <DocCenter />
-  </ThemeProvider>
-);
-
-export default DocCenterWithTheme; 
+// 移除嵌套ThemeProvider
+export default DocCenter; 

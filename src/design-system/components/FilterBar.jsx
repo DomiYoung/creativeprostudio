@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from '@emotion/styled';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../index';
 
 // 筛选栏容器
@@ -112,6 +112,86 @@ const FilterButton = styled.button`
   }
 `;
 
+// 筛选组下拉触发器
+const FilterGroupButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  font-size: 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background-color: ${props => props.isDark 
+    ? props.hasActive ? 'rgba(255, 145, 144, 0.2)' : 'rgba(255, 255, 255, 0.05)' 
+    : props.hasActive ? 'rgba(255, 145, 144, 0.1)' : '#F6F6F6'};
+  color: ${props => props.hasActive 
+    ? '#FF9190' 
+    : props.isDark ? '#aaa' : '#666'};
+  border: 1px solid ${props => props.hasActive 
+    ? 'rgba(255, 145, 144, 0.3)' 
+    : 'transparent'};
+  font-weight: ${props => props.hasActive ? '600' : '500'};
+  min-width: 120px;
+  
+  &:hover {
+    background-color: ${props => props.isDark 
+      ? props.hasActive ? 'rgba(255, 145, 144, 0.25)' : 'rgba(255, 255, 255, 0.1)' 
+      : props.hasActive ? 'rgba(255, 145, 144, 0.15)' : 'rgba(0, 0, 0, 0.05)'};
+  }
+  
+  i.dropdown-icon {
+    margin-left: 8px;
+    transition: transform 0.2s;
+    ${props => props.isOpen && 'transform: rotate(180deg);'}
+  }
+`;
+
+// 筛选组下拉菜单
+const FilterDropdown = styled(motion.div)`
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 100;
+  background-color: ${props => props.isDark ? '#1a1a1a' : 'white'};
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, ${props => props.isDark ? '0.4' : '0.15'});
+  min-width: 200px;
+  padding: 8px;
+  margin-top: 4px;
+  border: 1px solid ${props => props.isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)'};
+`;
+
+const FilterDropdownItem = styled.div`
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: ${props => props.active 
+    ? '#FF9190' 
+    : props.isDark ? '#ddd' : '#333'};
+  
+  &:hover {
+    background-color: ${props => props.isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.03)'};
+  }
+  
+  i {
+    margin-right: 8px;
+  }
+`;
+
+const DropdownTitle = styled.div`
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: ${props => props.isDark ? '#888' : '#999'};
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+`;
+
 // 标签按钮
 const TagButton = styled(motion.button)`
   display: flex;
@@ -199,8 +279,8 @@ const FilterBar = ({
   segments = [],
   activeSegment = '',
   onSegmentChange,
-  filters = [],
-  activeFilters = [],
+  filters = [],            // 可以是简单数组或者分组数组
+  activeFilters = [],      
   onFilterChange,
   tags = [],
   activeTags = [],
@@ -217,6 +297,110 @@ const FilterBar = ({
 }) => {
   const { colorMode } = useTheme();
   const isDark = colorMode === 'dark';
+  
+  // 跟踪哪个筛选组是展开的
+  const [openFilterGroup, setOpenFilterGroup] = useState(null);
+  
+  // 判断过滤器是简单数组还是分组数组
+  const isGroupedFilters = Array.isArray(filters) && filters.length > 0 && 
+                          typeof filters[0] === 'object' && 'items' in filters[0];
+  
+  // 处理筛选组点击
+  const handleFilterGroupClick = (groupIndex) => {
+    if (openFilterGroup === groupIndex) {
+      setOpenFilterGroup(null);
+    } else {
+      setOpenFilterGroup(groupIndex);
+    }
+  };
+  
+  // 渲染简单筛选按钮
+  const renderSimpleFilters = () => {
+    return filters.map(filter => (
+      <FilterButton 
+        key={filter.id || filter}
+        active={activeFilters.includes(filter.id || filter)}
+        onClick={() => onFilterChange && onFilterChange(filter.id || filter)}
+        isDark={isDark}
+      >
+        {filter.icon && <i className={`fas ${filter.icon}`}></i>}
+        {filter.label || filter}
+      </FilterButton>
+    ));
+  };
+  
+  // 渲染分组筛选按钮
+  const renderGroupedFilters = () => {
+    return filters.map((group, index) => {
+      // 检查组内是否有任何活跃的筛选项
+      const hasActiveItems = group.items.some(item => 
+        (activeFilters.includes(item.id) || 
+         (Array.isArray(activeFilters) && 
+          Array.isArray(activeFilters[0]) && 
+          activeFilters[index]?.includes(item.id)))
+      );
+      
+      // 获取此组的活跃筛选项
+      const groupActiveItems = Array.isArray(activeFilters[0]) 
+        ? activeFilters[index] || []
+        : activeFilters;
+      
+      return (
+        <div key={index} style={{ position: 'relative' }}>
+          <FilterGroupButton
+            isDark={isDark}
+            hasActive={hasActiveItems}
+            isOpen={openFilterGroup === index}
+            onClick={() => handleFilterGroupClick(index)}
+          >
+            {group.title}
+            {hasActiveItems && <span style={{ marginLeft: '8px' }}>({groupActiveItems.length})</span>}
+            <i className="fas fa-chevron-down dropdown-icon"></i>
+          </FilterGroupButton>
+          
+          <AnimatePresence>
+            {openFilterGroup === index && (
+              <FilterDropdown 
+                isDark={isDark}
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.2 }}
+              >
+                <DropdownTitle isDark={isDark}>{group.title}</DropdownTitle>
+                {group.items.map(item => (
+                  <FilterDropdownItem
+                    key={item.id}
+                    isDark={isDark}
+                    active={groupActiveItems.includes(item.id)}
+                    onClick={() => {
+                      if (onFilterChange) {
+                        if (Array.isArray(activeFilters[0])) {
+                          // 分组筛选时
+                          onFilterChange(item.id, index);
+                        } else {
+                          // 普通筛选时
+                          onFilterChange(item.id);
+                        }
+                      }
+                    }}
+                  >
+                    <span>
+                      {item.icon && <i className={`fas ${item.icon}`}></i>}
+                      {item.label}
+                    </span>
+                    {groupActiveItems.includes(item.id) && (
+                      <i className="fas fa-check" style={{ color: '#FF9190' }}></i>
+                    )}
+                  </FilterDropdownItem>
+                ))}
+              </FilterDropdown>
+            )}
+          </AnimatePresence>
+        </div>
+      );
+    });
+  };
   
   return (
     <FilterContainer 
@@ -243,32 +427,67 @@ const FilterBar = ({
           </SegmentedControl>
         )}
         
-        {/* 筛选按钮 */}
-        {filters.length > 0 && filters.map(filter => (
-          <FilterButton 
-            key={filter.id || filter}
-            active={activeFilters.includes(filter.id || filter)}
-            onClick={() => onFilterChange && onFilterChange(filter.id || filter)}
-            isDark={isDark}
-          >
-            {filter.icon && <i className={`fas ${filter.icon}`}></i>}
-            {filter.label || filter}
-          </FilterButton>
-        ))}
+        {/* 筛选按钮（简单或分组） */}
+        {filters.length > 0 && (
+          isGroupedFilters ? renderGroupedFilters() : renderSimpleFilters()
+        )}
         
-        {/* 标签 */}
+        {/* 标签按钮 */}
         {tags.length > 0 && tags.map(tag => (
           <TagButton 
             key={tag.id || tag}
             active={activeTags.includes(tag.id || tag)}
             onClick={() => onTagChange && onTagChange(tag.id || tag)}
-            isDark={isDark}
-            whileHover={{ y: -2 }}
+            whileHover={{ y: -4 }}
             whileTap={{ scale: 0.95 }}
+            isDark={isDark}
           >
             {tag.label || tag}
           </TagButton>
         ))}
+        
+        {/* 排序下拉 */}
+        {showSortFilter && sortOptions.length > 0 && (
+          <div style={{ position: 'relative' }}>
+            <FilterButton 
+              isDark={isDark}
+              onClick={() => handleFilterGroupClick('sort')}
+            >
+              <i className="fas fa-sort"></i>
+              {activeSort}
+              <i className="fas fa-chevron-down" style={{ marginLeft: '8px' }}></i>
+            </FilterButton>
+            
+            <AnimatePresence>
+              {openFilterGroup === 'sort' && (
+                <FilterDropdown
+                  isDark={isDark}
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                >
+                  <DropdownTitle isDark={isDark}>排序方式</DropdownTitle>
+                  {sortOptions.map(option => (
+                    <FilterDropdownItem
+                      key={option}
+                      isDark={isDark}
+                      active={activeSort === option}
+                      onClick={() => {
+                        onSortChange && onSortChange(option);
+                        setOpenFilterGroup(null);
+                      }}
+                    >
+                      <span>{option}</span>
+                      {activeSort === option && (
+                        <i className="fas fa-check" style={{ color: '#FF9190' }}></i>
+                      )}
+                    </FilterDropdownItem>
+                  ))}
+                </FilterDropdown>
+              )}
+            </AnimatePresence>
+          </div>
+        )}
       </FilterGroup>
       
       <ActionGroup>
@@ -279,7 +498,6 @@ const FilterBar = ({
               <i className="fas fa-search"></i>
             </SearchIcon>
             <SearchInput 
-              type="text" 
               placeholder={searchPlaceholder}
               onChange={(e) => onSearch && onSearch(e.target.value)}
               isDark={isDark}
@@ -287,31 +505,11 @@ const FilterBar = ({
           </SearchContainer>
         )}
         
-        {/* 排序 */}
-        {showSortFilter && (
-          <SegmentedControl isDark={isDark}>
-            {sortOptions.map(sort => (
-              <Segment 
-                key={sort}
-                className={activeSort === sort ? 'active' : ''}
-                onClick={() => onSortChange && onSortChange(sort)}
-                isDark={isDark}
-              >
-                {sort}
-              </Segment>
-            ))}
-          </SegmentedControl>
-        )}
-        
-        {/* 自定义操作 */}
+        {/* 操作按钮 */}
         {actions.map((action, index) => (
-          <motion.div 
-            key={index}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
+          <React.Fragment key={index}>
             {action}
-          </motion.div>
+          </React.Fragment>
         ))}
       </ActionGroup>
     </FilterContainer>

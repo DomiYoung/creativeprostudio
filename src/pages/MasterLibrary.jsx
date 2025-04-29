@@ -219,6 +219,7 @@ const MasterLibrary = () => {
       description="浏览和管理设计模板，快速创建符合品牌标准的设计。"
       breadcrumbs={breadcrumbs}
       activeNav="master-library"
+      isDark={isDark}
     >
       {/* 筛选栏 */}
       <FilterBar

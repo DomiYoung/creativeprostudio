@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
+import { useTheme } from '../design-system';
 
 // 图标导入
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
@@ -25,16 +26,17 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background-color: #f5f5f7;
+  background-color: ${props => props.isDark ? '#121212' : '#f5f5f7'};
   font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', Helvetica, Arial, sans-serif;
+  color: ${props => props.isDark ? '#f5f5f7' : '#1d1d1f'};
 `;
 
 const Header = styled.header`
   height: 60px;
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: ${props => props.isDark ? 'rgba(30, 30, 30, 0.8)' : 'rgba(255, 255, 255, 0.8)'};
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid ${props => props.isDark ? '#333' : '#e0e0e0'};
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -470,6 +472,8 @@ const mockProjects = [
 
 const ProjectsView = () => {
   const navigate = useNavigate();
+  const { colorMode } = useTheme();
+  const isDark = colorMode === 'dark';
   const [viewMode, setViewMode] = useState('grid');
   const [searchTerm, setSearchTerm] = useState('');
   const [projects, setProjects] = useState(mockProjects);
@@ -527,8 +531,8 @@ const ProjectsView = () => {
   };
   
   return (
-    <Container>
-      <Header>
+    <Container isDark={isDark}>
+      <Header isDark={isDark}>
         <BackButton onClick={handleBack}>
           <ArrowBackIosNewIcon fontSize="small" />
           返回

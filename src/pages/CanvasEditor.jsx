@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
+import { useTheme, Button } from '../design-system';
 
 // 图标导入
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
@@ -30,6 +31,8 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import LockIcon from '@mui/icons-material/Lock';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
+import BackspaceIcon from '@mui/icons-material/Backspace';
+import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh';
 
 // 模拟数据
 const mockLayers = [
@@ -61,16 +64,16 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background-color: #f5f5f7;
+  background-color: ${props => props.backgroundColor};
   font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', Helvetica, Arial, sans-serif;
 `;
 
 const Header = styled.header`
   height: 60px;
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: ${props => props.backgroundColor};
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid ${props => props.borderBottomColor};
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -91,7 +94,7 @@ const BackButton = styled.button`
   align-items: center;
   background: transparent;
   border: none;
-  color: #0066cc;
+  color: ${props => props.color};
   font-size: 14px;
   cursor: pointer;
   padding: 8px;
@@ -111,7 +114,7 @@ const BackButton = styled.button`
 const Title = styled.h1`
   font-size: 16px;
   font-weight: 500;
-  color: #1d1d1f;
+  color: ${props => props.color};
   margin: 0;
 `;
 
@@ -130,7 +133,7 @@ const HistoryButton = styled.button`
   justify-content: center;
   background: transparent;
   border: none;
-  color: #1d1d1f;
+  color: ${props => props.color};
   cursor: pointer;
   transition: all 0.2s;
 
@@ -150,29 +153,6 @@ const HeaderRight = styled.div`
   gap: 12px;
 `;
 
-const ActionButton = styled.button`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: ${props => props.primary ? '#0066cc' : 'transparent'};
-  color: ${props => props.primary ? 'white' : '#0066cc'};
-  border: ${props => props.primary ? 'none' : '1px solid #0066cc'};
-  padding: 8px 16px;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-
-  &:hover {
-    background-color: ${props => props.primary ? '#004d99' : 'rgba(0, 102, 204, 0.05)'};
-  }
-
-  svg {
-    margin-right: ${props => props.iconOnly ? '0' : '8px'};
-  }
-`;
-
 const Content = styled.div`
   display: flex;
   flex: 1;
@@ -181,8 +161,8 @@ const Content = styled.div`
 
 const LeftPanel = styled.div`
   width: 240px;
-  background-color: white;
-  border-right: 1px solid #e0e0e0;
+  background-color: ${props => props.backgroundColor};
+  border-right: 1px solid ${props => props.borderRightColor};
   display: flex;
   flex-direction: column;
   overflow-y: auto;
@@ -200,9 +180,44 @@ const PanelSection = styled.div`
   }
 `;
 
-const ToolsGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+const PanelTitle = styled.h2`
+  font-size: 14px;
+  font-weight: 600;
+  color: ${props => props.color};
+  margin: 0 0 16px 0;
+`;
+
+const CanvasSizeContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+`;
+
+const CanvasSizeOption = styled.button`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid ${props => props.borderColor};
+  background-color: ${props => props.backgroundColor};
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    background-color: ${props => props.active ? '#f0f0f0' : '#f5f5f7'};
+  }
+
+  div {
+    font-size: 12px;
+    color: ${props => props.color};
+  }
+`;
+
+const ToolsContainer = styled.div`
+  display: flex;
+  flex-direction: column;
   gap: 8px;
 `;
 
@@ -213,25 +228,30 @@ const ToolButton = styled.button`
   justify-content: center;
   padding: 8px;
   border-radius: 8px;
-  border: none;
-  background-color: ${props => props.active ? '#f0f0f0' : 'transparent'};
+  border: 1px solid ${props => props.borderColor};
+  background-color: ${props => props.backgroundColor};
   cursor: pointer;
   transition: all 0.2s;
 
   &:hover {
-    background-color: #f5f5f7;
+    background-color: ${props => props.active ? '#f0f0f0' : '#f5f5f7'};
   }
 
   svg {
     font-size: 20px;
-    color: #1d1d1f;
+    color: ${props => props.color};
     margin-bottom: 4px;
   }
 
   span {
     font-size: 12px;
-    color: #1d1d1f;
+    color: ${props => props.color};
   }
+`;
+
+const ToolName = styled.span`
+  font-size: 12px;
+  color: ${props => props.color};
 `;
 
 const LayersPanel = styled.div`
@@ -305,14 +325,26 @@ const WorkArea = styled.div`
   overflow: auto;
 `;
 
-const Canvas = styled.div`
-  width: ${props => props.width}px;
-  height: ${props => props.height}px;
-  transform: scale(${props => props.zoom});
-  background-color: white;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+const CanvasContainer = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   position: relative;
-  transition: transform 0.2s;
+  overflow: auto;
+  padding: 40px;
+  background-color: ${props => props.backgroundColor};
+`;
+
+const Canvas = styled.div`
+  width: ${props => props.size.width * props.zoom}px;
+  height: ${props => props.size.height * props.zoom}px;
+  background-color: white;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+  transform-origin: center;
 `;
 
 const ZoomControls = styled.div`
@@ -321,51 +353,33 @@ const ZoomControls = styled.div`
   right: 20px;
   display: flex;
   align-items: center;
-  gap: 8px;
-  background-color: white;
-  padding: 8px;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 4px 8px;
+  border-radius: 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 `;
 
 const ZoomText = styled.span`
-  font-size: 14px;
-  font-weight: 500;
-  color: #1d1d1f;
+  font-size: 12px;
   margin: 0 8px;
+  color: ${props => props.color};
 `;
 
-const ZoomButton = styled.button`
-  width: 32px;
-  height: 32px;
-  border-radius: 4px;
+const LayersContainer = styled.div`
   display: flex;
-  align-items: center;
-  justify-content: center;
-  background: transparent;
-  border: none;
-  color: #1d1d1f;
-  cursor: pointer;
-  transition: all 0.2s;
-  
-  &:hover {
-    background-color: rgba(0, 0, 0, 0.05);
-  }
-  
-  &:disabled {
-    color: #cccccc;
-    cursor: not-allowed;
-  }
-  
-  svg {
-    font-size: 18px;
-  }
+  flex-direction: column;
+  gap: 8px;
+`;
+
+const LayerControls = styled.div`
+  display: flex;
+  gap: 4px;
 `;
 
 const RightPanel = styled.div`
   width: 280px;
-  background-color: white;
-  border-left: 1px solid #e0e0e0;
+  background-color: ${props => props.backgroundColor};
+  border-left: 1px solid ${props => props.borderLeftColor};
   overflow-y: auto;
 `;
 
@@ -450,12 +464,36 @@ const ButtonGroup = styled.div`
   }
 `;
 
+const ZoomButton = styled.button`
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: ${props => props.disabled ? 'rgba(255, 255, 255, 0.1)' : 'rgba(255, 255, 255, 0.7)'};
+  border: none;
+  border-radius: 4px;
+  color: ${props => props.disabled ? '#999' : '#333'};
+  cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
+  transition: all 0.2s;
+  
+  &:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.9);
+  }
+  
+  svg {
+    font-size: 18px;
+  }
+`;
+
 const CanvasEditor = () => {
   const navigate = useNavigate();
+  const { colorMode } = useTheme();
+  const isDark = colorMode === 'dark';
   const [activeTool, setActiveTool] = useState('select');
   const [layers, setLayers] = useState(mockLayers);
   const [activeLayer, setActiveLayer] = useState(null);
-  const [zoom, setZoom] = useState(0.8);
+  const [zoom, setZoom] = useState(1);
   const [canvasSize, setCanvasSize] = useState(canvasSizes[0]);
   const [history, setHistory] = useState([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
@@ -519,15 +557,11 @@ const CanvasEditor = () => {
 
   // 处理缩放
   const handleZoomIn = () => {
-    if (zoom < 2) {
-      setZoom(prevZoom => Math.min(prevZoom + 0.1, 2).toFixed(1));
-    }
+    setZoom(prev => Math.min(prev + 0.1, 2));
   };
 
   const handleZoomOut = () => {
-    if (zoom > 0.2) {
-      setZoom(prevZoom => Math.max(prevZoom - 0.1, 0.2).toFixed(1));
-    }
+    setZoom(prev => Math.max(prev - 0.1, 0.25));
   };
 
   // 选择画布尺寸
@@ -539,127 +573,122 @@ const CanvasEditor = () => {
   };
 
   return (
-    <Container>
-      <Header>
+    <Container style={{backgroundColor: isDark ? '#121212' : '#f5f5f7', color: isDark ? '#f5f5f7' : '#1d1d1f'}}>
+      <Header style={{backgroundColor: isDark ? 'rgba(30, 30, 30, 0.8)' : 'rgba(255, 255, 255, 0.8)', borderBottomColor: isDark ? '#333' : '#e0e0e0'}}>
         <HeaderLeft>
-          <BackButton onClick={handleBack}>
+          <BackButton onClick={handleBack} style={{color: isDark ? '#60a5fa' : '#0066cc'}}>
             <ArrowBackIosNewIcon fontSize="small" />
             返回
           </BackButton>
-          <Title>画布编辑器</Title>
+          <Title style={{color: isDark ? '#f5f5f7' : '#1d1d1f'}}>画布编辑器</Title>
         </HeaderLeft>
         
         <HeaderCenter>
           <HistoryButton 
             onClick={handleUndo}
             disabled={historyIndex <= 0}
+            style={{color: isDark ? (historyIndex <= 0 ? '#555' : '#f5f5f7') : (historyIndex <= 0 ? '#cccccc' : '#1d1d1f')}}
           >
             <UndoIcon />
           </HistoryButton>
           <HistoryButton 
             onClick={handleRedo}
             disabled={historyIndex >= history.length - 1}
+            style={{color: isDark ? (historyIndex >= history.length - 1 ? '#555' : '#f5f5f7') : (historyIndex >= history.length - 1 ? '#cccccc' : '#1d1d1f')}}
           >
             <RedoIcon />
           </HistoryButton>
         </HeaderCenter>
         
         <HeaderRight>
-          <ActionButton onClick={handleSave}>
-            <SaveIcon fontSize="small" />
+          <Button
+            variant="outline"
+            size="md"
+            leftIcon={<SaveIcon fontSize="small" />}
+            onClick={handleSave}
+          >
             保存
-          </ActionButton>
-          <ActionButton primary onClick={handleExport}>
-            <DownloadIcon fontSize="small" />
+          </Button>
+          <Button
+            variant="primary"
+            size="md"
+            leftIcon={<DownloadIcon fontSize="small" />}
+            onClick={handleExport}
+          >
             导出
-          </ActionButton>
+          </Button>
         </HeaderRight>
       </Header>
       
       <Content>
-        <LeftPanel>
+        <LeftPanel style={{backgroundColor: isDark ? '#1e1e1e' : 'white', borderRightColor: isDark ? '#333' : '#e0e0e0'}}>
           <PanelSection>
-            <h2>画布尺寸</h2>
-            <PropertyRow>
-              <select 
-                value={canvasSize.id}
-                onChange={handleCanvasSizeChange}
-              >
-                {canvasSizes.map(size => (
-                  <option key={size.id} value={size.id}>
-                    {size.name} - {size.width}x{size.height}
-                  </option>
-                ))}
-              </select>
-            </PropertyRow>
+            <PanelTitle style={{color: isDark ? '#f5f5f7' : '#1d1d1f'}}>画布尺寸</PanelTitle>
+            <CanvasSizeContainer>
+              {canvasSizes.map((size) => (
+                <CanvasSizeOption 
+                  key={size.name}
+                  active={canvasSize.name === size.name}
+                  onClick={() => setCanvasSize(size)}
+                  style={{
+                    backgroundColor: isDark 
+                      ? (canvasSize.name === size.name ? '#333' : '#1e1e1e') 
+                      : (canvasSize.name === size.name ? '#f0f0f0' : 'white'),
+                    color: isDark ? '#f5f5f7' : '#1d1d1f',
+                    borderColor: isDark ? '#444' : '#e0e0e0'
+                  }}
+                >
+                  <div>{size.name}</div>
+                  <div>{size.width} × {size.height}px</div>
+                </CanvasSizeOption>
+              ))}
+            </CanvasSizeContainer>
           </PanelSection>
           
           <PanelSection>
-            <h2>工具</h2>
-            <ToolsGrid>
-              {mockTools.map(tool => (
+            <PanelTitle style={{color: isDark ? '#f5f5f7' : '#1d1d1f'}}>工具</PanelTitle>
+            <ToolsContainer>
+              {mockTools.map((tool) => (
                 <ToolButton 
                   key={tool.id}
+                  onClick={() => setActiveTool(tool.id)}
                   active={activeTool === tool.id}
-                  onClick={() => handleToolSelect(tool.id)}
+                  style={{
+                    backgroundColor: isDark 
+                      ? (activeTool === tool.id ? '#333' : '#1e1e1e') 
+                      : (activeTool === tool.id ? '#f0f0f0' : 'white'),
+                    color: isDark 
+                      ? (activeTool === tool.id ? '#60a5fa' : '#f5f5f7') 
+                      : (activeTool === tool.id ? '#0066cc' : '#1d1d1f'),
+                    borderColor: isDark ? '#444' : '#e0e0e0'
+                  }}
                 >
                   {tool.icon}
-                  <span>{tool.name}</span>
+                  <ToolName>{tool.name}</ToolName>
                 </ToolButton>
               ))}
-            </ToolsGrid>
-          </PanelSection>
-          
-          <PanelSection style={{ flex: 1 }}>
-            <h2>图层</h2>
-            <LayersPanel>
-              <LayersList>
-                {layers.map(layer => (
-                  <LayerItem 
-                    key={layer.id}
-                    active={activeLayer === layer.id}
-                    onClick={() => handleLayerSelect(layer.id)}
-                  >
-                    {layer.type === 'image' && <ImageIcon fontSize="small" />}
-                    {layer.type === 'text' && <TextFieldsIcon fontSize="small" />}
-                    {layer.type === 'shape' && <AddCircleOutlineIcon fontSize="small" />}
-                    <LayerName visible={layer.visible}>{layer.name}</LayerName>
-                    <LayerIcon onClick={(e) => {
-                      e.stopPropagation();
-                      toggleLayerVisibility(layer.id);
-                    }}>
-                      {layer.visible ? <VisibilityIcon fontSize="small" /> : <VisibilityOffIcon fontSize="small" />}
-                    </LayerIcon>
-                    <LayerIcon onClick={(e) => {
-                      e.stopPropagation();
-                      toggleLayerLock(layer.id);
-                    }}>
-                      {layer.locked ? <LockIcon fontSize="small" /> : <LockOpenIcon fontSize="small" />}
-                    </LayerIcon>
-                  </LayerItem>
-                ))}
-              </LayersList>
-            </LayersPanel>
+            </ToolsContainer>
           </PanelSection>
         </LeftPanel>
         
         <WorkArea>
-          <Canvas 
-            width={canvasSize.width} 
-            height={canvasSize.height} 
-            zoom={zoom}
-          >
-            {/* 此处将会放置画布上的各种元素 */}
-          </Canvas>
+          <CanvasContainer backgroundColor={isDark ? '#1e1e1e' : 'white'}>
+            <Canvas 
+              size={canvasSize}
+              zoom={zoom}
+            >
+              {/* 此处将会放置画布上的各种元素 */}
+            </Canvas>
+          </CanvasContainer>
           
           <ZoomControls>
             <ZoomButton 
               onClick={handleZoomOut}
-              disabled={zoom <= 0.2}
+              disabled={zoom <= 0.25}
             >
               <ZoomOutIcon />
             </ZoomButton>
-            <ZoomText>{Math.round(zoom * 100)}%</ZoomText>
+            <ZoomText color={isDark ? '#f5f5f7' : '#1d1d1f'}>{Math.round(zoom * 100)}%</ZoomText>
             <ZoomButton 
               onClick={handleZoomIn}
               disabled={zoom >= 2}
@@ -669,93 +698,74 @@ const CanvasEditor = () => {
           </ZoomControls>
         </WorkArea>
         
-        <RightPanel>
-          <PropertyPanel>
-            <PropertyGroup>
-              <h3>基本属性</h3>
-              <PropertyRow>
-                <label>位置 X</label>
-                <input type="number" placeholder="0" />
-              </PropertyRow>
-              <PropertyRow>
-                <label>位置 Y</label>
-                <input type="number" placeholder="0" />
-              </PropertyRow>
-              <PropertyRow>
-                <label>宽度</label>
-                <input type="number" placeholder="200" />
-              </PropertyRow>
-              <PropertyRow>
-                <label>高度</label>
-                <input type="number" placeholder="200" />
-              </PropertyRow>
-              <PropertyRow>
-                <label>旋转</label>
-                <input type="number" placeholder="0" />
-              </PropertyRow>
-            </PropertyGroup>
-            
-            <PropertyGroup>
-              <h3>样式</h3>
-              <PropertyRow>
-                <label>填充颜色</label>
-                <input type="color" defaultValue="#FFFFFF" />
-              </PropertyRow>
-              <PropertyRow>
-                <label>不透明度</label>
-                <input type="range" min="0" max="100" defaultValue="100" />
-              </PropertyRow>
-            </PropertyGroup>
-            
-            <PropertyGroup>
-              <h3>文本样式</h3>
-              <PropertyRow>
-                <label>字体</label>
-                <select>
-                  <option>苹方</option>
-                  <option>黑体</option>
-                  <option>宋体</option>
-                  <option>Arial</option>
-                </select>
-              </PropertyRow>
-              <PropertyRow>
-                <label>大小</label>
-                <input type="number" placeholder="16" />
-              </PropertyRow>
-              <PropertyRow>
-                <label>颜色</label>
-                <input type="color" defaultValue="#000000" />
-              </PropertyRow>
-              <PropertyRow>
-                <label>对齐</label>
-                <ButtonGroup>
-                  <button className="active">
-                    <FormatAlignLeftIcon />
-                  </button>
-                  <button>
-                    <FormatAlignCenterIcon />
-                  </button>
-                  <button>
-                    <FormatAlignRightIcon />
-                  </button>
-                </ButtonGroup>
-              </PropertyRow>
-              <PropertyRow>
-                <label>样式</label>
-                <ButtonGroup>
-                  <button className="active">
-                    <FormatBoldIcon />
-                  </button>
-                  <button>
-                    <FormatItalicIcon />
-                  </button>
-                  <button>
-                    <FormatUnderlinedIcon />
-                  </button>
-                </ButtonGroup>
-              </PropertyRow>
-            </PropertyGroup>
-          </PropertyPanel>
+        <RightPanel style={{backgroundColor: isDark ? '#1e1e1e' : 'white', borderLeftColor: isDark ? '#333' : '#e0e0e0'}}>
+          <PanelSection>
+            <PanelTitle style={{color: isDark ? '#f5f5f7' : '#1d1d1f'}}>
+              <LayersIcon style={{marginRight: '8px'}} />
+              图层
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                style={{marginLeft: 'auto'}} 
+                onClick={() => {
+                  const newLayer = { id: `layer-${layers.length + 1}`, name: `图层 ${layers.length + 1}`, type: 'shape', visible: true, locked: false };
+                  setLayers([...layers, newLayer]);
+                }}
+                leftIcon={<AddCircleOutlineIcon fontSize="small" />}
+              />
+            </PanelTitle>
+            <LayersContainer>
+              {layers.map((layer) => (
+                <LayerItem 
+                  key={layer.id}
+                  active={activeLayer?.id === layer.id}
+                  onClick={() => setActiveLayer(layer)}
+                  style={{
+                    backgroundColor: isDark 
+                      ? (activeLayer?.id === layer.id ? '#333' : '#1e1e1e') 
+                      : (activeLayer?.id === layer.id ? '#f0f0f0' : 'white'),
+                    color: isDark ? '#f5f5f7' : '#1d1d1f',
+                    borderColor: isDark ? '#444' : '#e0e0e0'
+                  }}
+                >
+                  <LayerName>{layer.name}</LayerName>
+                  <LayerControls>
+                    <Button 
+                      variant="ghost" 
+                      size="xs" 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleLayerVisibility(layer.id);
+                      }}
+                      leftIcon={layer.visible ? <VisibilityIcon fontSize="small" /> : <VisibilityOffIcon fontSize="small" />}
+                    />
+                    <Button 
+                      variant="ghost" 
+                      size="xs" 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleLayerLock(layer.id);
+                      }}
+                      leftIcon={layer.locked ? <LockIcon fontSize="small" /> : <LockOpenIcon fontSize="small" />}
+                    />
+                    <Button 
+                      variant="ghost" 
+                      size="xs" 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        const newLayers = layers.filter(l => l.id !== layer.id);
+                        setLayers(newLayers);
+                        if (activeLayer?.id === layer.id) {
+                          setActiveLayer(null);
+                        }
+                      }}
+                      leftIcon={<DeleteIcon fontSize="small" style={{color: isDark ? '#ff6b6b' : '#d32f2f'}} />}
+                    />
+                  </LayerControls>
+                </LayerItem>
+              ))}
+            </LayersContainer>
+          </PanelSection>
         </RightPanel>
       </Content>
     </Container>

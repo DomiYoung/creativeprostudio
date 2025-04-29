@@ -222,6 +222,97 @@ const Contributor = styled.div`
   transition: border-color 0.3s ease;
 `;
 
+// 选择指示器
+const SelectIndicator = styled(motion.div)`
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: ${props => props.isSelected 
+    ? '#FF9190' 
+    : 'rgba(255, 255, 255, 0.8)'};
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 3;
+  color: ${props => props.isSelected ? 'white' : '#aaa'};
+  border: 2px solid ${props => props.isSelected ? '#FF9190' : 'white'};
+  
+  i {
+    font-size: 12px;
+  }
+`;
+
+// 文件夹标签
+const FolderTags = styled.div`
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  display: flex;
+  gap: 4px;
+  z-index: 2;
+`;
+
+const FolderTag = styled.div`
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: ${props => props.color};
+  border: 2px solid white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  position: relative;
+  
+  &:hover::after {
+    content: "${props => props.name}";
+    position: absolute;
+    bottom: 18px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.75);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+`;
+
+// 删除按钮
+const DeleteButton = styled(motion.div)`
+  position: absolute;
+  top: 12px;
+  right: ${props => props.showSelectIndicator ? '46px' : '12px'};
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 87, 87, 0.9);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 2;
+  color: white;
+  opacity: 0;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  
+  i {
+    font-size: 14px;
+  }
+  
+  ${CardContainer}:hover & {
+    opacity: 1;
+  }
+`;
+
 // 主组件
 const ContentCard = ({ 
   image,
@@ -230,15 +321,28 @@ const ContentCard = ({
   statusText,
   progress,
   isFavorite,
+  isSelected,
+  showSelectIndicator,
   metaItems = [],
   tags = [],
   contributors = [],
   contributorColors = {},
   aspectRatio = '16/9',
   onClick,
+  folders = [],
+  onDelete,
+  showDeleteButton = true,
 }) => {
   const { colorMode } = useTheme();
   const isDark = colorMode === 'dark';
+  
+  // 阻止删除按钮点击事件冒泡到卡片
+  const handleDeleteClick = (e) => {
+    e.stopPropagation();
+    if (onDelete) {
+      onDelete();
+    }
+  };
   
   return (
     <CardContainer 
@@ -263,10 +367,31 @@ const ContentCard = ({
           transition={{ duration: 0.4 }}
         />
         
-        {status && statusText && (
+        {status && statusText && !showSelectIndicator && (
           <CardStatus status={status}>
             {statusText}
           </CardStatus>
+        )}
+        
+        {showSelectIndicator && (
+          <SelectIndicator 
+            isSelected={isSelected}
+            whileHover={{ scale: 1.2 }}
+            whileTap={{ scale: 0.9 }}
+          >
+            <i className={`fas ${isSelected ? 'fa-check' : 'fa-plus'}`}></i>
+          </SelectIndicator>
+        )}
+        
+        {showDeleteButton && onDelete && (
+          <DeleteButton 
+            showSelectIndicator={showSelectIndicator}
+            whileHover={{ scale: 1.2 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={handleDeleteClick}
+          >
+            <i className="fas fa-trash-alt"></i>
+          </DeleteButton>
         )}
         
         <FavoriteIcon 
@@ -276,6 +401,25 @@ const ContentCard = ({
         >
           <i className={`fas ${isFavorite ? 'fa-star' : 'fa-star'}`}></i>
         </FavoriteIcon>
+        
+        {/* 文件夹标签 */}
+        {folders.length > 0 && (
+          <FolderTags>
+            {folders.slice(0, 3).map((folder, index) => (
+              <FolderTag 
+                key={index}
+                color={folder.color}
+                name={folder.name}
+              />
+            ))}
+            {folders.length > 3 && (
+              <FolderTag 
+                color="#888"
+                name={`还有 ${folders.length - 3} 个文件夹`}
+              />
+            )}
+          </FolderTags>
+        )}
       </CardPreview>
       
       <CardContent>
@@ -285,7 +429,8 @@ const ContentCard = ({
           <CardMeta hasProgress={progress !== undefined}>
             {metaItems.map((item, index) => (
               <MetaItem key={index} isDark={isDark}>
-                <i className={`far ${item.icon}`}></i> {item.text}
+                {item.icon && <i className={`fas ${item.icon}`}></i>}
+                {item.text}
               </MetaItem>
             ))}
           </CardMeta>
@@ -294,10 +439,10 @@ const ContentCard = ({
         {progress !== undefined && (
           <ProgressBar isDark={isDark}>
             <ProgressFill 
+              progress={`${progress}%`}
               initial={{ width: 0 }}
-              animate={{ width: progress }}
-              transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-              progress={progress}
+              animate={{ width: `${progress}%` }}
+              transition={{ duration: 0.8, ease: 'easeOut' }}
             />
           </ProgressBar>
         )}
@@ -312,26 +457,22 @@ const ContentCard = ({
         
         {contributors.length > 0 && (
           <ContributorsContainer>
-            {contributors.map((contributor, i) => (
-              <motion.div
-                key={`contributor-${i}`}
-                whileHover={{ y: -4, scale: 1.1, zIndex: 10 }}
-                transition={{ type: "spring", stiffness: 300, damping: 15 }}
+            {contributors.map((contributor, index) => (
+              <Contributor 
+                key={index}
+                isDark={isDark}
+                color={contributorColors[contributor.id] || undefined}
+                index={10 - index}
               >
-                <Contributor 
-                  color={contributorColors[contributor]}
-                  index={5 - i}
-                  isDark={isDark}
-                >
-                  {contributor}
-                </Contributor>
-              </motion.div>
+                {contributor.initials || contributor.name?.charAt(0) || '?'}
+              </Contributor>
             ))}
-            <motion.div
-              whileHover={{ y: -4, scale: 1.1, zIndex: 10 }}
-            >
-              <Contributor isAdd index={1} isDark={isDark}>+</Contributor>
-            </motion.div>
+            
+            {contributors.length > 3 && (
+              <Contributor isDark={isDark} isAdd index={1}>
+                +{contributors.length - 3}
+              </Contributor>
+            )}
           </ContributorsContainer>
         )}
       </CardContent>
