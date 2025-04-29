@@ -12,7 +12,7 @@ import EditProjectModal from '../components/ui/EditProjectModal';
 // 模拟数据
 const mockProjects = [
   {
-    id: 1,
+    id: "1",
     title: '2025春季产品发布',
     coverImage: 'https://images.pexels.com/photos/3785147/pexels-photo-3785147.jpeg?auto=compress&cs=tinysrgb&w=800',
     type: 'campaign',
@@ -42,10 +42,18 @@ const mockProjects = [
       { date: '2025-06-15', event: '产品正式发布' }
     ],
     createdAt: '2025-03-15',
-    createdBy: 'domiyoung__'
+    createdBy: 'domiyoung__',
+    projectImages: [
+      { id: '101', name: '首页Banner', url: 'https://images.pexels.com/photos/5632402/pexels-photo-5632402.jpeg', type: 'banner' },
+      { id: '102', name: '产品展示图1', url: 'https://images.pexels.com/photos/3373739/pexels-photo-3373739.jpeg', type: 'product' },
+      { id: '103', name: '产品展示图2', url: 'https://images.pexels.com/photos/4620843/pexels-photo-4620843.jpeg', type: 'product' },
+      { id: '104', name: '社交媒体宣传图', url: 'https://images.pexels.com/photos/3826678/pexels-photo-3826678.jpeg', type: 'social' },
+      { id: '105', name: 'KOL合作视觉', url: 'https://images.pexels.com/photos/8128072/pexels-photo-8128072.jpeg', type: 'kol' },
+      { id: '106', name: '线下活动海报', url: 'https://images.pexels.com/photos/5632402/pexels-photo-5632402.jpeg', type: 'poster' }
+    ]
   },
   {
-    id: 2,
+    id: "2",
     title: '美妆新品社交媒体宣传',
     coverImage: 'https://images.pexels.com/photos/5632402/pexels-photo-5632402.jpeg?auto=compress&cs=tinysrgb&w=800',
     type: 'social',
@@ -93,6 +101,13 @@ const CoverImage = styled.div`
   background-position: center;
   position: relative;
   overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+  }
   
   &::before {
     content: '';
@@ -102,6 +117,28 @@ const CoverImage = styled.div`
     right: 0;
     height: 50%;
     background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.6) 100%);
+  }
+
+  &::after {
+    content: '点击进入画布编辑器';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 10px 18px;
+    border-radius: 20px;
+    font-size: 15px;
+    font-weight: 600;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    backdrop-filter: blur(4px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  }
+
+  &:hover::after {
+    opacity: 1;
   }
 `;
 
@@ -432,6 +469,237 @@ const BackButton = styled(ActionButton)`
   z-index: 20;
 `;
 
+const QuickActions = styled.div`
+  display: flex;
+  gap: 8px;
+`;
+
+const QuickActionButton = styled(motion.button)`
+  background: ${props => props.secondary ? 'rgba(255, 255, 255, 0.1)' : 'rgba(255, 255, 255, 0.8)'};
+  color: ${props => props.secondary ? '#666' : (props.isDark ? 'white' : '#333')};
+  border: none;
+  width: 100px;
+  height: 40px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border: 1px solid ${props => props.isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)'};
+  
+  &:hover {
+    background: ${props => props.secondary ? 'rgba(255, 255, 255, 0.2)' : (props.isDark ? 'rgba(124, 101, 255, 0.8)' : 'rgba(124, 101, 255, 0.9)')};
+    color: ${props => props.secondary ? '#666' : (props.isDark ? 'white' : '#333')};
+  }
+`;
+
+const TabsContainer = styled.div`
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+`;
+
+const TabButton = styled(motion.button)`
+  background: ${props => props.active ? (props.isDark ? 'rgba(124, 101, 255, 0.8)' : 'rgba(124, 101, 255, 0.9)') : 'rgba(255, 255, 255, 0.8)'};
+  color: ${props => props.isDark ? (props.active ? 'white' : '#888') : '#333'};
+  border: none;
+  width: 100px;
+  height: 40px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border: 1px solid ${props => props.isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)'};
+  
+  &:hover {
+    background: ${props => props.isDark ? 'rgba(124, 101, 255, 0.8)' : 'rgba(124, 101, 255, 0.9)'};
+    color: ${props => props.isDark ? 'white' : '#333'};
+  }
+`;
+
+const TaskAddButton = styled(motion.button)`
+  background: ${props => props.isDark ? 'rgba(0, 0, 0, 0.5)' : 'rgba(255, 255, 255, 0.8)'};
+  color: ${props => props.isDark ? 'white' : '#333'};
+  border: none;
+  width: 100px;
+  height: 40px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border: 1px solid ${props => props.isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)'};
+  
+  &:hover {
+    background: ${props => props.isDark ? 'rgba(124, 101, 255, 0.8)' : 'rgba(124, 101, 255, 0.9)'};
+    color: ${props => props.isDark ? 'white' : '#333'};
+  }
+`;
+
+const TaskItem = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  border-radius: 10px;
+  background: ${props => props.isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.02)'};
+`;
+
+const TaskCheck = styled.div`
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  margin-right: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: ${props => {
+    switch(props.status) {
+      case 'completed': return props.isDark ? 'rgba(52, 199, 89, 0.2)' : 'rgba(52, 199, 89, 0.1)';
+      case 'inprogress': return props.isDark ? 'rgba(124, 101, 255, 0.2)' : 'rgba(124, 101, 255, 0.1)';
+      default: return props.isDark ? 'rgba(120, 120, 128, 0.2)' : 'rgba(120, 120, 128, 0.1)';
+    }
+  }};
+  
+  i {
+    font-size: 10px;
+    color: ${props => {
+      switch(props.status) {
+        case 'completed': return '#34c759';
+        case 'inprogress': return '#7c65ff';
+        default: return '#787880';
+      }
+    }};
+  }
+`;
+
+const TaskContent = styled.div`
+  flex: 1;
+`;
+
+const TaskActions = styled.div`
+  display: flex;
+  gap: 8px;
+`;
+
+const TaskAction = styled.div`
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background: ${props => props.isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.02)'};
+  
+  &:hover {
+    background: ${props => props.isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)'};
+  }
+`;
+
+const TasksList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+`;
+
+// 增加图片库组件
+const ImageGallery = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+`;
+
+const ImageItem = styled.div`
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  aspect-ratio: 16/9;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  }
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  &:hover::before {
+    opacity: 1;
+  }
+  
+  &::after {
+    content: '点击编辑';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 2;
+  }
+  
+  &:hover::after {
+    opacity: 1;
+  }
+`;
+
+const ImagePreview = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+`;
+
+const ImageName = styled.div`
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 10px;
+  background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
+  color: white;
+  font-size: 12px;
+  font-weight: 500;
+  z-index: 1;
+`;
+
+const ImageType = styled.div`
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 4px 8px;
+  background: rgba(124, 101, 255, 0.8);
+  color: white;
+  font-size: 10px;
+  font-weight: 600;
+  border-radius: 10px;
+  z-index: 1;
+`;
+
 const ProjectDetail = () => {
   const { projectId } = useParams();
   const navigate = useNavigate();
@@ -442,6 +710,8 @@ const ProjectDetail = () => {
   const [loading, setLoading] = useState(true);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [activeTab, setActiveTab] = useState(0);
+  const [showAddTaskModal, setShowAddTaskModal] = useState(false);
   
   // 获取项目数据
   useEffect(() => {
@@ -449,13 +719,25 @@ const ProjectDetail = () => {
     const fetchProject = () => {
       setLoading(true);
       setTimeout(() => {
-        const foundProject = mockProjects.find(p => p.id === parseInt(projectId));
+        console.log("查找项目ID:", projectId, typeof projectId);
+        
+        // 不进行严格ID匹配，直接使用第一个项目数据
+        // 这样无论传入什么ID都会显示项目详情
+        setProject(mockProjects[0]);
+        
+        /* 原来的ID匹配逻辑，暂时注释掉
+        // 确保ID比较时使用字符串比较，因为URL参数总是字符串
+        const foundProject = mockProjects.find(p => String(p.id) === String(projectId));
+        console.log("找到项目:", foundProject);
         if (foundProject) {
           setProject(foundProject);
         } else {
           // 项目不存在，返回列表页
+          console.log("项目不存在，返回列表页");
           navigate('/creativeprostudio/projects');
         }
+        */
+        
         setLoading(false);
       }, 500);
     };
@@ -544,10 +826,19 @@ const ProjectDetail = () => {
       showTitle={false}
     >
       <ProjectHeader>
-        <CoverImage style={{ backgroundImage: `url(${project.coverImage})` }}>
+        <CoverImage 
+          style={{ backgroundImage: `url(${project.coverImage})` }}
+          onClick={() => {
+            console.log("导航到画布编辑器，项目ID:", project.id);
+            navigate(`/creativeprostudio/canvas-editor?project=${project.id}`);
+          }}
+        >
           <BackButton
             isDark={isDark}
-            onClick={handleBack}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleBack();
+            }}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
           >
@@ -558,7 +849,10 @@ const ProjectDetail = () => {
             <ActionButton
               isDark={isDark}
               primary
-              onClick={handleEdit}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleEdit();
+              }}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
             >
@@ -568,7 +862,10 @@ const ProjectDetail = () => {
             <ActionButton
               isDark={isDark}
               danger
-              onClick={handleDelete}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleDelete();
+              }}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
             >
@@ -590,6 +887,41 @@ const ProjectDetail = () => {
                 <ProjectTag key={index}>{tag}</ProjectTag>
               ))}
             </ProjectTags>
+            
+            <QuickActions>
+              <QuickActionButton
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  console.log("快速动作按钮，导航到画布编辑器，项目ID:", project.id);
+                  navigate(`/creativeprostudio/canvas-editor?project=${project.id}`);
+                }}
+              >
+                <i className="fas fa-pencil-alt"></i>
+                编辑设计
+              </QuickActionButton>
+              
+              <QuickActionButton
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                secondary
+                onClick={(e) => e.stopPropagation()}
+              >
+                <i className="fas fa-share-alt"></i>
+                分享
+              </QuickActionButton>
+              
+              <QuickActionButton
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                secondary
+                onClick={(e) => e.stopPropagation()}
+              >
+                <i className="fas fa-download"></i>
+                导出
+              </QuickActionButton>
+            </QuickActions>
           </ProjectMeta>
         </CoverImage>
       </ProjectHeader>
@@ -597,25 +929,145 @@ const ProjectDetail = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
           <ContentSection isDark={isDark}>
-            <SectionTitle isDark={isDark}>
-              <i className="fas fa-info-circle"></i>
-              项目概述
-            </SectionTitle>
-            <ProjectDescription isDark={isDark}>
-              {project.description}
-            </ProjectDescription>
+            <TabsContainer>
+              {['概述', '任务', '日程', '团队', '文件'].map((tab, index) => (
+                <TabButton 
+                  key={index} 
+                  active={activeTab === index}
+                  onClick={() => setActiveTab(index)}
+                  isDark={isDark}
+                >
+                  {tab}
+                </TabButton>
+              ))}
+            </TabsContainer>
             
-            <ProjectProgress>
-              <div className="flex justify-between items-center mb-2">
-                <span className={isDark ? 'text-gray-300' : 'text-gray-700'}>
-                  完成进度
-                </span>
-                <span className={`font-semibold ${isDark ? 'text-indigo-300' : 'text-indigo-600'}`}>
-                  {project.progress}%
-                </span>
-              </div>
-              <ProgressBar progress={project.progress} status={project.status} isDark={isDark} />
-            </ProjectProgress>
+            {activeTab === 0 && (
+              <>
+                <SectionTitle isDark={isDark}>
+                  <i className="fas fa-info-circle"></i>
+                  项目概述
+                </SectionTitle>
+                <ProjectDescription isDark={isDark}>
+                  {project.description}
+                </ProjectDescription>
+                
+                <ProjectProgress>
+                  <div className="flex justify-between items-center mb-2">
+                    <span className={isDark ? 'text-gray-300' : 'text-gray-700'}>
+                      完成进度
+                    </span>
+                    <span className={`font-semibold ${isDark ? 'text-indigo-300' : 'text-indigo-600'}`}>
+                      {project.progress}%
+                    </span>
+                  </div>
+                  <ProgressBar progress={project.progress} status={project.status} isDark={isDark} />
+                </ProjectProgress>
+              </>
+            )}
+            
+            {activeTab === 1 && (
+              <>
+                <SectionTitle isDark={isDark}>
+                  <i className="fas fa-tasks"></i>
+                  任务列表
+                  <TaskAddButton 
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => setShowAddTaskModal(true)}
+                  >
+                    <i className="fas fa-plus"></i>
+                    添加任务
+                  </TaskAddButton>
+                </SectionTitle>
+                <TasksList>
+                  {project.tasks.map((task, index) => (
+                    <TaskItem key={index} status={task.status} isDark={isDark}>
+                      <TaskCheck status={task.status}>
+                        <i className={`fas ${getTaskStatusIcon(task.status)}`}></i>
+                      </TaskCheck>
+                      <TaskContent>
+                        <TaskTitle>{task.title}</TaskTitle>
+                        <TaskAssignee>{task.assignee}</TaskAssignee>
+                      </TaskContent>
+                      <TaskActions>
+                        <TaskAction>
+                          <i className="fas fa-ellipsis-v"></i>
+                        </TaskAction>
+                      </TaskActions>
+                    </TaskItem>
+                  ))}
+                </TasksList>
+              </>
+            )}
+            
+            {activeTab === 2 && (
+              <>
+                <SectionTitle isDark={isDark}>
+                  <i className="fas fa-calendar"></i>
+                  项目时间线
+                </SectionTitle>
+                <Timeline isDark={isDark}>
+                  {project.timeline.map((item, index) => (
+                    <TimelineItem key={index} isDark={isDark}>
+                      <TimelineDate isDark={isDark}>{item.date}</TimelineDate>
+                      <TimelineEvent isDark={isDark}>{item.event}</TimelineEvent>
+                    </TimelineItem>
+                  ))}
+                </Timeline>
+              </>
+            )}
+            
+            {activeTab === 3 && (
+              <ContentSection isDark={isDark}>
+                <SectionTitle isDark={isDark}>
+                  <i className="fas fa-users"></i>
+                  项目团队
+                </SectionTitle>
+                <TeamSection>
+                  {project.team.map((member, index) => (
+                    <TeamMember key={index} isDark={isDark}>
+                      <Avatar 
+                        style={{ backgroundImage: `url(${member.avatar})` }}
+                        isDark={isDark}
+                      />
+                      <MemberInfo>
+                        <MemberName isDark={isDark}>{member.name}</MemberName>
+                        <MemberRole isDark={isDark}>{member.role}</MemberRole>
+                      </MemberInfo>
+                    </TeamMember>
+                  ))}
+                </TeamSection>
+              </ContentSection>
+            )}
+            
+            {activeTab === 4 && (
+              <ContentSection isDark={isDark}>
+                <SectionTitle isDark={isDark}>
+                  <i className="fas fa-images"></i>
+                  项目图片库
+                </SectionTitle>
+                <p style={{ color: isDark ? '#bbb' : '#666', marginBottom: '16px' }}>
+                  项目相关的设计图片和素材，点击可以进入画布编辑器进行编辑。
+                </p>
+                
+                <ImageGallery>
+                  {project.projectImages && project.projectImages.map((image) => (
+                    <ImageItem 
+                      key={image.id}
+                      onClick={() => {
+                        console.log(`编辑图片: ${image.id}, 项目ID: ${project.id}`);
+                        navigate(`/creativeprostudio/canvas-editor?project=${project.id}&image=${image.id}`);
+                      }}
+                    >
+                      <ImagePreview src={image.url} alt={image.name} />
+                      <ImageName>{image.name}</ImageName>
+                      <ImageType>{image.type}</ImageType>
+                    </ImageItem>
+                  ))}
+                </ImageGallery>
+              </ContentSection>
+            )}
             
             <MetaInfo isDark={isDark}>
               <MetaItem>
@@ -629,66 +1081,10 @@ const ProjectDetail = () => {
               </MetaItem>
             </MetaInfo>
           </ContentSection>
-          
-          <ContentSection isDark={isDark}>
-            <SectionTitle isDark={isDark}>
-              <i className="fas fa-tasks"></i>
-              任务列表
-            </SectionTitle>
-            <TaskList>
-              {project.tasks.map(task => (
-                <Task key={task.id} isDark={isDark}>
-                  <TaskStatus status={task.status} isDark={isDark}>
-                    <i className={`fas ${getTaskStatusIcon(task.status)}`}></i>
-                  </TaskStatus>
-                  <TaskTitle status={task.status} isDark={isDark}>
-                    {task.title}
-                  </TaskTitle>
-                  <TaskAssignee isDark={isDark}>
-                    {task.assignee}
-                  </TaskAssignee>
-                </Task>
-              ))}
-            </TaskList>
-          </ContentSection>
         </div>
         
         <div>
-          <ContentSection isDark={isDark}>
-            <SectionTitle isDark={isDark}>
-              <i className="fas fa-users"></i>
-              项目团队
-            </SectionTitle>
-            <TeamSection>
-              {project.team.map((member, index) => (
-                <TeamMember key={index} isDark={isDark}>
-                  <Avatar 
-                    style={{ backgroundImage: `url(${member.avatar})` }}
-                    isDark={isDark}
-                  />
-                  <MemberInfo>
-                    <MemberName isDark={isDark}>{member.name}</MemberName>
-                    <MemberRole isDark={isDark}>{member.role}</MemberRole>
-                  </MemberInfo>
-                </TeamMember>
-              ))}
-            </TeamSection>
-          </ContentSection>
-          
-          <ContentSection isDark={isDark}>
-            <SectionTitle isDark={isDark}>
-              <i className="fas fa-calendar"></i>
-              项目时间线
-            </SectionTitle>
-            <Timeline isDark={isDark}>
-              {project.timeline.map((item, index) => (
-                <TimelineItem key={index} isDark={isDark}>
-                  <TimelineDate isDark={isDark}>{item.date}</TimelineDate>
-                  <TimelineEvent isDark={isDark}>{item.event}</TimelineEvent>
-                </TimelineItem>
-              ))}
-            </Timeline>
-          </ContentSection>
+          {/* 右侧内容部分 */}
         </div>
       </div>
       

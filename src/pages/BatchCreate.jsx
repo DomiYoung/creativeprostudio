@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../design-system';
 import { Button } from '../design-system';
+import { Tooltip } from '@mui/material';
+import FilterBar from '../design-system/components/FilterBar';
 
 // 图标导入
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
@@ -22,6 +24,7 @@ const Container = styled.div`
   background-color: ${props => props.isDark ? '#121212' : '#f5f5f7'};
   font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', Helvetica, Arial, sans-serif;
   color: ${props => props.isDark ? '#f5f5f7' : '#1d1d1f'};
+  transition: background-color 0.3s ease, color 0.3s ease;
 `;
 
 const Header = styled.header`
@@ -39,61 +42,38 @@ const Header = styled.header`
   z-index: 100;
 `;
 
-const BackButton = styled.button`
+const BackButton = styled(motion.button)`
   display: flex;
   align-items: center;
-  background: transparent;
+  background: none;
   border: none;
-  color: #0066cc;
-  font-size: 14px;
+  color: ${props => props.isDark ? '#f5f5f7' : '#1d1d1f'};
+  font-size: 16px;
   cursor: pointer;
-  padding: 8px;
-  border-radius: 6px;
-  transition: background-color 0.2s;
-
+  padding: 8px 16px;
+  border-radius: 8px;
+  margin-right: 16px;
+  
   &:hover {
-    background-color: rgba(0, 102, 204, 0.05);
+    background-color: ${props => props.isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)'};
   }
-
+  
   svg {
-    font-size: 18px;
-    margin-right: 4px;
+    margin-right: 8px;
   }
 `;
 
 const Title = styled.h1`
-  font-size: 16px;
-  font-weight: 500;
-  color: #1d1d1f;
+  font-size: 28px;
+  font-weight: 700;
   margin: 0;
-`;
-
-const ActionButton = styled.button`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: ${props => props.primary ? '#0066cc' : 'transparent'};
-  color: ${props => props.primary ? 'white' : '#0066cc'};
-  border: ${props => props.primary ? 'none' : '1px solid #0066cc'};
-  padding: 8px 16px;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-
-  &:hover {
-    background-color: ${props => props.primary ? '#004d99' : 'rgba(0, 102, 204, 0.05)'};
-  }
-
-  svg {
-    margin-right: 8px;
-  }
-
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
+  background: ${props => props.isDark 
+    ? 'linear-gradient(90deg, #FF9190 0%, #FFC3A0 100%)' 
+    : 'linear-gradient(90deg, #FF6B6B 0%, #FFB88C 100%)'};
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.5px;
 `;
 
 const MainContent = styled.div`
@@ -157,8 +137,8 @@ const StepLabel = styled.span`
   font-weight: ${props => props.active ? '500' : 'normal'};
 `;
 
-const Card = styled.div`
-  background-color: white;
+const Card = styled(motion.div)`
+  background-color: ${props => props.isDark ? '#1e1e1e' : 'white'};
   border-radius: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   padding: 24px;
@@ -434,6 +414,31 @@ const BatchCreate = () => {
   const [uploadedFile, setUploadedFile] = useState(null);
   const [results, setResults] = useState([]);
   
+  // 过滤器状态
+  const [activeTemplateCategory, setActiveTemplateCategory] = useState('全部');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredTemplates, setFilteredTemplates] = useState(mockTemplates);
+  
+  // 过滤模板
+  useEffect(() => {
+    let filtered = [...mockTemplates];
+    
+    // 按类别过滤
+    if (activeTemplateCategory !== '全部') {
+      filtered = filtered.filter(template => template.category === activeTemplateCategory);
+    }
+    
+    // 按搜索词过滤
+    if (searchTerm) {
+      filtered = filtered.filter(template => 
+        template.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        template.category.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+    
+    setFilteredTemplates(filtered);
+  }, [activeTemplateCategory, searchTerm]);
+  
   // 处理返回按钮
   const handleBack = () => {
     navigate(-1);
@@ -480,42 +485,64 @@ const BatchCreate = () => {
     navigate('/batch-center');
   };
   
+  // 模板类别列表
+  const templateCategories = ['全部', '产品', '营销', '品牌'];
+  
   return (
     <Container isDark={isDark}>
       <Header isDark={isDark}>
-        <BackButton onClick={handleBack}>
-          <ArrowBackIosNewIcon fontSize="small" />
-          返回
-        </BackButton>
-        <Title>批量创建</Title>
+        <Tooltip title="返回">
+          <BackButton 
+            isDark={isDark}
+            onClick={handleBack}
+            whileHover={{ x: -5 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <ArrowBackIosNewIcon fontSize="small" />
+            返回
+          </BackButton>
+        </Tooltip>
+        <Title isDark={isDark}>批量创建</Title>
         <div style={{ width: '100px' }}></div>
       </Header>
       
       <MainContent>
+        {currentStep === 1 && (
+          <FilterBar 
+            segments={templateCategories}
+            activeSegment={activeTemplateCategory}
+            onSegmentChange={setActiveTemplateCategory}
+            showSearch={true}
+            searchPlaceholder="搜索模板..."
+            onSearch={setSearchTerm}
+            showSortFilter={false}
+          />
+        )}
+        
         <StepIndicator>
           <Step>
-            <StepCircle active={currentStep === 1} data-completed={currentStep > 1}>
+            <StepCircle active={currentStep === 1} data-completed={currentStep > 1} isDark={isDark}>
               {currentStep > 1 ? <CheckCircleIcon /> : 1}
             </StepCircle>
-            <StepLabel active={currentStep === 1} data-completed={currentStep > 1}>选择模板</StepLabel>
+            <StepLabel active={currentStep === 1} data-completed={currentStep > 1} isDark={isDark}>选择模板</StepLabel>
           </Step>
           <Step>
-            <StepCircle active={currentStep === 2} data-completed={currentStep > 2}>
+            <StepCircle active={currentStep === 2} data-completed={currentStep > 2} isDark={isDark}>
               {currentStep > 2 ? <CheckCircleIcon /> : 2}
             </StepCircle>
-            <StepLabel active={currentStep === 2} data-completed={currentStep > 2}>上传数据</StepLabel>
+            <StepLabel active={currentStep === 2} data-completed={currentStep > 2} isDark={isDark}>上传数据</StepLabel>
           </Step>
           <Step>
-            <StepCircle active={currentStep === 3} data-completed={currentStep > 3}>
+            <StepCircle active={currentStep === 3} data-completed={currentStep > 3} isDark={isDark}>
               {currentStep > 3 ? <CheckCircleIcon /> : 3}
             </StepCircle>
-            <StepLabel active={currentStep === 3} data-completed={currentStep > 3}>数据预览</StepLabel>
+            <StepLabel active={currentStep === 3} data-completed={currentStep > 3} isDark={isDark}>数据预览</StepLabel>
           </Step>
           <Step>
-            <StepCircle active={currentStep === 4}>
+            <StepCircle active={currentStep === 4} isDark={isDark}>
               4
             </StepCircle>
-            <StepLabel active={currentStep === 4}>完成创建</StepLabel>
+            <StepLabel active={currentStep === 4} isDark={isDark}>完成创建</StepLabel>
           </Step>
         </StepIndicator>
         
@@ -525,7 +552,7 @@ const BatchCreate = () => {
             <p>请选择一个模板作为批量创建的基础</p>
             
             <TemplateGrid>
-              {mockTemplates.map(template => (
+              {filteredTemplates.map(template => (
                 <TemplateCard 
                   key={template.id}
                   selected={selectedTemplate === template.id}

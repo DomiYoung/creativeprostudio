@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据库设计 - CreativePro Studio</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary: #F5E1D9;
+            --secondary: #FFB5C5;
+            --accent: #B6E5D8;
+            --text-primary: #1D1D1F;
+            --text-secondary: #86868B;
+            --background: #F9FAFB;
+            --border: #E5E5E7;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+            --radius-sm: 6px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background-color: var(--background);
+            padding: var(--spacing-lg);
+        }
+        
+        .document-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            padding: var(--spacing-xl);
+        }
+        
+        .document-header {
+            margin-bottom: var(--spacing-xl);
+            text-align: center;
+            position: relative;
+        }
+        
+        .document-title {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: var(--spacing-md);
+            color: var(--text-primary);
+        }
+        
+        .document-subtitle {
+            font-size: 16px;
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .metadata {
+            display: flex;
+            justify-content: center;
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+        
+        .metadata-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+        
+        .toc {
+            background-color: rgba(255, 181, 197, 0.2);
+            padding: var(--spacing-lg);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .toc-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: var(--spacing-md);
+            color: var(--text-primary);
+        }
+        
+        .toc-list {
+            list-style-type: none;
+        }
+        
+        .toc-item {
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .toc-link {
+            text-decoration: none;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            transition: all 0.2s;
+        }
+        
+        .toc-link:hover {
+            color: #0066CC;
+        }
+        
+        .section {
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .section-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: var(--spacing-md);
+            color: var(--text-primary);
+            padding-bottom: var(--spacing-sm);
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .subsection {
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .subsection-title {
+            font-size: 20px;
+            font-weight: 500;
+            margin-bottom: var(--spacing-md);
+            color: var(--text-primary);
+        }
+        
+        p {
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            margin: var(--spacing-md) 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: var(--spacing-md) 0;
+            font-size: 14px;
+        }
+        
+        th, td {
+            padding: var(--spacing-sm) var(--spacing-md);
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        th {
+            font-weight: 500;
+            background-color: #F5F5F7;
+        }
+        
+        tr:hover {
+            background-color: #F9F9FB;
+        }
+        
+        .diagram {
+            max-width: 100%;
+            margin: var(--spacing-lg) 0;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+        }
+        
+        .code-block {
+            background-color: #2A2F38;
+            color: white;
+            padding: var(--spacing-md);
+            border-radius: var(--radius-md);
+            font-family: "SF Mono", SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            overflow-x: auto;
+            margin: var(--spacing-md) 0;
+            font-size: 14px;
+        }
+        
+        .note {
+            background-color: rgba(182, 229, 216, 0.3);
+            border-left: 4px solid var(--accent);
+            padding: var(--spacing-md);
+            border-radius: var(--radius-sm);
+            margin: var(--spacing-md) 0;
+        }
+        
+        .note-title {
+            font-weight: 500;
+            margin-bottom: var(--spacing-sm);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+    </style>
+</head>
+<body>
+    <div class="document-container">
+        <header class="document-header">
+            <h1 class="document-title">数据库设计</h1>
+            <p class="document-subtitle">CreativePro Studio 数据库架构与表结构设计</p>
+            <div class="metadata">
+                <div class="metadata-item">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>最后更新：2025-04-27</span>
+                </div>
+                <div class="metadata-item">
+                    <i class="fas fa-user"></i>
+                    <span>作者：后端开发团队</span>
+                </div>
+                <div class="metadata-item">
+                    <i class="fas fa-code-branch"></i>
+                    <span>版本：1.0.0</span>
+                </div>
+            </div>
+        </header>
+        
+        <nav class="toc">
+            <h2 class="toc-title">目录</h2>
+            <ul class="toc-list">
+                <li class="toc-item">
+                    <a href="#overview" class="toc-link">
+                        <i class="fas fa-database"></i>
+                        <span>1. 数据库总体设计</span>
+                    </a>
+                </li>
+                <li class="toc-item">
+                    <a href="#tables" class="toc-link">
+                        <i class="fas fa-table"></i>
+                        <span>2. 核心表结构设计</span>
+                    </a>
+                </li>
+                <li class="toc-item">
+                    <a href="#relationships" class="toc-link">
+                        <i class="fas fa-project-diagram"></i>
+                        <span>3. 实体关系模型</span>
+                    </a>
+                </li>
+                <li class="toc-item">
+                    <a href="#optimization" class="toc-link">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>4. 性能优化策略</span>
+                    </a>
+                </li>
+                <li class="toc-item">
+                    <a href="#migration" class="toc-link">
+                        <i class="fas fa-code-branch"></i>
+                        <span>5. 数据迁移与演进</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        
+        <section id="overview" class="section">
+            <h2 class="section-title">1. 数据库总体设计</h2>
+            <p>CreativePro Studio 采用多模式数据存储架构，基于不同业务场景选择合适的数据库类型和存储策略。主要数据分类如下：</p>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>数据类型</th>
+                            <th>数据库选型</th>
+                            <th>主要用途</th>
+                            <th>备注</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>核心业务数据</td>
+                            <td>PostgreSQL</td>
+                            <td>用户管理、项目管理、权限控制</td>
+                            <td>强一致性、事务支持</td>
+                        </tr>
+                        <tr>
+                            <td>媒体资源元数据</td>
+                            <td>PostgreSQL + MongoDB</td>
+                            <td>素材库管理、资源索引</td>
+                            <td>结构化+半结构化混合存储</td>
+                        </tr>
+                        <tr>
+                            <td>全文检索数据</td>
+                            <td>Elasticsearch</td>
+                            <td>内容搜索、相似资源匹配</td>
+                            <td>多维度索引、高性能查询</td>
+                        </tr>
+                        <tr>
+                            <td>缓存数据</td>
+                            <td>Redis</td>
+                            <td>热点数据缓存、会话存储</td>
+                            <td>高性能、低延迟</td>
+                        </tr>
+                        <tr>
+                            <td>时序数据</td>
+                            <td>InfluxDB</td>
+                            <td>指标监控、操作日志</td>
+                            <td>高写入、时间序列优化</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <p>数据库架构遵循以下设计原则：</p>
+            <ul>
+                <li><strong>服务边界隔离</strong>：每个微服务拥有独立的数据存储，避免跨服务直接访问数据库</li>
+                <li><strong>读写分离</strong>：高负载场景下实现读写分离，提升性能和可用性</li>
+                <li><strong>多级缓存</strong>：应用层、服务层、数据库层多级缓存策略</li>
+                <li><strong>数据分片</strong>：大规模数据采用水平分片策略，支持业务规模扩展</li>
+                <li><strong>高可用架构</strong>：关键数据库集群部署，支持自动故障转移</li>
+            </ul>
+            
+            <div class="note">
+                <div class="note-title">
+                    <i class="fas fa-lightbulb"></i>
+                    <span>设计说明</span>
+                </div>
+                <p>系统采用"一个微服务一个数据库"的松耦合架构，但在特定场景下允许服务间通过事件驱动和数据同步机制共享数据，确保数据一致性和性能平衡。</p>
+            </div>
+        </section>
+        
+        <section id="tables" class="section">
+            <h2 class="section-title">2. 核心表结构设计</h2>
+            
+            <div class="subsection">
+                <h3 class="subsection-title">2.1 用户与权限相关表</h3>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>表名</th>
+                                <th>主要字段</th>
+                                <th>索引</th>
+                                <th>说明</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>users</td>
+                                <td>id, username, email, password_hash, status, created_at, updated_at</td>
+                                <td>主键(id), 唯一索引(email, username)</td>
+                                <td>用户基本信息</td>
+                            </tr>
+                            <tr>
+                                <td>roles</td>
+                                <td>id, name, description</td>
+                                <td>主键(id), 唯一索引(name)</td>
+                                <td>角色定义</td>
+                            </tr>
+                            <tr>
+                                <td>permissions</td>
+                                <td>id, name, resource, action, description</td>
+                                <td>主键(id), 复合索引(resource, action)</td>
+                                <td>权限定义</td>
+                            </tr>
+                            <tr>
+                                <td>user_roles</td>
+                                <td>user_id, role_id</td>
+                                <td>主键(user_id, role_id), 外键索引</td>
+                                <td>用户-角色关联</td>
+                            </tr>
+                            <tr>
+                                <td>role_permissions</td>
+                                <td>role_id, permission_id</td>
+                                <td>主键(role_id, permission_id), 外键索引</td>
+                                <td>角色-权限关联</td>
+                            </tr>
+                            <tr>
+                                <td>user_profiles</td>
+                                <td>user_id, full_name, avatar_url, preferences, settings</td>
+                                <td>主键(user_id), 外键索引</td>
+                                <td>用户扩展信息</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="code-block">
+<pre>-- 用户表 DDL 示例
+CREATE TABLE users (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    username VARCHAR(50) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    status VARCHAR(20) NOT NULL DEFAULT 'active',
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT users_email_unique UNIQUE (email),
+    CONSTRAINT users_username_unique UNIQUE (username)
+);
+
+-- 创建索引
+CREATE INDEX idx_users_status ON users(status);
+CREATE INDEX idx_users_created_at ON users(created_at);</pre>
+                </div>
+            </div>
+            
+            <div class="subsection">
+                <h3 class="subsection-title">2.2 项目与模板相关表</h3>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>表名</th>
+                                <th>主要字段</th>
+                                <th>索引</th>
+                                <th>说明</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>projects</td>
+                                <td>id, name, description, owner_id, status, created_at, updated_at</td>
+                                <td>主键(id), 索引(owner_id, status)</td>
+                                <td>项目信息</td>
+                            </tr>
+                            <tr>
+                                <td>project_members</td>
+                                <td>project_id, user_id, role, joined_at</td>
+                                <td>主键(project_id, user_id), 索引(user_id)</td>
+                                <td>项目成员关联</td>
+                            </tr>
+                            <tr>
+                                <td>templates</td>
+                                <td>id, name, description, creator_id, version, status, content, created_at, updated_at</td>
+                                <td>主键(id), 索引(creator_id, status)</td>
+                                <td>设计模板</td>
+                            </tr>
+                            <tr>
+                                <td>template_variables</td>
+                                <td>template_id, name, type, default_value, constraints</td>
+                                <td>主键(template_id, name), 索引(template_id)</td>
+                                <td>模板变量定义</td>
+                            </tr>
+                            <tr>
+                                <td>template_versions</td>
+                                <td>id, template_id, version, content, change_log, created_at, created_by</td>
+                                <td>主键(id), 索引(template_id, version)</td>
+                                <td>模板版本历史</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="subsection">
+                <h3 class="subsection-title">2.3 素材与资源相关表</h3>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>表名</th>
+                                <th>主要字段</th>
+                                <th>索引</th>
+                                <th>说明</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>assets</td>
+                                <td>id, name, type, mime_type, size, storage_path, upload_by, created_at, updated_at</td>
+                                <td>主键(id), 索引(type, upload_by)</td>
+                                <td>素材资源</td>
+                            </tr>
+                            <tr>
+                                <td>asset_metadata</td>
+                                <td>asset_id, width, height, duration, format, color_profile, metadata</td>
+                                <td>主键(asset_id), 外键索引</td>
+                                <td>素材元数据</td>
+                            </tr>
+                            <tr>
+                                <td>asset_tags</td>
+                                <td>asset_id, tag_id</td>
+                                <td>主键(asset_id, tag_id), 索引(tag_id)</td>
+                                <td>素材标签关联</td>
+                            </tr>
+                            <tr>
+                                <td>tags</td>
+                                <td>id, name, category, created_at</td>
+                                <td>主键(id), 唯一索引(name, category)</td>
+                                <td>标签定义</td>
+                            </tr>
+                            <tr>
+                                <td>asset_collections</td>
+                                <td>id, name, description, owner_id, created_at, updated_at</td>
+                                <td>主键(id), 索引(owner_id)</td>
+                                <td>素材集合</td>
+                            </tr>
+                            <tr>
+                                <td>collection_assets</td>
+                                <td>collection_id, asset_id, added_at</td>
+                                <td>主键(collection_id, asset_id), 索引(asset_id)</td>
+                                <td>集合-素材关联</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="subsection">
+                <h3 class="subsection-title">2.4 批处理相关表</h3>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>表名</th>
+                                <th>主要字段</th>
+                                <th>索引</th>
+                                <th>说明</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>batch_jobs</td>
+                                <td>id, name, description, template_id, creator_id, status, config, created_at, updated_at</td>
+                                <td>主键(id), 索引(creator_id, status, template_id)</td>
+                                <td>批处理任务</td>
+                            </tr>
+                            <tr>
+                                <td>batch_items</td>
+                                <td>id, job_id, status, variables, result_url, error_message, processed_at</td>
+                                <td>主键(id), 索引(job_id, status)</td>
+                                <td>批处理子项</td>
+                            </tr>
+                            <tr>
+                                <td>job_history</td>
+                                <td>id, job_id, status, message, occurred_at</td>
+                                <td>主键(id), 索引(job_id, occurred_at)</td>
+                                <td>任务历史记录</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+        
+        <section id="relationships" class="section">
+            <h2 class="section-title">3. 实体关系模型</h2>
+            <p>主要实体间的关系如下图所示：</p>
+            
+            <img src="https://via.placeholder.com/900x500" alt="实体关系图" class="diagram">
+            
+            <div class="subsection">
+                <h3 class="subsection-title">3.1 核心实体关系描述</h3>
+                <ul>
+                    <li><strong>用户-项目</strong>：一对多关系，一个用户可以拥有多个项目</li>
+                    <li><strong>项目-成员</strong>：多对多关系，一个项目可以有多个成员，一个用户可以参与多个项目</li>
+                    <li><strong>项目-模板</strong>：一对多关系，一个项目可以包含多个模板</li>
+                    <li><strong>模板-变量</strong>：一对多关系，一个模板可以定义多个变量</li>
+                    <li><strong>模板-版本</strong>：一对多关系，一个模板可以有多个历史版本</li>
+                    <li><strong>项目-素材</strong>：多对多关系，一个项目可以使用多个素材，一个素材可以被多个项目使用</li>
+                    <li><strong>素材-标签</strong>：多对多关系，一个素材可以有多个标签，一个标签可以应用于多个素材</li>
+                </ul>
+            </div>
+            
+            <div class="subsection">
+                <h3 class="subsection-title">3.2 数据一致性策略</h3>
+                <p>系统使用以下策略确保数据一致性：</p>
+                <ul>
+                    <li><strong>外键约束</strong>：在关系型数据库中使用外键确保引用完整性</li>
+                    <li><strong>事务控制</strong>：关键业务操作使用事务确保原子性</li>
+                    <li><strong>乐观锁</strong>：使用版本号机制避免并发更新冲突</li>
+                    <li><strong>最终一致性</strong>：跨服务数据同步通过事件驱动确保最终一致性</li>
+                </ul>
+            </div>
+        </section>
+        
+        <section id="optimization" class="section">
+            <h2 class="section-title">4. 性能优化策略</h2>
+            
+            <div class="subsection">
+                <h3 class="subsection-title">4.1 索引优化</h3>
+                <p>系统使用以下索引策略提升查询性能：</p>
+                <ul>
+                    <li><strong>B-Tree索引</strong>：用于等值查询、范围查询和排序操作</li>
+                    <li><strong>部分索引</strong>：针对特定条件创建索引，减少索引大小</li>
+                    <li><strong>复合索引</strong>：针对多字段联合查询创建复合索引</li>
+                    <li><strong>全文索引</strong>：用于内容搜索和模糊匹配</li>
+                </ul>
+                
+                <div class="code-block">
+<pre>-- 索引优化示例
+CREATE INDEX idx_projects_owner_status ON projects(owner_id, status);
+CREATE INDEX idx_assets_type_created ON assets(type, created_at);
+CREATE INDEX idx_batch_jobs_status_created ON batch_jobs(status, created_at);
+
+-- 部分索引示例
+CREATE INDEX idx_users_active ON users(email) WHERE status = 'active';
+
+-- 全文索引示例
+CREATE INDEX idx_assets_name_fts ON assets USING gin(to_tsvector('chinese', name || ' ' || description));</pre>
+                </div>
+            </div>
+            
+            <div class="subsection">
+                <h3 class="subsection-title">4.2 查询优化</h3>
+                <p>提高查询性能的主要策略：</p>
+                <ul>
+                    <li><strong>预加载关联</strong>：减少N+1查询问题</li>
+                    <li><strong>分页查询</strong>：使用键集分页代替偏移分页</li>
+                    <li><strong>查询缓存</strong>：利用Redis缓存热点查询结果</li>
+                    <li><strong>物化视图</strong>：预计算复杂聚合查询</li>
+                </ul>
+                
+                <div class="code-block">
+<pre>-- 高效分页查询示例（键集分页）
+SELECT * FROM projects
+WHERE (created_at, id) < (?, ?) -- 上一页最后一条记录的(created_at, id)
+ORDER BY created_at DESC, id DESC
+LIMIT 20;</pre>
+                </div>
+            </div>
+            
+            <div class="subsection">
+                <h3 class="subsection-title">4.3 分区策略</h3>
+                <p>对于大型表使用分区策略提升性能：</p>
+                <ul>
+                    <li><strong>时间分区</strong>：按时间范围分区，适用于日志和历史数据</li>
+                    <li><strong>哈希分区</strong>：按键哈希值分区，适用于均匀分布数据</li>
+                    <li><strong>列表分区</strong>：按枚举值分区，适用于状态或类型字段</li>
+                </ul>
+                
+                <div class="code-block">
+<pre>-- 分区表示例（按时间分区）
+CREATE TABLE job_history (
+    id UUID NOT NULL,
+    job_id UUID NOT NULL,
+    status VARCHAR(20) NOT NULL,
+    message TEXT,
+    occurred_at TIMESTAMP WITH TIME ZONE NOT NULL
+) PARTITION BY RANGE (occurred_at);
+
+-- 创建分区
+CREATE TABLE job_history_202501 PARTITION OF job_history
+    FOR VALUES FROM ('2025-01-01') TO ('2025-02-01');
+    
+CREATE TABLE job_history_202502 PARTITION OF job_history
+    FOR VALUES FROM ('2025-02-01') TO ('2025-03-01');</pre>
+                </div>
+            </div>
+        </section>
+        
+        <section id="migration" class="section">
+            <h2 class="section-title">5. 数据迁移与演进</h2>
+            
+            <div class="subsection">
+                <h3 class="subsection-title">5.1 迁移工具</h3>
+                <p>系统使用Flyway作为数据库版本控制和迁移工具，自动化管理数据库结构的变更：</p>
+                <ul>
+                    <li>使用SQL脚本定义架构变更</li>
+                    <li>支持版本控制和回滚机制</li>
+                    <li>自动管理迁移历史记录</li>
+                    <li>支持不同环境的一致性部署</li>
+                </ul>
+            </div>
+            
+            <div class="subsection">
+                <h3 class="subsection-title">5.2 迁移策略</h3>
+                <p>系统采用以下数据迁移和演进策略：</p>
+                <ul>
+                    <li><strong>零停机迁移</strong>：确保迁移过程不影响系统使用</li>
+                    <li><strong>向后兼容</strong>：架构变更保持向后兼容性</li>
+                    <li><strong>蓝绿部署</strong>：大型迁移采用蓝绿部署策略</li>
+                    <li><strong>数据验证</strong>：迁移后进行数据完整性和一致性验证</li>
+                </ul>
+                
+                <div class="note">
+                    <div class="note-title">
+                        <i class="fas fa-lightbulb"></i>
+                        <span>最佳实践</span>
+                    </div>
+                    <p>对于重大架构变更，采用双写双读策略：先添加新的数据结构，同时写入新旧结构，然后迁移历史数据，最后切换读取源并清理旧结构。</p>
+                </div>
+            </div>
+            
+            <div class="subsection">
+                <h3 class="subsection-title">5.3 迁移脚本示例</h3>
+                <div class="code-block">
+<pre>-- V1.0.5__Add_Template_Sharing.sql
+-- 添加模板共享表
+CREATE TABLE template_sharing (
+    template_id UUID NOT NULL REFERENCES templates(id) ON DELETE CASCADE,
+    shared_with UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    permission VARCHAR(20) NOT NULL DEFAULT 'view', -- view, edit, manage
+    shared_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    shared_by UUID NOT NULL REFERENCES users(id),
+    PRIMARY KEY (template_id, shared_with)
+);
+
+-- 创建索引
+CREATE INDEX idx_template_sharing_shared_with ON template_sharing(shared_with);
+
+-- 更新权限表，添加新权限
+INSERT INTO permissions (name, resource, action, description)
+VALUES
+    ('template:share', 'template', 'share', '共享模板权限');
+
+-- 更新模板表，添加可见性字段
+ALTER TABLE templates ADD COLUMN visibility VARCHAR(20) NOT NULL DEFAULT 'private';</pre>
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+</html> 

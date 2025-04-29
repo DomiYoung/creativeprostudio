@@ -34,6 +34,11 @@ import UXDocumentation from './design-system/ux';
 import ProductLifecyclePresentation from './pages/ProductLifecyclePresentation';
 import CtoPresentation from './pages/CtoPresentation';
 import DocCenter from './DocCenter';
+import { createGlobalStyle } from 'styled-components';
+import ProductLifecycleFlow from './components/ProductLifecycleFlow';
+import GlamShiftConcept from './components/GlamShiftConcept';
+import ProjectDetail from './pages/ProjectDetail';
+import Projects from './pages/Projects';
 
 // 创建Chakra UI主题
 const theme = extendTheme({
@@ -258,36 +263,129 @@ const DocCardFooter = styled.div`
   color: ${colors.gray[500]};
 `;
 
-// 页脚
-const AppFooterStyled = styled.footer`
-  background-color: white;
-  padding: ${spacing.space[6]};
-  text-align: center;
-  border-top: 1px solid ${colors.ui.border.light};
-  margin-top: auto;
+// 全局样式
+const GlobalStyle = createGlobalStyle`
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
   
-  p {
-    color: ${colors.ui.text.secondary.light};
-    font-size: ${typography.fontSize.footnote};
+  body {
+    font-family: 'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: #F9FAFB;
+    color: #1D1D1F;
+    line-height: 1.5;
+  }
+  
+  a {
+    text-decoration: none;
+    color: inherit;
   }
 `;
 
-// 图标组件
-const Icon = ({ name }) => {
-  // 简单图标实现
-  const iconMap = {
-    plan: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="9"/></svg>,
-    research: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>,
-    design: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>,
-    develop: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>,
-    test: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>,
-    deploy: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21.2 15c.7-1.2 1-2.5.7-3.9-.6-2-2.4-3.5-4.4-3.5h-1.2c-.7-3-3.2-5.2-6.2-5.6-3-.3-5.9 1.3-7.3 4-1.2 2.5-1 6.5.5 8.8m8.7-1.6V21"/><path d="M16 16l-4-4-4 4"/></svg>,
-    iterate: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21.5 2v6h-6"/><path d="M2.5 12.1v-6h6"/><path d="M20.7 16.5A10 10 0 1 0 4.1 13"/><path d="M13.9 7.1A10 10 0 0 1 20 11l1.5-3"/></svg>,
-    document: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>,
-    system: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>,
-  };
-  
-  return iconMap[name] || null;
+// 导航栏
+const Navbar = () => {
+  return (
+    <nav className="navbar">
+      <div className="navbar-container">
+        <div className="navbar-logo">CreativePro Studio</div>
+        <div className="navbar-menu">
+          <a href="#product-concept" className="navbar-item">产品概念</a>
+          <a href="#lifecycle" className="navbar-item">生命周期</a>
+        </div>
+      </div>
+      <style jsx>{`
+        .navbar {
+          position: sticky;
+          top: 0;
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px);
+          background-color: rgba(255, 255, 255, 0.8);
+          box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+          z-index: 100;
+        }
+        
+        .navbar-container {
+          max-width: 1200px;
+          margin: 0 auto;
+          padding: 1rem 1.5rem;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+        
+        .navbar-logo {
+          font-family: 'Poppins', sans-serif;
+          font-weight: 700;
+          font-size: 1.5rem;
+          background: linear-gradient(90deg, #FF6B6B 0%, #FFB88C 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+        
+        .navbar-menu {
+          display: flex;
+          gap: 2rem;
+        }
+        
+        .navbar-item {
+          font-weight: 500;
+          padding: 0.5rem 0;
+          position: relative;
+          color: #1D1D1F;
+          transition: all 0.3s ease;
+        }
+        
+        .navbar-item:after {
+          content: '';
+          position: absolute;
+          width: 0;
+          height: 2px;
+          background: linear-gradient(90deg, #FF6B6B 0%, #FFB88C 100%);
+          bottom: 0;
+          left: 0;
+          transition: width 0.3s ease;
+        }
+        
+        .navbar-item:hover:after {
+          width: 100%;
+        }
+      `}</style>
+    </nav>
+  );
+};
+
+// 页脚
+const AppFooter = () => {
+  return (
+    <footer className="footer">
+      <div className="footer-container">
+        <div className="footer-copyright">© domiyoung__</div>
+      </div>
+      <style jsx>{`
+        .footer {
+          background-color: #1D1D1F;
+          color: #F9FAFB;
+          padding: 2rem 0;
+          margin-top: 4rem;
+        }
+        
+        .footer-container {
+          max-width: 1200px;
+          margin: 0 auto;
+          padding: 0 1.5rem;
+          text-align: center;
+        }
+        
+        .footer-copyright {
+          font-size: 0.9rem;
+          color: #86868B;
+        }
+      `}</style>
+    </footer>
+  );
 };
 
 // 首页组件
@@ -485,7 +583,7 @@ function Home() {
           </DocsGrid>
         </SectionContent>
       </MainContent>
-      <Footer />
+      <AppFooter />
     </AppContainer>
   );
 }
@@ -498,50 +596,129 @@ function NotFound() {
         <PageTitle>404 - 页面未找到</PageTitle>
         <p>您访问的页面不存在。</p>
       </MainContent>
-      <Footer />
+      <AppFooter />
     </AppContainer>
   );
 }
 
+// 创意专业工作室页面
+const CreativeProStudio = () => {
+  return (
+    <div style={{ maxWidth: '100vw', overflow: 'hidden' }}>
+      <div className="hero-section">
+        <div className="hero-content">
+          <h1 className="hero-title">CreativePro Studio</h1>
+          <p className="hero-subtitle">Z世代美妆与潮流数字体验</p>
+          <div className="hero-cta">
+            <Button
+              colorScheme="pink"
+              size="lg"
+              variant="solid"
+              style={{ background: 'linear-gradient(90deg, #FF6B6B 0%, #FFB88C 100%)' }}
+            >
+              探索产品
+            </Button>
+          </div>
+        </div>
+        <style jsx>{`
+          .hero-section {
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #F9FAFB 0%, #EDF2F7 100%);
+            position: relative;
+            padding: 2rem;
+          }
+          
+          .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(circle at 80% 10%, rgba(255, 107, 107, 0.1) 0%, rgba(255, 184, 140, 0.05) 50%, transparent 80%);
+            z-index: 0;
+          }
+          
+          .hero-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            max-width: 800px;
+          }
+          
+          .hero-title {
+            font-size: clamp(3rem, 5vw, 5rem);
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(90deg, #FF6B6B 0%, #FFB88C 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.02em;
+          }
+          
+          .hero-subtitle {
+            font-size: clamp(1.2rem, 2vw, 1.5rem);
+            color: #4A5568;
+            margin-bottom: 2rem;
+          }
+          
+          .hero-cta {
+            margin-top: 2rem;
+          }
+        `}</style>
+      </div>
+      
+      <div style={{ padding: '2rem' }}>
+        <GlamShiftConcept />
+      </div>
+      
+      <div style={{ padding: '2rem', marginTop: '4rem' }}>
+        <ProductLifecycleFlow />
+      </div>
+      
+      <AppFooter />
+    </div>
+  );
+};
+
 function App() {
   return (
-    <ChakraProvider theme={theme} resetCSS={false}>
-      <Router>
-        <div className="app">
-          {/* Wrap all routes with the ThemeProvider */}
-          <ThemeProvider>
+    <ThemeProvider>
+      <ChakraProvider theme={theme}>
+        <AppContainer>
+          <Router>
             <Routes>
-              <Route path="/creativeprostudio" element={<Layout />}>
-                <Route index element={<Home />} />
-                <Route path="prototype" element={<Prototype />} />
-                <Route path="asset-library" element={<AssetLibrary />} />
-                <Route path="ux-documents" element={<UXDocuments />} />
-                <Route path="document-center" element={<DocCenter />} />
-                <Route path="database-design" element={<DatabaseDesign />} />
-                <Route path="api-specification" element={<ApiSpecification />} />
-                <Route path="ui-guidelines" element={<UiGuidelines />} />
-                <Route path="interaction-guidelines" element={<InteractionGuidelines />} />
-                <Route path="project-report" element={<ProjectReport />} />
-                <Route path="project-blueprint" element={<ProjectBlueprint />} />
-                <Route path="frontend-design" element={<FrontendGuide />} />
-                <Route path="backend-design" element={<BackendDesign />} />
-                <Route path="master-library" element={<MasterLibrary />} />
-                <Route path="batch-center" element={<BatchCenter />} />
-                <Route path="batch-detail" element={<BatchDetail />} />
-                <Route path="home-page" element={<PrototypeDesign />} />
-                <Route path="product-concept" element={<ProductConcept />} />
-                <Route path="lifecycle-flow" element={<LifecycleFlow />} />
-                <Route path="product-lifecycle" element={<ProductLifecyclePresentation />} />
-                <Route path="cto-presentation" element={<CtoPresentation />} />
-                <Route path="ux-guidelines" element={<UXDocumentation />} />
-                <Route path="system-blueprint" element={<ProjectBlueprint />} />
-                <Route path="*" element={<NotFound />} />
-              </Route>
+              <Route path="/" element={<Home />} />
+              <Route path="/master-library" element={<MasterLibrary />} />
+              <Route path="/batch-center" element={<BatchCenter />} />
+              <Route path="/batch/:id" element={<BatchDetail />} />
+              <Route path="/ui-guidelines" element={<UiGuidelines />} />
+              <Route path="/api-specification" element={<ApiSpecification />} />
+              <Route path="/database-design" element={<DatabaseDesign />} />
+              <Route path="/interaction-guidelines" element={<InteractionGuidelines />} />
+              <Route path="/project-report" element={<ProjectReport />} />
+              <Route path="/project-blueprint" element={<ProjectBlueprint />} />
+              <Route path="/frontend-guide" element={<FrontendGuide />} />
+              <Route path="/backend-design" element={<BackendDesign />} />
+              <Route path="/prototype-design" element={<PrototypeDesign />} />
+              <Route path="/doc-center" element={<DocCenter />} />
+              <Route path="/asset-library" element={<AssetLibrary />} />
+              <Route path="/ux-documents" element={<UXDocuments />} />
+              <Route path="/product-lifecycle-presentation" element={<ProductLifecyclePresentation />} />
+              <Route path="/cto-presentation" element={<CtoPresentation />} />
+              <Route path="/creativepro-studio" element={<CreativeProStudio />} />
+              <Route path="/project-detail/:id" element={<ProjectDetail />} />
+              <Route path="/projects" element={<Projects />} />
+              <Route path="*" element={<NotFound />} />
             </Routes>
-          </ThemeProvider>
-        </div>
-      </Router>
-    </ChakraProvider>
+          </Router>
+        </AppContainer>
+      </ChakraProvider>
+    </ThemeProvider>
   );
 }
 

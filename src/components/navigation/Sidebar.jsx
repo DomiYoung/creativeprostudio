@@ -12,6 +12,12 @@ const menuItems = [
     path: '/creativeprostudio/asset-library'
   },
   {
+    id: 'material-library',
+    label: '材质库',
+    icon: 'fas fa-palette',
+    path: '/creativeprostudio/material-library'
+  },
+  {
     id: 'ux-documents',
     label: 'UX设计文档',
     icon: 'fas fa-file-alt',

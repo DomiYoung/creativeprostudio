@@ -29,6 +29,27 @@ const CardPreview = styled.div`
     object-fit: cover;
     transition: transform 0.5s ease;
   }
+  
+  &::after {
+    content: '点击编辑';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 2;
+  }
+  
+  &:hover::after {
+    opacity: 1;
+  }
 `;
 
 // 卡片状态标签
@@ -329,9 +350,13 @@ const ContentCard = ({
   contributorColors = {},
   aspectRatio = '16/9',
   onClick,
+  onSelect,
   folders = [],
   onDelete,
   showDeleteButton = true,
+  selectable = false,
+  selected = false,
+  onEditDesign,
 }) => {
   const { colorMode } = useTheme();
   const isDark = colorMode === 'dark';
@@ -340,7 +365,27 @@ const ContentCard = ({
   const handleDeleteClick = (e) => {
     e.stopPropagation();
     if (onDelete) {
-      onDelete();
+      onDelete(e);
+    }
+  };
+  
+  // 处理卡片点击
+  const handleCardClick = (e) => {
+    if (selectable && onSelect) {
+      onSelect(e);
+    } else if (onClick) {
+      onClick(e);
+    }
+  };
+  
+  // 处理图片点击（直接进入编辑器）
+  const handleImageClick = (e) => {
+    e.stopPropagation();
+    if (onEditDesign) {
+      onEditDesign(e);
+    } else if (onClick) {
+      // 如果没有提供编辑器回调，则默认使用onClick
+      onClick(e);
     }
   };
   
@@ -356,10 +401,13 @@ const ContentCard = ({
           ? 'rgba(255, 255, 255, 0.08)' 
           : 'rgba(0, 0, 0, 0.08)'
       }}
-      onClick={onClick}
+      onClick={handleCardClick}
       layout
     >
-      <CardPreview aspectRatio={aspectRatio}>
+      <CardPreview 
+        aspectRatio={aspectRatio}
+        onClick={handleImageClick}
+      >
         <motion.img 
           src={image} 
           alt={title}
@@ -378,6 +426,7 @@ const ContentCard = ({
             isSelected={isSelected}
             whileHover={{ scale: 1.2 }}
             whileTap={{ scale: 0.9 }}
+            onClick={(e) => e.stopPropagation()}
           >
             <i className={`fas ${isSelected ? 'fa-check' : 'fa-plus'}`}></i>
           </SelectIndicator>
@@ -398,6 +447,7 @@ const ContentCard = ({
           isFavorite={isFavorite}
           whileHover={{ scale: 1.2 }}
           whileTap={{ scale: 0.9 }}
+          onClick={(e) => e.stopPropagation()}
         >
           <i className={`fas ${isFavorite ? 'fa-star' : 'fa-star'}`}></i>
         </FavoriteIcon>
@@ -410,12 +460,14 @@ const ContentCard = ({
                 key={index}
                 color={folder.color}
                 name={folder.name}
+                onClick={(e) => e.stopPropagation()}
               />
             ))}
             {folders.length > 3 && (
               <FolderTag 
                 color="#888"
                 name={`还有 ${folders.length - 3} 个文件夹`}
+                onClick={(e) => e.stopPropagation()}
               />
             )}
           </FolderTags>

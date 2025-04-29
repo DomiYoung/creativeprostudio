@@ -189,7 +189,7 @@ const MasterLibrary = () => {
   const handleTemplateSelect = (id) => {
     // Navigate to template details or editor
     console.log(`Selected template: ${id}`);
-    // navigate(`/template-editor/${id}`);
+    navigate(`/creativeprostudio/canvas-editor?template=${id}`);
   };
 
   // 处理筛选变化
@@ -210,7 +210,7 @@ const MasterLibrary = () => {
   // 处理创建新模板
   const handleCreateTemplate = () => {
     console.log('Creating new template');
-    // navigate('/create-template');
+    navigate('/creativeprostudio/canvas-editor?create=template');
   };
 
   return (

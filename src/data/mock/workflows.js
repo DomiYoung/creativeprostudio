@@ -6,7 +6,7 @@ export const workflows = [
     description: "查看可用素材资源",
     icon: "fa-images",
     color: "#97C1FF",
-    path: "/asset-library"
+    path: "/creativeprostudio/asset-library"
   },
   {
     step: 2,
@@ -14,7 +14,7 @@ export const workflows = [
     description: "浏览设计模板",
     icon: "fa-palette",
     color: "#FFB5C5",
-    path: "/master-library"
+    path: "/creativeprostudio/master-library"
   },
   {
     step: 3,
@@ -22,7 +22,7 @@ export const workflows = [
     description: "Excel批量生成",
     icon: "fa-table",
     color: "#D5B3FF",
-    path: "/batch-create"
+    path: "/creativeprostudio/batch-create"
   },
   {
     step: 4,
@@ -30,7 +30,7 @@ export const workflows = [
     description: "调整图片细节",
     icon: "fa-pen-fancy",
     color: "#F5A680",
-    path: "/canvas-editor"
+    path: "/creativeprostudio/canvas-editor"
   },
   {
     step: 5,
@@ -38,6 +38,6 @@ export const workflows = [
     description: "管理导出作品",
     icon: "fa-folder-open",
     color: "#B6E5D8",
-    path: "/projects"
+    path: "/creativeprostudio/projects"
   }
 ]; 

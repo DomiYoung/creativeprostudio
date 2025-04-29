@@ -26,6 +26,7 @@ import FrontendArchitecture from './pages/FrontendArchitecture.jsx';
 import ProjectsList from './pages/ProjectsList.jsx';
 import DocumentationPage from './pages/DocumentationPage.jsx';
 import MaterialLibrary from './pages/MaterialLibrary.jsx';
+import ProjectDetail from './pages/ProjectDetail.jsx';
 import { ThemeProvider } from './design-system';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -60,6 +61,7 @@ root.render(
           <Route path="/creativeprostudio/demo" element={<CreativeDemo />} />
           <Route path="/creativeprostudio/app" element={<App />} />
           <Route path="/creativeprostudio/documentation" element={<DocumentationPage />} />
+          <Route path="/creativeprostudio/projects/:id" element={<ProjectDetail />} />
           
           {/* 兼容旧路径的重定向 */}
           <Route path="/document/*" element={<Navigate to="/creativeprostudio" replace />} />

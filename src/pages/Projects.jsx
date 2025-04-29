@@ -44,7 +44,7 @@ const projectStatusFilters = [
 // 模拟项目数据
 const mockProjects = [
   {
-    id: 1,
+    id: "1",
     title: '2025春季产品发布',
     coverImage: 'https://images.pexels.com/photos/3785147/pexels-photo-3785147.jpeg?auto=compress&cs=tinysrgb&w=800',
     type: 'campaign',
@@ -60,7 +60,7 @@ const mockProjects = [
     statusText: '进行中'
   },
   {
-    id: 2,
+    id: '2',
     title: '美妆新品社交媒体宣传',
     coverImage: 'https://images.pexels.com/photos/5632402/pexels-photo-5632402.jpeg?auto=compress&cs=tinysrgb&w=800',
     type: 'social',
@@ -76,7 +76,7 @@ const mockProjects = [
     isFeatured: true
   },
   {
-    id: 3,
+    id: '3',
     title: '护肤系列包装设计',
     coverImage: 'https://images.pexels.com/photos/3373739/pexels-photo-3373739.jpeg?auto=compress&cs=tinysrgb&w=800',
     type: 'product',
@@ -92,7 +92,7 @@ const mockProjects = [
     statusText: '进行中'
   },
   {
-    id: 4,
+    id: '4',
     title: '夏季促销活动',
     coverImage: 'https://images.pexels.com/photos/3826678/pexels-photo-3826678.jpeg?auto=compress&cs=tinysrgb&w=800',
     type: 'campaign',
@@ -109,7 +109,7 @@ const mockProjects = [
     statusText: '已完成'
   },
   {
-    id: 5,
+    id: '5',
     title: '年度品牌重塑计划',
     coverImage: 'https://images.pexels.com/photos/4620843/pexels-photo-4620843.jpeg?auto=compress&cs=tinysrgb&w=800',
     type: 'other',
@@ -126,7 +126,7 @@ const mockProjects = [
     isFeatured: true
   },
   {
-    id: 6,
+    id: '6',
     title: '彩妆系列广告拍摄',
     coverImage: 'https://images.pexels.com/photos/8128072/pexels-photo-8128072.jpeg?auto=compress&cs=tinysrgb&w=800',
     type: 'campaign',

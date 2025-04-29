@@ -306,6 +306,17 @@ const productEntries = [
     path: "/creativeprostudio/asset-library"
   },
   {
+    title: "材质库",
+    description: "专业材质资源管理，包含质感纹理、产品肌理、特效材质等，为Z世代美妆产品提供独特视觉效果。",
+    icon: "fa-brush",
+    iconBg: "bg-pink/20",
+    iconColor: "var(--pink)",
+    date: "2025-04-30",
+    type: "设计资源",
+    badgeType: "new",
+    path: "/creativeprostudio/material-library"
+  },
+  {
     title: "项目管理",
     description: "管理所有创意项目，跟踪进度、分配任务和审核设计，提供完整的项目生命周期管理。",
     icon: "fa-tasks",

@@ -59,6 +59,13 @@ const canvasSizes = [
   { id: 'product', name: '产品展示', width: 800, height: 1000 },
 ];
 
+// 模拟绘图元素数据
+const mockElements = [
+  { id: 'elem1', type: 'text', x: 100, y: 100, width: 200, height: 50, content: '标题文本', fontSize: 24, fontWeight: 'bold', color: '#000000' },
+  { id: 'elem2', type: 'image', x: 100, y: 200, width: 300, height: 200, src: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60' },
+  { id: 'elem3', type: 'shape', x: 450, y: 100, width: 150, height: 150, shapeType: 'rectangle', backgroundColor: '#FF9190', borderRadius: '10px' },
+];
+
 // 样式组件
 const Container = styled.div`
   display: flex;
@@ -497,6 +504,76 @@ const CanvasEditor = () => {
   const [canvasSize, setCanvasSize] = useState(canvasSizes[0]);
   const [history, setHistory] = useState([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
+  const [projectId, setProjectId] = useState(null);
+  const [templateId, setTemplateId] = useState(null);
+  const [isCreatingTemplate, setIsCreatingTemplate] = useState(false);
+  const [editorTitle, setEditorTitle] = useState("画布编辑器");
+  const [elements, setElements] = useState(mockElements);
+  const [selectedElement, setSelectedElement] = useState(null);
+  const [dragState, setDragState] = useState({ isDragging: false, startX: 0, startY: 0, elementId: null });
+  const [canvasBackgroundImage, setCanvasBackgroundImage] = useState(null);
+  
+  // 初始化 - 检查URL参数
+  useEffect(() => {
+    const queryParams = new URLSearchParams(window.location.search);
+    const projectParam = queryParams.get('project');
+    const templateParam = queryParams.get('template');
+    const imageParam = queryParams.get('image');
+    const createParam = queryParams.get('create');
+    
+    if (projectParam) {
+      setProjectId(projectParam);
+      setEditorTitle("项目画布编辑");
+      // 这里可以根据项目ID加载相应的项目数据
+      console.log(`加载项目ID: ${projectParam}，类型: ${typeof projectParam}`);
+      
+      // 检查是否有图片参数
+      if (imageParam) {
+        console.log(`加载图片ID: ${imageParam}`);
+        setEditorTitle(`编辑图片 - ID:${imageParam}`);
+        
+        // 模拟加载图片数据
+        const mockImages = [
+          { id: '101', url: 'https://images.pexels.com/photos/5632402/pexels-photo-5632402.jpeg', name: '首页Banner' },
+          { id: '102', url: 'https://images.pexels.com/photos/3373739/pexels-photo-3373739.jpeg', name: '产品展示图1' },
+          { id: '103', url: 'https://images.pexels.com/photos/4620843/pexels-photo-4620843.jpeg', name: '产品展示图2' },
+          { id: '104', url: 'https://images.pexels.com/photos/3826678/pexels-photo-3826678.jpeg', name: '社交媒体宣传图' },
+          { id: '105', url: 'https://images.pexels.com/photos/8128072/pexels-photo-8128072.jpeg', name: 'KOL合作视觉' },
+          { id: '106', url: 'https://images.pexels.com/photos/5632402/pexels-photo-5632402.jpeg', name: '线下活动海报' }
+        ];
+        
+        // 查找匹配的图片
+        const foundImage = mockImages.find(img => img.id === imageParam);
+        if (foundImage) {
+          // 设置背景图片
+          setCanvasBackgroundImage(foundImage.url);
+          setEditorTitle(`编辑 "${foundImage.name}"`);
+        }
+      }
+      
+      // 这里模拟从服务器加载项目数据
+      // 注意确保ID的类型匹配 - URL参数总是字符串
+      const loadProjectData = () => {
+        console.log("正在加载项目数据...");
+        // 实际项目中，这里应该是一个API调用
+        // 现在只是演示用
+      };
+      
+      loadProjectData();
+    } else if (templateParam) {
+      setTemplateId(templateParam);
+      setEditorTitle("模板画布编辑");
+      // 这里可以根据模板ID加载相应的模板数据
+      console.log(`加载模板ID: ${templateParam}`);
+    } else if (createParam === 'template') {
+      setIsCreatingTemplate(true);
+      setEditorTitle("创建新模板");
+      // 初始化一个空白模板
+      console.log("创建新模板");
+    } else {
+      console.log("未指定项目或模板ID，创建空白画布");
+    }
+  }, []);
 
   // 处理工具选择
   const handleToolSelect = (toolId) => {
@@ -546,7 +623,16 @@ const CanvasEditor = () => {
   // 处理保存操作
   const handleSave = () => {
     console.log('保存当前设计');
-    // 保存当前设计的逻辑
+    
+    if (projectId) {
+      // 保存项目设计
+      console.log(`保存项目ID: ${projectId}`);
+      // TODO: 实现项目保存API调用
+    } else if (templateId || isCreatingTemplate) {
+      // 保存为模板
+      console.log(`保存为模板: ${templateId || '新模板'}`);
+      // TODO: 实现模板保存API调用
+    }
   };
 
   // 处理导出操作
@@ -572,6 +658,150 @@ const CanvasEditor = () => {
     }
   };
 
+  // 打开模板库
+  const handleOpenTemplateLibrary = () => {
+    navigate('/creativeprostudio/master-library');
+  };
+
+  // 处理元素选择
+  const handleElementSelect = (elementId) => {
+    setSelectedElement(elementId);
+  };
+
+  // 开始拖拽元素
+  const handleDragStart = (e, elementId) => {
+    e.stopPropagation();
+    setDragState({
+      isDragging: true,
+      startX: e.clientX,
+      startY: e.clientY,
+      elementId
+    });
+    handleElementSelect(elementId);
+  };
+
+  // 拖拽元素
+  const handleDragMove = (e) => {
+    if (!dragState.isDragging) return;
+    
+    const deltaX = e.clientX - dragState.startX;
+    const deltaY = e.clientY - dragState.startY;
+    
+    setElements(elements.map(element => {
+      if (element.id === dragState.elementId) {
+        return {
+          ...element,
+          x: element.x + deltaX,
+          y: element.y + deltaY
+        };
+      }
+      return element;
+    }));
+    
+    setDragState({
+      ...dragState,
+      startX: e.clientX,
+      startY: e.clientY
+    });
+  };
+
+  // 结束拖拽
+  const handleDragEnd = () => {
+    setDragState({ isDragging: false, startX: 0, startY: 0, elementId: null });
+  };
+
+  // 渲染画布元素
+  const renderCanvasElement = (element) => {
+    const isSelected = selectedElement === element.id;
+    const baseStyle = {
+      position: 'absolute',
+      left: `${element.x}px`,
+      top: `${element.y}px`,
+      width: `${element.width}px`,
+      height: `${element.height}px`,
+      cursor: 'move',
+      border: isSelected ? '2px solid #60a5fa' : 'none',
+      boxShadow: isSelected ? '0 0 10px rgba(0, 102, 204, 0.3)' : 'none',
+      userSelect: 'none'
+    };
+    
+    switch (element.type) {
+      case 'text':
+        return (
+          <div
+            key={element.id}
+            style={{
+              ...baseStyle,
+              fontSize: `${element.fontSize}px`,
+              fontWeight: element.fontWeight,
+              color: element.color,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              textAlign: 'center'
+            }}
+            onMouseDown={(e) => handleDragStart(e, element.id)}
+          >
+            {element.content}
+          </div>
+        );
+      case 'image':
+        return (
+          <div
+            key={element.id}
+            style={{
+              ...baseStyle,
+              backgroundImage: `url(${element.src})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center'
+            }}
+            onMouseDown={(e) => handleDragStart(e, element.id)}
+          />
+        );
+      case 'shape':
+        return (
+          <div
+            key={element.id}
+            style={{
+              ...baseStyle,
+              backgroundColor: element.backgroundColor,
+              borderRadius: element.borderRadius
+            }}
+            onMouseDown={(e) => handleDragStart(e, element.id)}
+          />
+        );
+      default:
+        return null;
+    }
+  };
+
+  const renderCanvas = () => {
+    const canvasContainerStyle = {
+      width: `${canvasSize.width}px`,
+      height: `${canvasSize.height}px`,
+      background: canvasBackgroundImage 
+        ? `url(${canvasBackgroundImage}) no-repeat center/cover`
+        : isDark ? '#2c2c2e' : '#f5f5f7',
+      position: 'relative',
+      overflow: 'hidden',
+      transition: 'transform 0.3s ease',
+      transform: `scale(${zoom})`,
+      transformOrigin: 'center center',
+      boxShadow: '0 0 20px rgba(0, 0, 0, 0.1)'
+    };
+
+    return (
+      <div 
+        style={canvasContainerStyle}
+        onMouseDown={handleDragEnd}
+        onMouseMove={handleDragMove}
+        onMouseUp={handleDragEnd}
+      >
+        {elements.map(element => renderCanvasElement(element))}
+      </div>
+    );
+  };
+
   return (
     <Container style={{backgroundColor: isDark ? '#121212' : '#f5f5f7', color: isDark ? '#f5f5f7' : '#1d1d1f'}}>
       <Header style={{backgroundColor: isDark ? 'rgba(30, 30, 30, 0.8)' : 'rgba(255, 255, 255, 0.8)', borderBottomColor: isDark ? '#333' : '#e0e0e0'}}>
@@ -580,7 +810,7 @@ const CanvasEditor = () => {
             <ArrowBackIosNewIcon fontSize="small" />
             返回
           </BackButton>
-          <Title style={{color: isDark ? '#f5f5f7' : '#1d1d1f'}}>画布编辑器</Title>
+          <Title style={{color: isDark ? '#f5f5f7' : '#1d1d1f'}}>{editorTitle}</Title>
         </HeaderLeft>
         
         <HeaderCenter>
@@ -601,6 +831,39 @@ const CanvasEditor = () => {
         </HeaderCenter>
         
         <HeaderRight>
+          {templateId && (
+            <Button
+              variant="outline"
+              size="md"
+              leftIcon={<AutoFixHighIcon fontSize="small" />}
+              onClick={() => {
+                // 复制现有模板
+                console.log("复制模板:", templateId);
+                setIsCreatingTemplate(true);
+                setTemplateId(null);
+                setEditorTitle("从模板创建新模板");
+              }}
+            >
+              复制模板
+            </Button>
+          )}
+          
+          {projectId && !isCreatingTemplate && (
+            <Button
+              variant="outline"
+              size="md"
+              leftIcon={<LayersIcon fontSize="small" />}
+              onClick={() => {
+                // 将项目保存为模板
+                console.log("将项目保存为模板");
+                setIsCreatingTemplate(true);
+                setEditorTitle("保存为模板");
+              }}
+            >
+              保存为模板
+            </Button>
+          )}
+          
           <Button
             variant="outline"
             size="md"
@@ -646,6 +909,21 @@ const CanvasEditor = () => {
           </PanelSection>
           
           <PanelSection>
+            <PanelTitle style={{color: isDark ? '#f5f5f7' : '#1d1d1f'}}>模板与库</PanelTitle>
+            <ToolButton 
+              onClick={handleOpenTemplateLibrary}
+              style={{
+                backgroundColor: isDark ? '#1e1e1e' : 'white',
+                color: isDark ? '#f5f5f7' : '#1d1d1f',
+                borderColor: isDark ? '#444' : '#e0e0e0'
+              }}
+            >
+              <LayersIcon />
+              <ToolName>模板库</ToolName>
+            </ToolButton>
+          </PanelSection>
+          
+          <PanelSection>
             <PanelTitle style={{color: isDark ? '#f5f5f7' : '#1d1d1f'}}>工具</PanelTitle>
             <ToolsContainer>
               {mockTools.map((tool) => (
@@ -673,12 +951,7 @@ const CanvasEditor = () => {
         
         <WorkArea>
           <CanvasContainer backgroundColor={isDark ? '#1e1e1e' : 'white'}>
-            <Canvas 
-              size={canvasSize}
-              zoom={zoom}
-            >
-              {/* 此处将会放置画布上的各种元素 */}
-            </Canvas>
+            {renderCanvas()}
           </CanvasContainer>
           
           <ZoomControls>
@@ -707,7 +980,8 @@ const CanvasEditor = () => {
                 variant="ghost" 
                 size="sm" 
                 style={{marginLeft: 'auto'}} 
-                onClick={() => {
+                onClick={(e) => {
+                  e.stopPropagation();
                   const newLayer = { id: `layer-${layers.length + 1}`, name: `图层 ${layers.length + 1}`, type: 'shape', visible: true, locked: false };
                   setLayers([...layers, newLayer]);
                 }}
