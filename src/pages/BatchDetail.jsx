@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { motion } from 'framer-text';
+import { motion } from 'framer-motion';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import PauseIcon from '@mui/icons-material/Pause';

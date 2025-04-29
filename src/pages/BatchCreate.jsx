@@ -133,13 +133,13 @@ const StepCircle = styled.div`
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background-color: ${props => props.active ? '#0066cc' : props.completed ? '#4CAF50' : 'white'};
-  border: 2px solid ${props => props.active ? '#0066cc' : props.completed ? '#4CAF50' : '#e0e0e0'};
+  background-color: ${props => props.active ? '#0066cc' : props['data-completed'] ? '#4CAF50' : 'white'};
+  border: 2px solid ${props => props.active ? '#0066cc' : props['data-completed'] ? '#4CAF50' : '#e0e0e0'};
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 8px;
-  color: ${props => (props.active || props.completed) ? 'white' : '#1d1d1f'};
+  color: ${props => (props.active || props['data-completed']) ? 'white' : '#1d1d1f'};
   font-weight: 500;
   transition: all 0.3s;
 
@@ -150,7 +150,7 @@ const StepCircle = styled.div`
 
 const StepLabel = styled.span`
   font-size: 14px;
-  color: ${props => props.active ? '#0066cc' : props.completed ? '#4CAF50' : '#86868b'};
+  color: ${props => props.active ? '#0066cc' : props['data-completed'] ? '#4CAF50' : '#86868b'};
   font-weight: ${props => props.active ? '500' : 'normal'};
 `;
 
@@ -489,22 +489,22 @@ const BatchCreate = () => {
       <MainContent>
         <StepIndicator>
           <Step>
-            <StepCircle active={currentStep === 1} completed={currentStep > 1}>
+            <StepCircle active={currentStep === 1} data-completed={currentStep > 1}>
               {currentStep > 1 ? <CheckCircleIcon /> : 1}
             </StepCircle>
-            <StepLabel active={currentStep === 1} completed={currentStep > 1}>选择模板</StepLabel>
+            <StepLabel active={currentStep === 1} data-completed={currentStep > 1}>选择模板</StepLabel>
           </Step>
           <Step>
-            <StepCircle active={currentStep === 2} completed={currentStep > 2}>
+            <StepCircle active={currentStep === 2} data-completed={currentStep > 2}>
               {currentStep > 2 ? <CheckCircleIcon /> : 2}
             </StepCircle>
-            <StepLabel active={currentStep === 2} completed={currentStep > 2}>上传数据</StepLabel>
+            <StepLabel active={currentStep === 2} data-completed={currentStep > 2}>上传数据</StepLabel>
           </Step>
           <Step>
-            <StepCircle active={currentStep === 3} completed={currentStep > 3}>
+            <StepCircle active={currentStep === 3} data-completed={currentStep > 3}>
               {currentStep > 3 ? <CheckCircleIcon /> : 3}
             </StepCircle>
-            <StepLabel active={currentStep === 3} completed={currentStep > 3}>数据预览</StepLabel>
+            <StepLabel active={currentStep === 3} data-completed={currentStep > 3}>数据预览</StepLabel>
           </Step>
           <Step>
             <StepCircle active={currentStep === 4}>

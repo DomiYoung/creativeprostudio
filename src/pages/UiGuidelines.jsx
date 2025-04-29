@@ -2,7 +2,7 @@ import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
   faCalendarAlt, faUser, faCodeBranch, faPalette, 
-  faLayerGroup, faCube, faTabletAlt, faAccessibleIcon,
+  faLayerGroup, faCube, faTabletAlt, faUniversalAccess,
   faLightbulb, faCode
 } from '@fortawesome/free-solid-svg-icons';
 import '../styles/DocumentPage.css';
@@ -58,7 +58,7 @@ const UiGuidelines = () => {
           </li>
           <li className="toc-item">
             <a href="#accessibility" className="toc-link">
-              <FontAwesomeIcon icon={faAccessibleIcon} />
+              <FontAwesomeIcon icon={faUniversalAccess} />
               <span>5. 无障碍设计</span>
             </a>
           </li>

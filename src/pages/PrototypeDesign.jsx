@@ -17,6 +17,11 @@ const PrototypeDesign = () => {
   const isDark = colorMode === 'dark';
   const [activeSegment, setActiveSegment] = useState('我的项目');
   
+  // 处理工作流步骤点击事件
+  const handleWorkflowStepClick = (path) => {
+    navigate(path);
+  };
+  
   return (
     <S.Container>
       {/* 导航栏 */}
@@ -27,13 +32,13 @@ const PrototypeDesign = () => {
               <S.LogoText>CreativePro </S.LogoText><S.LogoHighlight>Studio</S.LogoHighlight>
             </S.Logo>
           </S.LogoContainer>
-          <S.NavItem href="/" className="active">
+          <S.NavItem onClick={() => navigate('/')} className="active">
             <i className="fas fa-home"></i> 首页
           </S.NavItem>
-          <S.NavItem href="/canvas-editor">
+          <S.NavItem onClick={() => navigate('/canvas-editor')}>
             <i className="fas fa-edit"></i> 画布编辑器
           </S.NavItem>
-          <S.NavItem href="/document/batch-center.html">
+          <S.NavItem onClick={() => navigate('/batch-center')}>
             <i className="fas fa-th-large"></i> 批量处理中心
           </S.NavItem>
         </S.NavGroup>
@@ -58,7 +63,7 @@ const PrototypeDesign = () => {
             {workflows.map((workflow, index) => (
               <S.WorkflowStep 
                 key={workflow.step}
-                onClick={() => navigate(workflow.path)}
+                onClick={() => handleWorkflowStepClick(workflow.path)}
               >
                 <S.StepIconContainer className="step-icon-container">
                   <S.StepIcon color={workflow.color}>
@@ -95,7 +100,7 @@ const PrototypeDesign = () => {
                 boxShadow: '0 12px 24px rgba(0, 0, 0, 0.06)',
                 borderColor: '#E4E4E4'
               }}
-              onClick={() => navigate('/document/project-detail.html')}
+              onClick={() => navigate('/projects')}
             >
               <S.ProjectPreview>
                 <motion.img 
@@ -144,7 +149,7 @@ const PrototypeDesign = () => {
 
         {/* 创建新项目按钮 */}
         <S.CreateProjectButton
-          onClick={() => navigate('/document/batch-create.html')}
+          onClick={() => navigate('/batch-create')}
           whileHover={{ 
             y: -6, 
             boxShadow: '0 12px 30px rgba(245, 166, 128, 0.3)', 
@@ -163,10 +168,10 @@ const PrototypeDesign = () => {
         </S.FooterLogo>
         <S.FooterText>专为美妆电商设计的高效创意工具</S.FooterText>
         <S.FooterLinks>
-          <S.FooterLink href="#">关于我们</S.FooterLink>
-          <S.FooterLink href="#">帮助中心</S.FooterLink>
-          <S.FooterLink href="#">隐私政策</S.FooterLink>
-          <S.FooterLink href="#">用户协议</S.FooterLink>
+          <S.FooterLink onClick={() => navigate('/')}>关于我们</S.FooterLink>
+          <S.FooterLink onClick={() => navigate('/help')}>帮助中心</S.FooterLink>
+          <S.FooterLink onClick={() => navigate('/privacy')}>隐私政策</S.FooterLink>
+          <S.FooterLink onClick={() => navigate('/terms')}>用户协议</S.FooterLink>
         </S.FooterLinks>
         <S.Copyright>© 2025 CreativePro Studio. All rights reserved.</S.Copyright>
       </S.Footer>

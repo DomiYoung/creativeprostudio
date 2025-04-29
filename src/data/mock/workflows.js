@@ -14,7 +14,7 @@ export const workflows = [
     description: "浏览设计模板",
     icon: "fa-palette",
     color: "#FFB5C5",
-    path: "/document/master-library.html"
+    path: "/master-library"
   },
   {
     step: 3,
@@ -22,7 +22,7 @@ export const workflows = [
     description: "Excel批量生成",
     icon: "fa-table",
     color: "#D5B3FF",
-    path: "/document/batch-create.html"
+    path: "/batch-create"
   },
   {
     step: 4,
@@ -38,6 +38,6 @@ export const workflows = [
     description: "管理导出作品",
     icon: "fa-folder-open",
     color: "#B6E5D8",
-    path: "/document/projects.html"
+    path: "/projects"
   }
 ]; 

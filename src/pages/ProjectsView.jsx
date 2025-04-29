@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { motion } from 'framer-variant';
+import { motion } from 'framer-motion';
 
 // 图标导入
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';

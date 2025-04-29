@@ -458,6 +458,13 @@ const MaterialCardTag = styled.span`
   font-size: 11px;
 `;
 
+const MaterialCardTags = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 8px;
+`;
+
 const MaterialListItem = styled.div`
   display: flex;
   align-items: center;
@@ -575,12 +582,70 @@ const EmptyState = styled.div`
   }
 `;
 
+const BackToPrototypeButton = styled.button`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: ${props => props.isDark ? 'var(--gray-700)' : 'var(--gray-100)'};
+  color: ${props => props.isDark ? 'var(--gray-200)' : 'var(--gray-800)'};
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 14px;
+  margin-bottom: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  
+  &:hover {
+    background-color: ${props => props.isDark ? 'var(--gray-600)' : 'var(--gray-200)'};
+    color: ${props => props.isDark ? 'white' : 'var(--gray-900)'};
+  }
+  
+  i {
+    font-size: 12px;
+  }
+`;
+
+const EmptyStateButton = styled.button`
+  background-color: ${props => props.isDark ? 'var(--gray-700)' : 'var(--gray-100)'};
+  color: ${props => props.isDark ? 'var(--gray-200)' : 'var(--gray-800)'};
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  
+  &:hover {
+    background-color: ${props => props.isDark ? 'var(--gray-600)' : 'var(--gray-200)'};
+    color: ${props => props.isDark ? 'white' : 'var(--gray-900)'};
+  }
+`;
+
+// 定义PrimaryButton和SecondaryButton
+const PrimaryButton = styled(Button)`
+  background-color: ${props => props.isDark ? 'var(--dopamine-orange)' : 'var(--dopamine-orange)'};
+  color: ${props => props.isDark ? 'var(--gray-900)' : 'var(--gray-900)'};
+  &:hover {
+    background-color: ${props => props.isDark ? '#F0D2CA' : '#F0D2CA'};
+  }
+`;
+
+const SecondaryButton = styled(Button)`
+  background-color: transparent;
+  border: 1px solid ${props => props.isDark ? 'var(--gray-600)' : 'var(--gray-300)'};
+  color: ${props => props.isDark ? 'var(--gray-300)' : 'var(--gray-700)'};
+  &:hover {
+    border-color: ${props => props.isDark ? 'var(--gray-500)' : 'var(--gray-400)'};
+    background-color: ${props => props.isDark ? 'var(--gray-700)' : 'var(--gray-100)'};
+  }
+`;
+
 const AssetLibrary = () => {
   const navigate = useNavigate();
   const { colorMode } = useTheme();
   const isDark = colorMode === 'dark';
   
-  // State
   const [selectedSection, setSelectedSection] = useState('folder');
   const [selectedFolder, setSelectedFolder] = useState('all');
   const [selectedBrand, setSelectedBrand] = useState(null);
@@ -588,59 +653,42 @@ const AssetLibrary = () => {
   const [selectedTags, setSelectedTags] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [isGridView, setIsGridView] = useState(true);
+  
   const [materials, setMaterials] = useState([]);
-
+  
   useEffect(() => {
-    // 根据选择的条件过滤素材
-    let filteredMaterials = [...assetItems];
-
-    // 筛选文件夹
+    // 根据筛选条件过滤素材
+    let filtered = [...assetItems];
+    
+    // 根据文件夹/品牌筛选
     if (selectedSection === 'folder' && selectedFolder) {
-      if (selectedFolder !== 'all') {
-        filteredMaterials = filteredMaterials.filter(
-          material => material.folder === selectedFolder
-        );
-      }
+      filtered = filtered.filter(item => item.folder === selectedFolder || selectedFolder === 'all');
+    } else if (selectedSection === 'brand' && selectedBrand) {
+      filtered = filtered.filter(item => item.brand === selectedBrand);
     }
-
-    // 筛选品牌
-    if (selectedSection === 'brand' && selectedBrand) {
-      filteredMaterials = filteredMaterials.filter(
-        material => material.brand === selectedBrand
-      );
+    
+    // 根据分类筛选
+    if (selectedCategory !== 'all') {
+      filtered = filtered.filter(item => item.categories.includes(selectedCategory));
     }
-
-    // 筛选类别
-    if (selectedCategory && selectedCategory !== 'all') {
-      filteredMaterials = filteredMaterials.filter(
-        material => material.categories.includes(selectedCategory)
-      );
-    }
-
-    // 筛选标签
+    
+    // 根据标签筛选
     if (selectedTags.length > 0) {
-      filteredMaterials = filteredMaterials.filter(
-        material => selectedTags.some(tag => material.tags.includes(tag))
+      filtered = filtered.filter(item => 
+        selectedTags.some(tag => item.tags.includes(tag))
       );
     }
-
-    // 搜索筛选
-    if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase().trim();
-      filteredMaterials = filteredMaterials.filter(
-        material => material.title.toLowerCase().includes(query)
+    
+    // 根据搜索查询筛选
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(item => 
+        item.title.toLowerCase().includes(query)
       );
     }
-
-    setMaterials(filteredMaterials);
-  }, [
-    selectedSection,
-    selectedFolder,
-    selectedBrand,
-    selectedCategory,
-    selectedTags,
-    searchQuery
-  ]);
+    
+    setMaterials(filtered);
+  }, [selectedSection, selectedFolder, selectedBrand, selectedCategory, selectedTags, searchQuery]);
 
   const handleSidebarItemClick = (section, data = null) => {
     setSelectedSection(section);
@@ -780,40 +828,51 @@ const AssetLibrary = () => {
 
   return (
     <AppContainer isDark={isDark}>
-      {/* 页头 */}
       <AppHeader isDark={isDark}>
         <HeaderLogo isDark={isDark}>
-          <img src="https://via.placeholder.com/32" alt="Logo" />
+          <img src="/logo.svg" alt="CreativePro Studio Logo" />
           <span>CreativePro Studio</span>
         </HeaderLogo>
-        
         <HeaderNav>
-          <NavLink href="/prototype" isDark={isDark}>首页</NavLink>
-          <NavLink href="/asset-library" className="active" isDark={isDark}>素材库</NavLink>
-          <NavLink href="#" isDark={isDark}>模板中心</NavLink>
-          <NavLink href="#" isDark={isDark}>作品管理</NavLink>
+          <NavLink 
+            isDark={isDark} 
+            href="#" 
+            className="active"
+            onClick={() => navigate('/')}
+          >素材库</NavLink>
+          <NavLink 
+            isDark={isDark} 
+            href="#"
+            onClick={() => navigate('/master-library')}
+          >母版库</NavLink>
+          <NavLink 
+            isDark={isDark} 
+            href="#"
+            onClick={() => navigate('/batch-center')}
+          >批量处理</NavLink>
+          <NavLink 
+            isDark={isDark} 
+            href="#"
+            onClick={() => navigate('/projects')}
+          >项目管理</NavLink>
         </HeaderNav>
-        
         <HeaderActions>
-          <ActionButton isDark={isDark} title="上传">
-            <i className="fas fa-cloud-upload-alt"></i>
-          </ActionButton>
-          <ActionButton isDark={isDark} title="通知">
+          <ActionButton isDark={isDark}>
             <i className="fas fa-bell"></i>
           </ActionButton>
+          <ActionButton isDark={isDark}>
+            <i className="fas fa-cog"></i>
+          </ActionButton>
           <UserProfile>
-            <img src="https://via.placeholder.com/36" alt="User" />
+            <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="User Avatar" />
           </UserProfile>
         </HeaderActions>
       </AppHeader>
       
-      {/* 主内容区 */}
       <PageContainer>
-        {/* 侧边栏 */}
         <Sidebar isDark={isDark}>
-          {/* 文件夹部分 */}
           <SidebarSection>
-            <SidebarTitle isDark={isDark}>素材库</SidebarTitle>
+            <SidebarTitle isDark={isDark}>资源管理</SidebarTitle>
             {folderTypes.map(folder => (
               <SidebarItem key={folder.id}>
                 <SidebarLink 
@@ -827,11 +886,16 @@ const AssetLibrary = () => {
                 </SidebarLink>
               </SidebarItem>
             ))}
+            <SidebarItem>
+              <SidebarLink isDark={isDark} className="add-folder">
+                <i className="fas fa-plus"></i>
+                创建新文件夹
+              </SidebarLink>
+            </SidebarItem>
           </SidebarSection>
           
-          {/* 品牌部分 */}
           <SidebarSection>
-            <SidebarTitle isDark={isDark}>品牌</SidebarTitle>
+            <SidebarTitle isDark={isDark}>品牌文件夹</SidebarTitle>
             {brandFolders.map(brand => (
               <SidebarItem key={brand.id}>
                 <SidebarLink 
@@ -845,122 +909,118 @@ const AssetLibrary = () => {
                 </SidebarLink>
               </SidebarItem>
             ))}
-            <SidebarItem>
-              <SidebarLink 
-                isDark={isDark}
-                className="add-folder"
-              >
-                <i className="fas fa-plus"></i>
-                添加品牌
-              </SidebarLink>
-            </SidebarItem>
           </SidebarSection>
         </Sidebar>
         
-        {/* 素材内容区 */}
         <MaterialsContent>
           <ContentArea>
-            {/* 内容头部 */}
             <MaterialsHeader>
               <div>
                 <MaterialsTitle isDark={isDark}>{formatTitle()}</MaterialsTitle>
                 <MaterialsSubtitle isDark={isDark}>{formatSubtitle()}</MaterialsSubtitle>
               </div>
               
-              <SearchBar>
-                <SearchInput 
-                  type="text"
-                  placeholder="搜索素材..."
-                  value={searchQuery}
-                  onChange={handleSearch}
-                  isDark={isDark}
-                />
-                <SearchButton isDark={isDark}>
+              <MaterialsActions>
+                <SearchBar isDark={isDark}>
                   <i className="fas fa-search"></i>
-                </SearchButton>
-              </SearchBar>
-              
-              <HeaderTools>
-                <ViewToggle isDark={isDark}>
-                  <ViewToggleButton 
-                    isDark={isDark}
-                    isActive={isGridView}
-                    onClick={() => setIsGridView(true)}
-                  >
-                    <i className="fas fa-th-large"></i>
-                  </ViewToggleButton>
-                  <ViewToggleButton 
-                    isDark={isDark}
-                    isActive={!isGridView}
-                    onClick={() => setIsGridView(false)}
-                  >
-                    <i className="fas fa-list"></i>
-                  </ViewToggleButton>
-                </ViewToggle>
+                  <input 
+                    type="text" 
+                    placeholder="搜索素材..." 
+                    value={searchQuery}
+                    onChange={handleSearch}
+                  />
+                </SearchBar>
                 
-                <ToolButton isDark={isDark} title="上传素材">
+                <PrimaryButton isDark={isDark}>
                   <i className="fas fa-upload"></i>
                   上传素材
-                </ToolButton>
-              </HeaderTools>
+                </PrimaryButton>
+                
+                <SecondaryButton isDark={isDark}>
+                  <i className="fas fa-filter"></i>
+                  筛选
+                </SecondaryButton>
+                
+                <ViewToggle>
+                  <ActionButton 
+                    isDark={isDark}
+                    className={isGridView ? 'active' : ''}
+                    onClick={toggleView}
+                  >
+                    <i className="fas fa-th"></i>
+                  </ActionButton>
+                  <ActionButton 
+                    isDark={isDark}
+                    className={!isGridView ? 'active' : ''}
+                    onClick={toggleView}
+                  >
+                    <i className="fas fa-list"></i>
+                  </ActionButton>
+                </ViewToggle>
+              </MaterialsActions>
             </MaterialsHeader>
             
-            {/* 过滤器 */}
-            <FilterBar>
-              <FilterSection>
-                <FilterLabel isDark={isDark}>类别:</FilterLabel>
-                <FilterTags>
-                  {categories.map(category => (
-                    <FilterTag 
-                      key={category.id}
-                      isDark={isDark}
-                      isActive={selectedCategory === category.id}
-                      onClick={() => handleCategoryClick(category.id)}
-                    >
-                      {category.name}
-                    </FilterTag>
-                  ))}
-                </FilterTags>
-              </FilterSection>
-              
-              <FilterSection>
-                <FilterLabel isDark={isDark}>标签:</FilterLabel>
-                <FilterTags>
-                  {tags.map(tag => (
-                    <FilterTag 
-                      key={tag.id}
-                      isDark={isDark}
-                      isActive={selectedTags.includes(tag.id)}
-                      onClick={() => handleTagClick(tag.id)}
-                    >
-                      {tag.name}
-                    </FilterTag>
-                  ))}
-                </FilterTags>
-              </FilterSection>
-            </FilterBar>
+            <CategoryTabs>
+              {categories.map(category => (
+                <CategoryTab 
+                  key={category.id}
+                  isDark={isDark}
+                  isActive={selectedCategory === category.id}
+                  onClick={() => handleCategoryClick(category.id)}
+                >
+                  {category.name}
+                </CategoryTab>
+              ))}
+            </CategoryTabs>
             
-            {/* 素材列表 */}
-            {isGridView ? (
-              <MaterialsGrid>
-                {materials.map(material => renderMaterialCard(material))}
-              </MaterialsGrid>
-            ) : (
-              <MaterialsList>
-                {materials.map(material => renderMaterialListItem(material))}
-              </MaterialsList>
-            )}
+            <TagFilters>
+              {tags.map(tag => (
+                <TagFilter 
+                  key={tag.id}
+                  isDark={isDark}
+                  isActive={selectedTags.includes(tag.id)}
+                  onClick={() => handleTagClick(tag.id)}
+                >
+                  {tag.name}
+                </TagFilter>
+              ))}
+            </TagFilters>
             
-            {/* 空状态 */}
-            {materials.length === 0 && (
+            {/* 返回原型设计按钮 */}
+            <BackToPrototypeButton 
+              isDark={isDark}
+              onClick={() => navigate('/prototype')}
+            >
+              <i className="fas fa-arrow-left"></i>
+              返回原型设计
+            </BackToPrototypeButton>
+            
+            {materials.length === 0 ? (
               <EmptyState isDark={isDark}>
                 <i className="fas fa-search"></i>
-                <h3>没有找到匹配的素材</h3>
-                <p>尝试调整你的搜索或过滤条件</p>
+                <p>没有找到匹配的素材</p>
+                <EmptyStateButton isDark={isDark} onClick={() => {
+                  setSelectedCategory('all');
+                  setSelectedTags([]);
+                  setSearchQuery('');
+                }}>
+                  清除筛选条件
+                </EmptyStateButton>
               </EmptyState>
+            ) : (
+              <>
+                {isGridView ? (
+                  <MaterialsGrid>
+                    {materials.map(material => renderMaterialCard(material))}
+                  </MaterialsGrid>
+                ) : (
+                  <MaterialsList>
+                    {materials.map(material => renderMaterialListItem(material))}
+                  </MaterialsList>
+                )}
+              </>
             )}
             
-            {/* 分页 */}
             {materials.length > 0 && (
               <Pagination>
                 <PaginationButton isDark={isDark}>
