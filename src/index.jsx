@@ -24,6 +24,8 @@ import ProjectBlueprint from './pages/ProjectBlueprint.jsx';
 import BackendArchitecture from './pages/BackendArchitecture.jsx';
 import FrontendArchitecture from './pages/FrontendArchitecture.jsx';
 import ProjectsList from './pages/ProjectsList.jsx';
+import DocumentationPage from './pages/DocumentationPage.jsx';
+import MaterialLibrary from './pages/MaterialLibrary.jsx';
 import { ThemeProvider } from './design-system';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -49,6 +51,7 @@ root.render(
           <Route path="/creativeprostudio/canvas-editor" element={<CanvasEditor />} />
           <Route path="/creativeprostudio/projects" element={<ProjectsView />} />
           <Route path="/creativeprostudio/batch-create" element={<BatchCreate />} />
+          <Route path="/creativeprostudio/material-library" element={<MaterialLibrary />} />
           <Route path="/creativeprostudio/database-design" element={<DatabaseDesign />} />
           <Route path="/creativeprostudio/api-specification" element={<ApiSpecification />} />
           <Route path="/creativeprostudio/ui-guidelines" element={<UiGuidelines />} />
@@ -56,6 +59,7 @@ root.render(
           <Route path="/creativeprostudio/showcase" element={<UIShowcase />} />
           <Route path="/creativeprostudio/demo" element={<CreativeDemo />} />
           <Route path="/creativeprostudio/app" element={<App />} />
+          <Route path="/creativeprostudio/documentation" element={<DocumentationPage />} />
           
           {/* 兼容旧路径的重定向 */}
           <Route path="/document/*" element={<Navigate to="/creativeprostudio" replace />} />
@@ -68,6 +72,7 @@ root.render(
           <Route path="/batch-center" element={<Navigate to="/creativeprostudio/batch-center" replace />} />
           <Route path="/projects" element={<Navigate to="/creativeprostudio/projects" replace />} />
           <Route path="/batch-create" element={<Navigate to="/creativeprostudio/batch-create" replace />} />
+          <Route path="/material-library" element={<Navigate to="/creativeprostudio/material-library" replace />} />
           <Route path="/database-design" element={<Navigate to="/creativeprostudio/database-design" replace />} />
           <Route path="/api-specification" element={<Navigate to="/creativeprostudio/api-specification" replace />} />
           <Route path="/ui-guidelines" element={<Navigate to="/creativeprostudio/ui-guidelines" replace />} />
@@ -75,6 +80,7 @@ root.render(
           <Route path="/showcase" element={<Navigate to="/creativeprostudio/showcase" replace />} />
           <Route path="/demo" element={<Navigate to="/creativeprostudio/demo" replace />} />
           <Route path="/app" element={<Navigate to="/creativeprostudio/app" replace />} />
+          <Route path="/documentation" element={<Navigate to="/creativeprostudio/documentation" replace />} />
           
           {/* 404页面 */}
           <Route path="*" element={<NotFound />} />

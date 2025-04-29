@@ -28,6 +28,12 @@ import LifecycleFlow from './components/LifecycleFlow';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
 import { ThemeProvider } from './design-system';
+import AssetLibrary from './pages/AssetLibrary';
+import UXDocuments from './pages/UXDocuments';
+import UXDocumentation from './design-system/ux';
+import ProductLifecyclePresentation from './pages/ProductLifecyclePresentation';
+import CtoPresentation from './pages/CtoPresentation';
+import DocCenter from './DocCenter';
 
 // 创建Chakra UI主题
 const theme = extendTheme({
@@ -384,7 +390,28 @@ function Home() {
         blurred
         bordered
         sticky
-      />
+      >
+        <div className="flex items-center space-x-4">
+          <Link 
+            to="/creativeprostudio/ux-guidelines" 
+            className="nav-link"
+          >
+            UX设计系统
+          </Link>
+          <Link 
+            to="/creativeprostudio/system-blueprint" 
+            className="nav-link"
+          >
+            系统蓝图
+          </Link>
+          <Link 
+            to="/creativeprostudio/document-center" 
+            className="nav-link"
+          >
+            文档中心
+          </Link>
+        </div>
+      </Navigation>
       <MainContent>
         {/* 头部区域 */}
         <HeaderSection>
@@ -463,26 +490,6 @@ function Home() {
   );
 }
 
-// 文档中心组件
-function DocCenter() {
-  return (
-    <AppContainer>
-      <Navigation 
-        title="文档中心"
-        items={navigationItems}
-        blurred
-        bordered
-        sticky
-      />
-      <MainContent>
-        <PageTitle>产品设计文档</PageTitle>
-        <p>请从左侧导航选择要查看的文档。</p>
-      </MainContent>
-      <Footer />
-    </AppContainer>
-  );
-}
-
 // 404组件
 function NotFound() {
   return (
@@ -504,23 +511,32 @@ function App() {
           {/* Wrap all routes with the ThemeProvider */}
           <ThemeProvider>
             <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/doccenter" element={<DocCenter />} />
-              <Route path="/database-design" element={<DatabaseDesign />} />
-              <Route path="/api-specification" element={<ApiSpecification />} />
-              <Route path="/ui-guidelines" element={<UiGuidelines />} />
-              <Route path="/interaction-guidelines" element={<InteractionGuidelines />} />
-              <Route path="/project-report" element={<ProjectReport />} />
-              <Route path="/project-blueprint" element={<ProjectBlueprint />} />
-              <Route path="/frontend-design" element={<FrontendGuide />} />
-              <Route path="/backend-design" element={<BackendDesign />} />
-              <Route path="/master-library" element={<MasterLibrary />} />
-              <Route path="/batch-center" element={<BatchCenter />} />
-              <Route path="/batch-detail" element={<BatchDetail />} />
-              <Route path="/home-page" element={<PrototypeDesign />} />
-              <Route path="/product-concept" element={<ProductConcept />} />
-              <Route path="/lifecycle-flow" element={<LifecycleFlow />} />
-              <Route path="*" element={<NotFound />} />
+              <Route path="/creativeprostudio" element={<Layout />}>
+                <Route index element={<Home />} />
+                <Route path="prototype" element={<Prototype />} />
+                <Route path="asset-library" element={<AssetLibrary />} />
+                <Route path="ux-documents" element={<UXDocuments />} />
+                <Route path="document-center" element={<DocCenter />} />
+                <Route path="database-design" element={<DatabaseDesign />} />
+                <Route path="api-specification" element={<ApiSpecification />} />
+                <Route path="ui-guidelines" element={<UiGuidelines />} />
+                <Route path="interaction-guidelines" element={<InteractionGuidelines />} />
+                <Route path="project-report" element={<ProjectReport />} />
+                <Route path="project-blueprint" element={<ProjectBlueprint />} />
+                <Route path="frontend-design" element={<FrontendGuide />} />
+                <Route path="backend-design" element={<BackendDesign />} />
+                <Route path="master-library" element={<MasterLibrary />} />
+                <Route path="batch-center" element={<BatchCenter />} />
+                <Route path="batch-detail" element={<BatchDetail />} />
+                <Route path="home-page" element={<PrototypeDesign />} />
+                <Route path="product-concept" element={<ProductConcept />} />
+                <Route path="lifecycle-flow" element={<LifecycleFlow />} />
+                <Route path="product-lifecycle" element={<ProductLifecyclePresentation />} />
+                <Route path="cto-presentation" element={<CtoPresentation />} />
+                <Route path="ux-guidelines" element={<UXDocumentation />} />
+                <Route path="system-blueprint" element={<ProjectBlueprint />} />
+                <Route path="*" element={<NotFound />} />
+              </Route>
             </Routes>
           </ThemeProvider>
         </div>

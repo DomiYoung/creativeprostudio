@@ -140,6 +140,17 @@ const systemDesignDocs = [
     type: "设计资源",
     badgeType: "new",
     path: "/creativeprostudio/showcase"
+  },
+  {
+    title: "文档中心",
+    description: "项目所有文档的汇总浏览与查看，包含系统设计、前后端实现、用户界面等各方面的详细文档。",
+    icon: "fa-book",
+    iconBg: "bg-teal/20",
+    iconColor: "var(--teal)",
+    date: "2025-04-30",
+    type: "文档汇总",
+    badgeType: "new",
+    path: "/creativeprostudio/documentation"
   }
 ];
 
@@ -198,6 +209,17 @@ const techDocs = [
     type: "UI规范",
     badgeType: "new",
     path: "/creativeprostudio/ui-guidelines"
+  },
+  {
+    title: "UX Markdown文档",
+    description: "直接访问设计系统UX相关的Markdown源文件，包含系统蓝图、可用性指南、信息架构等设计文档。",
+    icon: "fa-file-alt",
+    iconBg: "bg-indigo/20",
+    iconColor: "var(--indigo)",
+    date: "2025-05-01",
+    type: "源文件",
+    badgeType: "new",
+    path: "/creativeprostudio/ux-guidelines"
   }
 ];
 
@@ -329,6 +351,65 @@ const systemDocs = [
     meta: { icon: "fas fa-book", text: "设计系统" },
     link: "/creativeprostudio/interaction-guidelines"
   },
+];
+
+// 添加产品经理专用文档
+const pmDocs = [
+  {
+    title: "项目蓝图",
+    description: "CreativePro Studio的整体产品愿景、目标和路线图，为团队提供明确的方向指导",
+    icon: "fa-map",
+    iconBg: "bg-blue/20",
+    iconColor: "var(--blue)",
+    date: "2025-04-15",
+    type: "战略文档",
+    badgeType: "new",
+    path: "/creativeprostudio/project-blueprint"
+  },
+  {
+    title: "项目进度监控",
+    description: "实时项目进度跟踪、里程碑完成情况及团队成员工作分配状态",
+    icon: "fa-tasks",
+    iconBg: "bg-pink/20",
+    iconColor: "var(--pink)",
+    date: "2025-05-10",
+    type: "监控面板",
+    badgeType: "updated",
+    path: "/creativeprostudio/project-report"
+  },
+  {
+    title: "产品生命周期",
+    description: "从规划构想到迭代优化的完整产品开发流程与各阶段管理策略",
+    icon: "fa-sync-alt",
+    iconBg: "bg-purple/20",
+    iconColor: "var(--purple)",
+    date: "2025-04-20",
+    type: "流程文档",
+    badgeType: "new",
+    path: "/creativeprostudio/product-lifecycle"
+  },
+  {
+    title: "风险管理",
+    description: "项目潜在风险识别、评估和应对策略，确保项目顺利推进",
+    icon: "fa-shield-alt",
+    iconBg: "bg-red/20",
+    iconColor: "var(--red)",
+    date: "2025-05-05",
+    type: "风险评估",
+    badgeType: "new",
+    path: "/creativeprostudio/project-risks"
+  },
+  {
+    title: "团队绩效",
+    description: "团队成员工作成果与绩效评估，包括关键指标与改进建议",
+    icon: "fa-users",
+    iconBg: "bg-green/20",
+    iconColor: "var(--green)",
+    date: "2025-05-15",
+    type: "绩效报告",
+    badgeType: "new",
+    path: "/creativeprostudio/team-performance"
+  }
 ];
 
 // 主题切换按钮 - 基于Apple Human Interface Guidelines改进
@@ -505,12 +586,289 @@ const ScrollIndicator = ({ isDark }) => {
   );
 };
 
+// 文件浏览器组件
+const UxFileBrowser = ({ isDark }) => {
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [fileContent, setFileContent] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [files, setFiles] = useState([]);
+  const [isLoadingFiles, setIsLoadingFiles] = useState(true);
+  const [errorMessage, setErrorMessage] = useState('');
+  
+  // 动态获取目录文件列表
+  useEffect(() => {
+    const fetchDirectoryContents = async () => {
+      setIsLoadingFiles(true);
+      setErrorMessage('');
+      
+      try {
+        // 方法1：使用后端API获取目录内容（需要后端支持）
+        const response = await fetch('/api/directory?path=src/design-system/ux');
+        
+        if (response.ok) {
+          const data = await response.json();
+          
+          // 将文件数据转换为我们需要的格式
+          const fileData = data.files.map(file => {
+            // 根据文件扩展名设置图标和描述
+            let icon = 'fa-file';
+            let description = '未知文件类型';
+            
+            if (file.name.endsWith('.md')) {
+              icon = 'fa-file-alt';
+              // 根据文件名推断描述
+              if (file.name.includes('Design')) description = '系统蓝图';
+              else if (file.name.includes('Usability')) description = '可用性指南';
+              else if (file.name.includes('Information')) description = '信息架构';
+              else if (file.name.includes('Interaction')) description = '交互模式';
+              else if (file.name.includes('Visual')) description = '视觉设计';
+              else if (file.name.includes('Material')) description = '素材库';
+              else description = 'Markdown文档';
+            } else if (file.name.endsWith('.jsx') || file.name.endsWith('.js')) {
+              icon = 'fa-file-code';
+              description = 'React组件';
+            } else if (file.name.endsWith('.css')) {
+              icon = 'fa-file-code';
+              description = '样式文件';
+            } else if (file.name.endsWith('.json')) {
+              icon = 'fa-file-code';
+              description = 'JSON数据';
+            }
+            
+            return {
+              name: file.name,
+              icon,
+              description,
+              type: file.type,
+              size: file.size
+            };
+          });
+          
+          setFiles(fileData);
+        } else {
+          // 如果API请求失败，回退到硬编码文件列表
+          console.warn('无法获取目录内容，使用备用文件列表');
+          setFiles([
+            { name: "DesignSystemOverview.md", icon: "fa-file-alt", description: "系统蓝图" },
+            { name: "UsabilityGuidelines.md", icon: "fa-file-alt", description: "可用性指南" },
+            { name: "InformationArchitecture.md", icon: "fa-file-alt", description: "信息架构" },
+            { name: "InteractionPatterns.md", icon: "fa-file-alt", description: "交互模式" },
+            { name: "VisualDesignGuidelines.md", icon: "fa-file-alt", description: "视觉设计" },
+            { name: "MaterialLibraryUX.md", icon: "fa-file-alt", description: "素材库" },
+            { name: "index.jsx", icon: "fa-file-code", description: "UX组件实现" }
+          ]);
+          setErrorMessage('目录内容加载失败，显示备用文件列表');
+        }
+      } catch (error) {
+        console.error('获取目录内容时出错:', error);
+        // 回退到硬编码文件列表
+        setFiles([
+          { name: "DesignSystemOverview.md", icon: "fa-file-alt", description: "系统蓝图" },
+          { name: "UsabilityGuidelines.md", icon: "fa-file-alt", description: "可用性指南" },
+          { name: "InformationArchitecture.md", icon: "fa-file-alt", description: "信息架构" },
+          { name: "InteractionPatterns.md", icon: "fa-file-alt", description: "交互模式" },
+          { name: "VisualDesignGuidelines.md", icon: "fa-file-alt", description: "视觉设计" },
+          { name: "MaterialLibraryUX.md", icon: "fa-file-alt", description: "素材库" },
+          { name: "index.jsx", icon: "fa-file-code", description: "UX组件实现" }
+        ]);
+        setErrorMessage('目录内容加载失败，显示备用文件列表');
+      } finally {
+        setIsLoadingFiles(false);
+      }
+    };
+    
+    fetchDirectoryContents();
+  }, []);
+  
+  // 加载文件内容
+  const loadFileContent = async (fileName) => {
+    if (!fileName) return;
+    
+    setIsLoading(true);
+    try {
+      const response = await fetch(`/src/design-system/ux/${fileName}`);
+      if (response.ok) {
+        const text = await response.text();
+        setFileContent(text);
+      } else {
+        setFileContent('文件加载失败，请稍后再试');
+      }
+    } catch (error) {
+      console.error('加载文件失败:', error);
+      setFileContent('文件加载失败，请稍后再试');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // 选择文件时触发
+  const handleFileSelect = (fileName) => {
+    setSelectedFile(fileName);
+    loadFileContent(fileName);
+  };
+  
+  // 渲染文件内容
+  const renderFileContent = () => {
+    if (!selectedFile) {
+      return (
+        <div className={`text-center p-8 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+          <i className="fas fa-folder-open text-3xl mb-2"></i>
+          <p>请从左侧选择文件查看内容</p>
+        </div>
+      );
+    }
+    
+    if (isLoading) {
+      return (
+        <div className="flex justify-center items-center h-full">
+          <div className={`animate-spin h-8 w-8 border-2 rounded-full ${
+            isDark ? 'border-indigo-500 border-t-transparent' : 'border-indigo-600 border-t-transparent'
+          }`}></div>
+        </div>
+      );
+    }
+    
+    const isMarkdown = selectedFile.endsWith('.md');
+    
+    return (
+      <div className={`overflow-auto h-full p-4 ${
+        isDark ? 'bg-gray-800/60 text-gray-200' : 'bg-white text-gray-800'
+      } rounded-lg`}>
+        {isMarkdown ? (
+          // 如果是Markdown，使用样式显示
+          <div className="prose prose-sm max-w-none dark:prose-invert">
+            <pre className="whitespace-pre-wrap">{fileContent}</pre>
+          </div>
+        ) : (
+          // 如果是代码，使用代码块显示
+          <pre className={`text-sm font-mono p-4 rounded-md overflow-x-auto ${
+            isDark ? 'bg-gray-900' : 'bg-gray-100'
+          }`}>
+            {fileContent}
+          </pre>
+        )}
+      </div>
+    );
+  };
+  
+  return (
+    <div className="mt-8">
+      <h3 className={`text-lg font-semibold mb-3 ${isDark ? 'text-gray-200' : 'text-gray-700'}`}>
+        UX设计系统文件浏览器
+      </h3>
+      
+      <div className={`border rounded-lg overflow-hidden ${
+        isDark ? 'border-gray-700 bg-gray-800/30' : 'border-gray-200 bg-gray-50'
+      }`}>
+        <div className={`flex items-center p-3 border-b ${
+          isDark ? 'border-gray-700 bg-gray-800' : 'border-gray-200 bg-gray-100'
+        }`}>
+          <i className="fas fa-folder-open mr-2"></i>
+          <span className="font-medium">src/design-system/ux/</span>
+          
+          {/* 刷新按钮 */}
+          <button 
+            onClick={() => {
+              setFiles([]);
+              setIsLoadingFiles(true);
+              // 重新触发useEffect中的fetchDirectoryContents
+              setIsLoadingFiles(false);
+            }}
+            className={`ml-auto p-1 rounded-full ${
+              isDark ? 'hover:bg-gray-700 text-gray-400 hover:text-gray-200' : 
+                      'hover:bg-gray-200 text-gray-500 hover:text-gray-700'
+            }`}
+            title="刷新目录"
+          >
+            <i className="fas fa-sync-alt"></i>
+          </button>
+        </div>
+        
+        <div className="flex h-96">
+          {/* 文件列表 */}
+          <div className={`w-1/3 border-r overflow-y-auto ${
+            isDark ? 'border-gray-700 bg-gray-800/50' : 'border-gray-200 bg-white'
+          }`}>
+            {isLoadingFiles ? (
+              <div className="flex justify-center items-center h-full">
+                <div className={`animate-spin h-6 w-6 border-2 rounded-full ${
+                  isDark ? 'border-blue-500 border-t-transparent' : 
+                          'border-blue-600 border-t-transparent'
+                }`}></div>
+              </div>
+            ) : files.length === 0 ? (
+              <div className={`text-center p-4 ${
+                isDark ? 'text-gray-400' : 'text-gray-500'
+              }`}>
+                <i className="fas fa-folder-open text-2xl mb-2"></i>
+                <p>目录为空</p>
+              </div>
+            ) : (
+              <>
+                {errorMessage && (
+                  <div className={`p-2 text-xs ${
+                    isDark ? 'bg-red-900/20 text-red-300 border-b border-red-900/30' : 
+                            'bg-red-50 text-red-600 border-b border-red-100'
+                  }`}>
+                    <i className="fas fa-exclamation-circle mr-1"></i>
+                    {errorMessage}
+                  </div>
+                )}
+                
+                {files.map((file, index) => (
+                  <motion.div
+                    key={index}
+                    whileHover={{ backgroundColor: isDark ? 'rgba(79, 70, 229, 0.1)' : 'rgba(79, 70, 229, 0.05)' }}
+                    className={`flex items-center p-3 cursor-pointer border-b ${
+                      selectedFile === file.name 
+                        ? (isDark ? 'bg-indigo-900/30 border-indigo-700/50' : 'bg-indigo-50 border-indigo-100')
+                        : (isDark ? 'border-gray-700/50' : 'border-gray-100')
+                    }`}
+                    onClick={() => handleFileSelect(file.name)}
+                  >
+                    <i className={`fas ${file.icon} mr-3 ${
+                      file.name.endsWith('.md')
+                        ? (isDark ? 'text-teal-400' : 'text-teal-600')
+                        : (isDark ? 'text-blue-400' : 'text-blue-600')
+                    }`}></i>
+                    <div>
+                      <div className={isDark ? 'text-gray-200' : 'text-gray-800'}>
+                        {file.name}
+                      </div>
+                      <div className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                        {file.description}
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </>
+            )}
+          </div>
+          
+          {/* 文件内容 */}
+          <div className="w-2/3 overflow-hidden p-3">
+            {renderFileContent()}
+          </div>
+        </div>
+        
+        <div className={`p-2 text-xs ${
+          isDark ? 'bg-gray-800 text-gray-400 border-t border-gray-700' : 
+                  'bg-gray-100 text-gray-500 border-t border-gray-200'
+        }`}>
+          © domiyoung__ | 所有文件版权所有
+        </div>
+      </div>
+    </div>
+  );
+};
+
 // 主文档中心组件 - 架构优化
 const DocCenter = () => {
   const navigate = useNavigate();
   const { colorMode } = useTheme();
   const isDark = colorMode === 'dark';
   const [showScrollIndicator, setShowScrollIndicator] = useState(true);
+  const [activeTab, setActiveTab] = useState('ux'); // 'ux' 或 'dev' 或 'pm'
   
   // 监听滚动事件
   useEffect(() => {
@@ -558,6 +916,135 @@ const DocCenter = () => {
       </div>
     );
   };
+
+  // 分类文档数据
+  const uxDesignDocs = [
+    ...systemDesignDocs.filter(doc => 
+      doc.title.includes('UX') || 
+      doc.title.includes('UI') || 
+      doc.title.includes('设计') || 
+      doc.title.includes('原型') ||
+      doc.title.includes('可用性')
+    ),
+    // ...systemDocs
+  ];
+
+  const devDocs = [
+    ...techDocs,
+    ...systemDesignDocs.filter(doc => 
+      doc.title.includes('架构') || 
+      doc.title.includes('API') || 
+      doc.title.includes('数据') ||
+      doc.title.includes('前端') ||
+      doc.title.includes('后端')
+    )
+  ];
+
+  // 选项卡切换组件
+  const TabSwitcher = () => (
+    <div className="flex justify-center mb-12">
+      <motion.div 
+        className={`rounded-xl p-1 flex ${
+          isDark ? 'bg-gray-800/80' : 'bg-gray-100/80'
+        }`}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+      >
+        <motion.button
+          onClick={() => setActiveTab('ux')}
+          className={`px-6 py-3 rounded-lg font-medium transition ${
+            activeTab === 'ux' 
+              ? (isDark ? 'bg-indigo-600 text-white' : 'bg-indigo-500 text-white') 
+              : (isDark ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-gray-900')
+          }`}
+          whileHover={{ scale: activeTab !== 'ux' ? 1.03 : 1 }}
+          whileTap={{ scale: 0.98 }}
+        >
+          <div className="flex items-center gap-2">
+            <i className="fas fa-paint-brush"></i>
+            <span>UX/UI设计师</span>
+          </div>
+        </motion.button>
+        
+        <motion.button
+          onClick={() => setActiveTab('dev')}
+          className={`px-6 py-3 rounded-lg font-medium transition ${
+            activeTab === 'dev' 
+              ? (isDark ? 'bg-indigo-600 text-white' : 'bg-indigo-500 text-white') 
+              : (isDark ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-gray-900')
+          }`}
+          whileHover={{ scale: activeTab !== 'dev' ? 1.03 : 1 }}
+          whileTap={{ scale: 0.98 }}
+        >
+          <div className="flex items-center gap-2">
+            <i className="fas fa-code"></i>
+            <span>开发工程师</span>
+          </div>
+        </motion.button>
+        
+        <motion.button
+          onClick={() => setActiveTab('pm')}
+          className={`px-6 py-3 rounded-lg font-medium transition ${
+            activeTab === 'pm' 
+              ? (isDark ? 'bg-indigo-600 text-white' : 'bg-indigo-500 text-white') 
+              : (isDark ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-gray-900')
+          }`}
+          whileHover={{ scale: activeTab !== 'pm' ? 1.03 : 1 }}
+          whileTap={{ scale: 0.98 }}
+        >
+          <div className="flex items-center gap-2">
+            <i className="fas fa-chart-pie"></i>
+            <span>产品经理</span>
+          </div>
+        </motion.button>
+      </motion.div>
+    </div>
+  );
+  
+  // 添加Markdown文档资源部分 - 移到组件内部
+  const renderMarkdownSection = () => {
+    const mdFiles = [
+      { name: "系统蓝图", path: "DesignSystemOverview.md" },
+      { name: "可用性指南", path: "UsabilityGuidelines.md" },
+      { name: "信息架构", path: "InformationArchitecture.md" },
+      { name: "交互模式", path: "InteractionPatterns.md" },
+      { name: "视觉设计", path: "VisualDesignGuidelines.md" },
+      { name: "素材库", path: "MaterialLibraryUX.md" }
+    ];
+
+    return (
+      <div className="mt-6">
+        <h3 className={`text-lg font-semibold mb-3 ${isDark ? 'text-gray-200' : 'text-gray-700'}`}>Markdown源文件</h3>
+        <div className={`p-4 rounded-lg ${isDark ? 'bg-gray-800' : 'bg-gray-100'}`}>
+          <p className={`mb-3 text-sm ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>直接访问src/design-system/ux目录下的Markdown源文件:</p>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+            {mdFiles.map((file, index) => (
+              <a 
+                key={index}
+                href={`/src/design-system/ux/${file.path}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`px-3 py-2 rounded text-sm font-medium transition ${
+                  isDark 
+                    ? 'bg-gray-700 hover:bg-indigo-700 text-gray-200' 
+                    : 'bg-white hover:bg-indigo-50 text-gray-700 hover:text-indigo-700 border border-gray-200'
+                } flex items-center gap-2`}
+              >
+                <i className="fas fa-file-alt"></i>
+                <span>{file.name}</span>
+              </a>
+            ))}
+          </div>
+          <div className="mt-3">
+            <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+              所有Markdown文件版权归属 © domiyoung__
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  };
   
   return (
     <div className={`min-h-screen relative pb-16 pt-12 ${
@@ -572,30 +1059,81 @@ const DocCenter = () => {
           subtitle="美妆与潮流创意设计平台，面向Z世代女性用户的一站式创意内容创作工具" 
         />
         
-        <section className="mb-16">
-          <SectionTitle title="系统规划与设计" isDark={isDark} />
-          {renderDocGrid(systemDesignDocs)}
-        </section>
-        
-        <section className="mb-16">
-          <SectionTitle title="产品功能快速入口" isDark={isDark} />
-          {renderDocGrid(productEntries)}
-        </section>
-        
-        <section className="mb-16">
-          <SectionTitle title="技术实现与文档" isDark={isDark} />
-          {renderDocGrid(techDocs)}
-        </section>
-        
-        <section className="mb-16">
-          <SectionTitle title="项目管理与资源" isDark={isDark} />
-          {renderDocGrid(projectDocs)}
-        </section>
-        
-        <section className="mb-16">
-          <SectionTitle title="系统设计与规范" isDark={isDark} />
-          {renderDocGrid(systemDocs)}
-        </section>
+        <TabSwitcher />
+
+        <AnimatePresence mode="wait">
+          {activeTab === 'ux' ? (
+            <motion.div
+              key="ux-content"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.4 }}
+            >
+              <section className="mb-16">
+                <SectionTitle title="UX/UI设计规范" isDark={isDark} />
+                {renderDocGrid(uxDesignDocs)}
+              </section>
+              
+              <section className="mb-16">
+                <SectionTitle title="产品与创意资源" isDark={isDark} />
+                {renderDocGrid(productEntries)}
+              </section>
+            </motion.div>
+          ) : activeTab === 'dev' ? (
+            <motion.div
+              key="dev-content"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.4 }}
+            >
+              <section className="mb-16">
+                <SectionTitle title="技术架构与API" isDark={isDark} />
+                {renderDocGrid(devDocs)}
+              </section>
+              
+              <section className="mb-16">
+                <SectionTitle title="开发资源与管理" isDark={isDark} />
+                {renderDocGrid(projectDocs)}
+              </section>
+              
+              <UxFileBrowser isDark={isDark} />
+              
+              {renderMarkdownSection()}
+            </motion.div>
+          ) : (
+            <motion.div
+              key="pm-content"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.4 }}
+            >
+              <section className="mb-16">
+                <SectionTitle title="项目管理与规划" isDark={isDark} />
+                {renderDocGrid(pmDocs)}
+              </section>
+              
+              <section className="mb-16">
+                <SectionTitle title="产品生命周期" isDark={isDark} />
+                {renderDocGrid([
+                  {
+                    title: "产品生命周期流程",
+                    description: "从规划构想到迭代优化的完整产品开发流程图，包含七个关键阶段",
+                    icon: "fa-sync-alt",
+                    iconBg: "bg-indigo/20",
+                    iconColor: "var(--indigo)",
+                    date: "2025-04-30",
+                    type: "流程文档",
+                    badgeType: "new",
+                    path: "/creativeprostudio/product-lifecycle"
+                  }
+                ])}
+              </section>
+            </motion.div>
+          )}
+        </AnimatePresence>
         
         <footer className={`text-center mt-20 py-8 border-t ${
           isDark ? 'border-gray-700/50 text-gray-400' : 'border-gray5 text-gray2'

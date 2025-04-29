@@ -1,171 +1,163 @@
 import React from 'react';
-import styled from '@emotion/styled';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useTheme } from '../../design-system';
+import styled from '@emotion/styled';
 
-// 模态框叠加层
+// 模态框背景
 const ModalOverlay = styled(motion.div)`
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(5px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  padding: 24px;
+  padding: 20px;
 `;
 
-// 模态框内容
-const ModalContent = styled(motion.div)`
+// 模态框容器
+const ModalContainer = styled(motion.div)`
   background-color: ${props => props.isDark ? '#1a1a1a' : 'white'};
   border-radius: 20px;
   width: 100%;
-  max-width: 400px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  max-width: 450px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  padding: 24px;
+  border: 1px solid ${props => props.isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)'};
 `;
 
-// 模态框标题
-const ModalHeader = styled.div`
-  padding: 24px 24px 16px 24px;
-  display: flex;
-  align-items: center;
-`;
-
-const HeaderIcon = styled.div`
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background-color: rgba(255, 87, 87, 0.1);
+// 警告图标
+const WarningIcon = styled.div`
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 20px;
+  border-radius: 30px;
+  background-color: ${props => props.isDark ? 'rgba(255, 59, 48, 0.15)' : 'rgba(255, 59, 48, 0.1)'};
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #FF5757;
-  margin-right: 16px;
   
   i {
-    font-size: 20px;
+    font-size: 28px;
+    color: #ff3b30;
   }
 `;
 
-const HeaderTitle = styled.h2`
-  margin: 0;
-  color: ${props => props.isDark ? '#f5f5f5' : '#1d1d1f'};
-  font-size: 20px;
+// 模态框标题
+const ModalTitle = styled.h3`
+  font-size: 18px;
   font-weight: 600;
+  color: ${props => props.isDark ? '#f5f5f5' : '#1d1d1f'};
+  margin: 0 0 12px;
+  text-align: center;
 `;
 
 // 模态框内容
-const ModalBody = styled.div`
-  padding: 0 24px 24px 24px;
+const ModalContent = styled.div`
+  margin-bottom: 24px;
+  text-align: center;
 `;
 
-const Message = styled.p`
+const ModalMessage = styled.p`
+  color: ${props => props.isDark ? '#bbb' : '#666'};
   font-size: 15px;
-  line-height: 1.5;
-  color: ${props => props.isDark ? '#aaa' : '#666'};
-  margin: 0 0 24px 0;
-  padding-left: 56px;
+  line-height: 1.6;
+  margin: 0;
 `;
 
-// 模态框底部
-const ModalFooter = styled.div`
-  padding: 16px 24px 24px 24px;
+// 操作按钮
+const ModalActions = styled.div`
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   gap: 12px;
+  margin-top: 24px;
 `;
 
-const FooterButton = styled(motion.button)`
-  padding: 12px 24px;
-  border-radius: 12px;
+const Button = styled.button`
+  padding: 10px 20px;
+  border-radius: 10px;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 15px;
   cursor: pointer;
+  transition: all 0.2s;
   
-  ${props => props.danger 
-    ? `
-      background-color: #FF5757;
-      color: white;
-      border: none;
-      box-shadow: 0 4px 12px rgba(255, 87, 87, 0.25);
-    `
-    : `
-      background-color: transparent;
-      color: ${props.isDark ? '#f5f5f5' : '#1d1d1f'};
-      border: 1px solid ${props.isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'};
-    `
-  }
-  
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+  &:focus {
+    outline: none;
   }
 `;
 
-const DeleteConfirmModal = ({ 
-  isOpen, 
-  onClose, 
-  onConfirm, 
-  title = "删除素材", 
-  message = "您确定要删除所选素材吗？此操作无法撤销。",
-  confirmText = "删除",
-  cancelText = "取消"
-}) => {
-  const { colorMode } = useTheme();
-  const isDark = colorMode === 'dark';
+const CancelButton = styled(Button)`
+  background: ${props => props.isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)'};
+  color: ${props => props.isDark ? '#bbb' : '#666'};
+  border: 1px solid ${props => props.isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'};
   
-  if (!isOpen) return null;
+  &:hover {
+    background: ${props => props.isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.08)'};
+    color: ${props => props.isDark ? 'white' : 'black'};
+  }
+`;
+
+const DeleteButton = styled(Button)`
+  background: #ff3b30;
+  color: white;
+  border: none;
   
+  &:hover {
+    background: #ff2d20;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 59, 48, 0.3);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+`;
+
+// 删除确认模态框组件
+const DeleteConfirmModal = ({ title, message, onConfirm, onCancel, isDark }) => {
   return (
     <AnimatePresence>
       <ModalOverlay
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        onClick={onClose}
       >
-        <ModalContent
+        <ModalContainer
           isDark={isDark}
-          initial={{ scale: 0.9, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          exit={{ scale: 0.9, opacity: 0 }}
-          transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-          onClick={(e) => e.stopPropagation()}
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.9 }}
+          transition={{ duration: 0.3 }}
         >
-          <ModalHeader>
-            <HeaderIcon>
-              <i className="fas fa-exclamation-triangle"></i>
-            </HeaderIcon>
-            <HeaderTitle isDark={isDark}>{title}</HeaderTitle>
-          </ModalHeader>
+          <WarningIcon isDark={isDark}>
+            <i className="fas fa-exclamation-triangle"></i>
+          </WarningIcon>
           
-          <ModalBody>
-            <Message isDark={isDark}>{message}</Message>
-          </ModalBody>
+          <ModalTitle isDark={isDark}>{title}</ModalTitle>
           
-          <ModalFooter>
-            <FooterButton
+          <ModalContent>
+            <ModalMessage isDark={isDark}>{message}</ModalMessage>
+          </ModalContent>
+          
+          <ModalActions>
+            <CancelButton 
+              type="button" 
+              onClick={onCancel} 
               isDark={isDark}
-              whileHover={{ y: -2 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={onClose}
             >
-              {cancelText}
-            </FooterButton>
-            <FooterButton
-              danger
-              whileHover={{ y: -2, boxShadow: '0 8px 16px rgba(255, 87, 87, 0.35)' }}
-              whileTap={{ scale: 0.95 }}
+              取消
+            </CancelButton>
+            <DeleteButton 
+              type="button" 
               onClick={onConfirm}
             >
-              {confirmText}
-            </FooterButton>
-          </ModalFooter>
-        </ModalContent>
+              确认删除
+            </DeleteButton>
+          </ModalActions>
+        </ModalContainer>
       </ModalOverlay>
     </AnimatePresence>
   );

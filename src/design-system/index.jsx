@@ -5,6 +5,7 @@ import PageLayout from './components/PageLayout';
 import ContentCard from './components/ContentCard';
 import GridLayout from './components/GridLayout';
 import FilterBar from './components/FilterBar';
+import { Link } from 'react-router-dom';
 
 // 创意组件导出
 import WaveAnimation from '../components/ui/WaveAnimation';
@@ -121,4 +122,26 @@ export default {
   GridLayout,
   FilterBar,
   COPYRIGHT_INFO
+};
+
+// 在导航或者相关组件中添加UX设计系统链接
+<Link to="/creativeprostudio/ux-guidelines" className="...">
+  UX设计文档
+</Link>
+
+// 设计系统导航组件
+export const DesignSystemNav = () => {
+  return (
+    <div className="flex space-x-4 my-4">
+      <Link to="/design-system" className="px-4 py-2 bg-purple-100 text-purple-800 rounded-md hover:bg-purple-200">
+        组件库
+      </Link>
+      <Link to="/creativeprostudio/ux-guidelines" className="px-4 py-2 bg-pink-100 text-pink-800 rounded-md hover:bg-pink-200">
+        UX设计文档
+      </Link>
+      <Link to="/creativeprostudio/system-blueprint" className="px-4 py-2 bg-blue-100 text-blue-800 rounded-md hover:bg-blue-200">
+        系统蓝图
+      </Link>
+    </div>
+  );
 }; 
