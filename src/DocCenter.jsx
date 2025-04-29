@@ -128,7 +128,7 @@ const systemDesignDocs = [
     date: "2025-04-25",
     type: "设计规范",
     badgeType: "new",
-    path: "/creativeprostudio/document/ux-document-browser.html"
+    path: "/creativeprostudio/ux-guidelines"
   },
   {
     title: "设计系统",

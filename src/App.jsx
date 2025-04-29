@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { ChakraProvider, extendTheme } from '@chakra-ui/react';
 import './App.css';
 import Button from './design-system/components/Button';
 import Card from './design-system/components/Card';
@@ -20,11 +21,23 @@ import ProjectReport from './pages/ProjectReport';
 import ProjectBlueprint from './pages/ProjectBlueprint';
 import FrontendGuide from './pages/FrontendGuide';
 import BackendDesign from './pages/BackendDesign';
-import HomePage from './pages/HomePage';
+import PrototypeDesign from './pages/PrototypeDesign';
 import ProductConcept from './components/ProductConcept';
 import LifecycleFlow from './components/LifecycleFlow';
-import Header from './components/Header';
-import Footer from './components/Footer';
+import Header from './components/layout/Header';
+import Footer from './components/layout/Footer';
+
+// 创建Chakra UI主题
+const theme = extendTheme({
+  styles: {
+    global: {
+      // 避免全局样式覆盖
+      'html, body': {
+        background: 'transparent',
+      },
+    },
+  },
+});
 
 // 应用容器 - 使用高品质背景渐变
 const AppContainer = styled.div`
@@ -238,7 +251,7 @@ const DocCardFooter = styled.div`
 `;
 
 // 页脚
-const Footer = styled.footer`
+const AppFooterStyled = styled.footer`
   background-color: white;
   padding: ${spacing.space[6]};
   text-align: center;
@@ -443,9 +456,7 @@ function Home() {
           </DocsGrid>
         </SectionContent>
       </MainContent>
-      <Footer>
-        <p>© 2025 CreativePro Studio. 保留所有权利。</p>
-      </Footer>
+      <Footer />
     </AppContainer>
   );
 }
@@ -465,9 +476,7 @@ function DocCenter() {
         <PageTitle>产品设计文档</PageTitle>
         <p>请从左侧导航选择要查看的文档。</p>
       </MainContent>
-      <Footer>
-        <p>© 2025 CreativePro Studio. 保留所有权利。</p>
-      </Footer>
+      <Footer />
     </AppContainer>
   );
 }
@@ -480,35 +489,38 @@ function NotFound() {
         <PageTitle>404 - 页面未找到</PageTitle>
         <p>您访问的页面不存在。</p>
       </MainContent>
+      <Footer />
     </AppContainer>
   );
 }
 
 function App() {
   return (
-    <Router>
-      <div className="app">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/doccenter" element={<DocCenter />} />
-          <Route path="/database-design" element={<DatabaseDesign />} />
-          <Route path="/api-specification" element={<ApiSpecification />} />
-          <Route path="/ui-guidelines" element={<UiGuidelines />} />
-          <Route path="/interaction-guidelines" element={<InteractionGuidelines />} />
-          <Route path="/project-report" element={<ProjectReport />} />
-          <Route path="/project-blueprint" element={<ProjectBlueprint />} />
-          <Route path="/frontend-design" element={<FrontendGuide />} />
-          <Route path="/backend-design" element={<BackendDesign />} />
-          <Route path="/master-library" element={<MasterLibrary />} />
-          <Route path="/batch-center" element={<BatchCenter />} />
-          <Route path="/batch-detail" element={<BatchDetail />} />
-          <Route path="/home-page" element={<HomePage />} />
-          <Route path="/product-concept" element={<ProductConcept />} />
-          <Route path="/lifecycle-flow" element={<LifecycleFlow />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </div>
-    </Router>
+    <ChakraProvider theme={theme} resetCSS={false}>
+      <Router>
+        <div className="app">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/doccenter" element={<DocCenter />} />
+            <Route path="/database-design" element={<DatabaseDesign />} />
+            <Route path="/api-specification" element={<ApiSpecification />} />
+            <Route path="/ui-guidelines" element={<UiGuidelines />} />
+            <Route path="/interaction-guidelines" element={<InteractionGuidelines />} />
+            <Route path="/project-report" element={<ProjectReport />} />
+            <Route path="/project-blueprint" element={<ProjectBlueprint />} />
+            <Route path="/frontend-design" element={<FrontendGuide />} />
+            <Route path="/backend-design" element={<BackendDesign />} />
+            <Route path="/master-library" element={<MasterLibrary />} />
+            <Route path="/batch-center" element={<BatchCenter />} />
+            <Route path="/batch-detail" element={<BatchDetail />} />
+            <Route path="/home-page" element={<PrototypeDesign />} />
+            <Route path="/product-concept" element={<ProductConcept />} />
+            <Route path="/lifecycle-flow" element={<LifecycleFlow />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </div>
+      </Router>
+    </ChakraProvider>
   );
 }
 

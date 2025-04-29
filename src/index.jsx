@@ -19,6 +19,7 @@ import BatchCreate from './pages/BatchCreate.jsx';
 import DatabaseDesign from './pages/DatabaseDesign.jsx';
 import ApiSpecification from './pages/ApiSpecification.jsx';
 import UiGuidelines from './pages/UiGuidelines.jsx';
+import UxGuidelines from './pages/UxGuidelines.jsx';
 import ProjectBlueprint from './pages/ProjectBlueprint.jsx';
 import BackendArchitecture from './pages/BackendArchitecture.jsx';
 import FrontendArchitecture from './pages/FrontendArchitecture.jsx';
@@ -49,6 +50,7 @@ root.render(
         <Route path="/creativeprostudio/database-design" element={<DatabaseDesign />} />
         <Route path="/creativeprostudio/api-specification" element={<ApiSpecification />} />
         <Route path="/creativeprostudio/ui-guidelines" element={<UiGuidelines />} />
+        <Route path="/creativeprostudio/ux-guidelines" element={<UxGuidelines />} />
         <Route path="/creativeprostudio/showcase" element={<UIShowcase />} />
         <Route path="/creativeprostudio/demo" element={<CreativeDemo />} />
         <Route path="/creativeprostudio/app" element={<App />} />
@@ -67,6 +69,7 @@ root.render(
         <Route path="/database-design" element={<Navigate to="/creativeprostudio/database-design" replace />} />
         <Route path="/api-specification" element={<Navigate to="/creativeprostudio/api-specification" replace />} />
         <Route path="/ui-guidelines" element={<Navigate to="/creativeprostudio/ui-guidelines" replace />} />
+        <Route path="/ux-guidelines" element={<Navigate to="/creativeprostudio/ux-guidelines" replace />} />
         <Route path="/showcase" element={<Navigate to="/creativeprostudio/showcase" replace />} />
         <Route path="/demo" element={<Navigate to="/creativeprostudio/demo" replace />} />
         <Route path="/app" element={<Navigate to="/creativeprostudio/app" replace />} />
