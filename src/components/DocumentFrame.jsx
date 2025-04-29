@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useTheme } from '../design-system';
 
@@ -9,6 +9,7 @@ import { useTheme } from '../design-system';
 const DocumentFrame = () => {
   const { document: docName } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { colorMode } = useTheme();
@@ -27,25 +28,36 @@ const DocumentFrame = () => {
       setLoading(false);
     };
 
+    const handleIframeError = () => {
+      console.error('文档加载失败:', docName);
+      setError('文档加载失败');
+      setLoading(false);
+    };
+
     const iframe = document.getElementById('document-frame');
     if (iframe) {
       iframe.addEventListener('load', handleIframeLoad);
-      iframe.addEventListener('error', () => {
-        setError('文档加载失败');
-        setLoading(false);
-      });
+      iframe.addEventListener('error', handleIframeError);
     }
 
     return () => {
       if (iframe) {
         iframe.removeEventListener('load', handleIframeLoad);
+        iframe.removeEventListener('error', handleIframeError);
       }
     };
   }, [docName]);
 
   // 返回按钮处理
   const handleBack = () => {
-    navigate('/');
+    // 分析当前路径，确定返回到哪个项目的文档中心
+    if (location.pathname.includes('/creativeprostudio/')) {
+      navigate('/creativeprostudio');
+    } else {
+      // 如果将来添加其他项目，可以在这里添加条件
+      // 默认返回项目列表
+      navigate('/');
+    }
   };
 
   return (
@@ -116,9 +128,10 @@ const DocumentFrame = () => {
             ${isDark ? 'bg-gray-800 shadow-gray-900/50' : 'bg-white shadow-gray3/20'}`}>
             <iframe
               id="document-frame"
-              src={`/pages/${docName}`}
+              src={`/public/pages/${docName}`}
               className="w-full h-[calc(100vh-140px)] border-0"
               title={docName}
+              onError={() => setError('文档加载失败')}
             ></iframe>
           </div>
         )}

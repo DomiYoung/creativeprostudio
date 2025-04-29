@@ -1,92 +1,153 @@
 import React from 'react';
-import { cva } from 'class-variance-authority';
+import styled from '@emotion/styled';
 import { motion } from 'framer-motion';
-import clsx from 'clsx';
+import colors from '../tokens/colors';
+import spacing from '../tokens/spacing';
+import typography from '../tokens/typography';
 
-// 定义按钮变体
-const buttonVariants = cva(
-  // 基础样式
-  "inline-flex items-center justify-center rounded-lg font-medium transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-50",
-  {
-    variants: {
-      // 按钮风格
-      variant: {
-        primary: "bg-purple text-white hover:bg-purple/90 focus-visible:ring-purple/50",
-        secondary: "bg-gray5 text-gray hover:bg-gray4 focus-visible:ring-gray/30",
-        outline: "border border-gray3 bg-white text-gray hover:bg-gray6 focus-visible:ring-gray/20",
-        ghost: "bg-transparent text-gray hover:bg-gray6 hover:text-gray",
-        link: "bg-transparent text-blue underline-offset-4 hover:underline p-0 height-auto",
-      },
-      // 按钮尺寸
-      size: {
-        xs: "text-xs px-2 py-1",
-        sm: "text-sm px-3 py-2",
-        md: "text-md px-4 py-2",
-        lg: "text-lg px-5 py-2.5",
-        xl: "text-xl px-6 py-3",
-      },
-      // 按钮是否占满父元素宽度
-      fullWidth: {
-        true: "w-full",
-      },
-      // 按钮是否有禁用状态
-      disabled: {
-        true: "opacity-50 cursor-not-allowed",
-      },
-      // 按钮是否有图标
-      hasIcon: {
-        true: "gap-2",
-      },
-    },
-    // 默认值
-    defaultVariants: {
-      variant: "primary",
-      size: "md",
-      fullWidth: false,
-      disabled: false,
-      hasIcon: false,
-    },
-  }
-);
+// 基础按钮组件 - 按照Apple设计风格
+const StyledButton = styled(motion.button)`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: ${props => props.pill ? spacing.borderRadius.pill : spacing.borderRadius.md};
+  font-family: ${typography.fontFamily.base};
+  font-weight: ${typography.fontWeight.semibold};
+  font-size: ${props => typography.fontSize[props.size === 'lg' ? 'body' : props.size === 'sm' ? 'footnote' : 'subhead']};
+  transition: all 0.2s ease;
+  cursor: pointer;
+  padding: ${props => 
+    props.size === 'lg' ? '12px 24px' : 
+    props.size === 'sm' ? '6px 16px' : 
+    '8px 20px'};
+  width: ${props => props.fullWidth ? '100%' : 'auto'};
+  
+  /* 根据变体设置样式 */
+  ${props => {
+    const isDark = props.theme?.colorMode === 'dark';
+    
+    switch(props.variant) {
+      case 'primary':
+        return `
+          background-color: ${isDark ? colors.primary.dark : colors.primary.light};
+          color: white;
+          border: none;
+          
+          &:hover {
+            background-color: ${isDark ? '#097CEC' : '#0071EB'};
+          }
+          
+          &:active {
+            background-color: ${isDark ? '#0868C6' : '#0062CC'};
+          }
+        `;
+      
+      case 'secondary':
+        return `
+          background-color: ${isDark ? colors.gray[800] : colors.gray[100]};
+          color: ${isDark ? colors.gray[100] : colors.gray[900]};
+          border: none;
+          
+          &:hover {
+            background-color: ${isDark ? colors.gray[700] : colors.gray[200]};
+          }
+          
+          &:active {
+            background-color: ${isDark ? colors.gray[600] : colors.gray[300]};
+          }
+        `;
+      
+      case 'outline':
+        return `
+          background-color: transparent;
+          color: ${isDark ? colors.primary.dark : colors.primary.light};
+          border: 1px solid ${isDark ? colors.primary.dark : colors.primary.light};
+          
+          &:hover {
+            background-color: ${isDark ? 'rgba(10, 132, 255, 0.1)' : 'rgba(0, 122, 255, 0.1)'};
+          }
+          
+          &:active {
+            background-color: ${isDark ? 'rgba(10, 132, 255, 0.2)' : 'rgba(0, 122, 255, 0.2)'};
+          }
+        `;
+        
+      case 'ghost':
+        return `
+          background-color: transparent;
+          color: ${isDark ? colors.gray[100] : colors.gray[900]};
+          border: none;
+          
+          &:hover {
+            background-color: ${isDark ? colors.gray[800] : colors.gray[100]};
+          }
+          
+          &:active {
+            background-color: ${isDark ? colors.gray[700] : colors.gray[200]};
+          }
+        `;
+        
+      case 'destructive':
+        return `
+          background-color: ${colors.semantic.error};
+          color: white;
+          border: none;
+          
+          &:hover {
+            background-color: #E02F25;
+          }
+          
+          &:active {
+            background-color: #C0271F;
+          }
+        `;
+      
+      default:
+        return '';
+    }
+  }}
+  
+  /* 禁用状态 */
+  ${props => props.disabled && `
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+  `}
+`;
 
+// Button组件
 const Button = React.forwardRef(({
   children,
-  className,
-  variant,
-  size,
-  fullWidth,
-  disabled,
+  variant = 'primary',
+  size = 'md',
+  fullWidth = false,
+  disabled = false,
+  pill = false,
   leftIcon,
   rightIcon,
   onClick,
   type = "button",
   ...props
 }, ref) => {
-  const hasIcon = Boolean(leftIcon || rightIcon);
-
   return (
-    <motion.button
+    <StyledButton
       ref={ref}
+      as={motion.button}
       type={type}
-      className={clsx(
-        buttonVariants({
-          variant,
-          size,
-          fullWidth,
-          disabled,
-          hasIcon,
-          className,
-        })
-      )}
-      onClick={disabled ? undefined : onClick}
+      variant={variant}
+      size={size}
+      fullWidth={fullWidth}
       disabled={disabled}
+      pill={pill}
+      onClick={disabled ? undefined : onClick}
       whileTap={!disabled ? { scale: 0.97 } : undefined}
       {...props}
     >
-      {leftIcon && <span className="inline-flex">{leftIcon}</span>}
+      {leftIcon && <span>{leftIcon}</span>}
       {children}
-      {rightIcon && <span className="inline-flex">{rightIcon}</span>}
-    </motion.button>
+      {rightIcon && <span>{rightIcon}</span>}
+    </StyledButton>
   );
 });
 

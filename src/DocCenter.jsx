@@ -24,17 +24,21 @@ const DocCard = ({ title, description, icon, iconBg, iconColor, date, type, badg
         interactive
         padding="none"
         className={`overflow-hidden h-full border-none transition-all duration-300 ${
-          isDark ? 'bg-gray-800/80 backdrop-blur-xl' : 'bg-white/95 backdrop-blur-xl'
+          isDark 
+            ? 'bg-gray-800/80 backdrop-blur-xl border border-gray-700/30' 
+            : 'bg-white/90 backdrop-blur-xl border border-gray-100'
         } ${
-          isDark ? 'hover:shadow-[0_12px_28px_-5px_rgba(124,58,237,0.35)]' : 
-                  'hover:shadow-[0_12px_28px_-5px_rgba(201,168,211,0.3)]'
+          isDark 
+            ? 'hover:shadow-[0_12px_28px_-5px_rgba(76,29,149,0.25)]' 
+            : 'hover:shadow-[0_12px_28px_-5px_rgba(79,70,229,0.15)]'
         }`}
         onClick={onClick}
       >
         {badgeType && (
           <div className={`absolute top-3 right-3 px-3 py-1 text-xs font-medium rounded-full text-white ${
-            badgeType === 'new' ? 'bg-gradient-to-r from-red/90 to-pink/90' : 
-                                'bg-gradient-to-r from-green/90 to-teal/90'
+            badgeType === 'new' 
+              ? 'bg-gradient-to-r from-indigo-600 to-violet-600' 
+              : 'bg-gradient-to-r from-emerald-600 to-teal-600'
           } shadow-sm backdrop-blur-xl z-10`}
           >
             {badgeType === 'new' ? '新' : '更新'}
@@ -43,8 +47,8 @@ const DocCard = ({ title, description, icon, iconBg, iconColor, date, type, badg
         
         <div className="relative overflow-hidden group">
           <div className={`absolute inset-0 opacity-10 ${
-            isDark ? 'bg-gradient-to-br from-purple/40 to-indigo/20' : 
-                    'bg-gradient-to-br from-primary-light to-white'
+            isDark ? 'bg-gradient-to-br from-indigo-900/40 to-slate-900/20' : 
+                    'bg-gradient-to-br from-indigo-50 to-white'
           }`}></div>
           
           <motion.div 
@@ -55,7 +59,7 @@ const DocCard = ({ title, description, icon, iconBg, iconColor, date, type, badg
             <motion.div 
               className={`w-20 h-20 rounded-2xl flex items-center justify-center text-3xl 
               shadow-lg transform transition-all duration-500
-              ${iconBg} ${isDark ? 'shadow-gray-900/40' : 'shadow-gray3/30'}`}
+              ${iconBg} ${isDark ? 'shadow-gray-900/40' : 'shadow-gray-200/80'}`}
               style={{ color: iconColor }}
               animate={{ 
                 scale: isHovered ? 1.05 : 1,
@@ -72,17 +76,17 @@ const DocCard = ({ title, description, icon, iconBg, iconColor, date, type, badg
             <h3 className={`text-xl font-semibold mb-3 ${isDark ? 'text-white' : 'text-gray-800'}`}>
               {title}
             </h3>
-            <p className={`text-sm mb-8 leading-relaxed ${isDark ? 'text-gray-300' : 'text-gray'}`}>
+            <p className={`text-sm mb-8 leading-relaxed ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
               {description}
             </p>
             <div className="flex justify-between items-center text-xs font-medium">
               <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full ${
-                isDark ? 'bg-gray-700/80' : 'bg-gray6/80'
+                isDark ? 'bg-gray-700/80' : 'bg-gray-100/80'
               }`}>
-                <i className={`fas fa-file-code ${isDark ? 'text-purple' : 'text-indigo'}`}></i>
-                <span className={isDark ? 'text-gray-300' : 'text-gray'}>{type}</span>
+                <i className={`fas fa-file-code ${isDark ? 'text-indigo-300' : 'text-indigo-600'}`}></i>
+                <span className={isDark ? 'text-gray-300' : 'text-gray-600'}>{type}</span>
               </div>
-              <span className={`${isDark ? 'text-gray-400' : 'text-gray2'}`}>{date}</span>
+              <span className={`${isDark ? 'text-gray-400' : 'text-gray-500'}`}>{date}</span>
             </div>
           </div>
         </div>
@@ -102,7 +106,7 @@ const systemDesignDocs = [
     date: "2025-04-27",
     type: "规划文档",
     badgeType: "new",
-    path: "/document/project-blueprint"
+    path: "/creativeprostudio/system-blueprint"
   },
   {
     title: "页面原型",
@@ -113,7 +117,7 @@ const systemDesignDocs = [
     date: "2025-04-22",
     type: "交互原型",
     badgeType: "updated",
-    path: "/prototype"
+    path: "/creativeprostudio/prototype"
   },
   {
     title: "UX 设计",
@@ -124,7 +128,7 @@ const systemDesignDocs = [
     date: "2025-04-25",
     type: "设计规范",
     badgeType: "new",
-    path: "/document/ux-document-browser.html"
+    path: "/creativeprostudio/document/ux-document-browser.html"
   },
   {
     title: "设计系统",
@@ -135,7 +139,7 @@ const systemDesignDocs = [
     date: "2025-04-29",
     type: "设计资源",
     badgeType: "new",
-    path: "/showcase"
+    path: "/creativeprostudio/showcase"
   }
 ];
 
@@ -149,7 +153,7 @@ const techDocs = [
     date: "2025-04-27",
     type: "服务架构",
     badgeType: "new",
-    path: "/document/backend-architecture"
+    path: "/creativeprostudio/backend-architecture"
   },
   {
     title: "数据库设计",
@@ -160,7 +164,7 @@ const techDocs = [
     date: "2025-04-27",
     type: "数据结构",
     badgeType: "new",
-    path: "/database-design"
+    path: "/creativeprostudio/database-design"
   },
   {
     title: "API规范",
@@ -171,7 +175,7 @@ const techDocs = [
     date: "2025-04-27",
     type: "接口规范",
     badgeType: "new",
-    path: "/api-specification"
+    path: "/creativeprostudio/api-specification"
   },
   {
     title: "前端架构设计",
@@ -182,7 +186,7 @@ const techDocs = [
     date: "2025-04-27",
     type: "组件库",
     badgeType: "new",
-    path: "/document/frontend-architecture"
+    path: "/creativeprostudio/frontend-architecture"
   },
   {
     title: "前端UI规范",
@@ -193,7 +197,7 @@ const techDocs = [
     date: "2025-04-28",
     type: "UI规范",
     badgeType: "new",
-    path: "/ui-guidelines"
+    path: "/creativeprostudio/ui-guidelines"
   }
 ];
 
@@ -207,7 +211,7 @@ const projectDocs = [
     date: "2025-06-20",
     type: "汇报文档",
     badgeType: "new",
-    path: "/project-report"
+    path: "/creativeprostudio/project-report"
   },
   {
     title: "项目执行计划",
@@ -218,7 +222,7 @@ const projectDocs = [
     date: "2025-04-27",
     type: "项目管理",
     badgeType: "new",
-    path: "/pages/project-plan.html"
+    path: "/creativeprostudio/document/project-plan.html"
   },
   {
     title: "开发资源",
@@ -229,7 +233,7 @@ const projectDocs = [
     date: "2025-04-27",
     type: "资源中心",
     badgeType: "new",
-    path: "/pages/resources.html"
+    path: "/creativeprostudio/document/resources.html"
   }
 ];
 
@@ -244,7 +248,7 @@ const productEntries = [
     date: "2025-04-30",
     type: "核心功能",
     badgeType: "new",
-    path: "/canvas-editor"
+    path: "/creativeprostudio/canvas-editor"
   },
   {
     title: "母版库",
@@ -255,7 +259,7 @@ const productEntries = [
     date: "2025-04-30",
     type: "设计资源",
     badgeType: "new",
-    path: "/master-library"
+    path: "/creativeprostudio/master-library"
   },
   {
     title: "批量处理中心",
@@ -266,7 +270,7 @@ const productEntries = [
     date: "2025-04-30",
     type: "效率工具",
     badgeType: "new",
-    path: "/batch-center"
+    path: "/creativeprostudio/batch-center"
   },
   {
     title: "素材库",
@@ -277,7 +281,7 @@ const productEntries = [
     date: "2025-04-30",
     type: "资源中心",
     badgeType: "new",
-    path: "/asset-library"
+    path: "/creativeprostudio/asset-library"
   },
   {
     title: "项目管理",
@@ -288,7 +292,7 @@ const productEntries = [
     date: "2025-04-30",
     type: "项目工具",
     badgeType: "new",
-    path: "/projects"
+    path: "/creativeprostudio/projects"
   },
   {
     title: "创建批量任务",
@@ -299,7 +303,7 @@ const productEntries = [
     date: "2025-04-30",
     type: "快捷操作",
     badgeType: "new",
-    path: "/batch-create"
+    path: "/creativeprostudio/batch-create"
   }
 ];
 
@@ -313,7 +317,7 @@ const systemDocs = [
     date: "2025-04-30",
     isNew: false,
     meta: { icon: "fas fa-book", text: "设计系统" },
-    link: "/ui-guidelines"
+    link: "/creativeprostudio/ui-guidelines"
   },
   {
     title: "交互设计规范",
@@ -323,7 +327,7 @@ const systemDocs = [
     date: "2025-05-28",
     isNew: true,
     meta: { icon: "fas fa-book", text: "设计系统" },
-    link: "/interaction-guidelines"
+    link: "/creativeprostudio/interaction-guidelines"
   },
 ];
 
@@ -334,10 +338,12 @@ const ThemeToggle = () => {
   return (
     <motion.button 
       onClick={toggleColorMode}
-      className={`fixed top-6 right-6 z-50 p-3.5 rounded-full shadow-xl ${
-        colorMode === 'light' ? 'bg-white/90 text-indigo backdrop-blur-md' : 'bg-gray-800/90 text-purple backdrop-blur-md'
+      className={`fixed top-6 right-6 z-50 p-3.5 rounded-full shadow-lg backdrop-blur-lg ${
+        colorMode === 'light' 
+          ? 'bg-white/80 text-indigo-600 border border-gray-100' 
+          : 'bg-gray-800/80 text-indigo-300 border border-gray-700/30'
       }`}
-      whileHover={{ scale: 1.1, boxShadow: "0px 10px 25px rgba(0, 0, 0, 0.18)" }}
+      whileHover={{ scale: 1.05, boxShadow: "0px 8px 20px rgba(0, 0, 0, 0.12)" }}
       whileTap={{ scale: 0.95 }}
       aria-label="切换主题模式"
     >
@@ -353,25 +359,50 @@ const ThemeToggle = () => {
 const BackgroundPattern = ({ isDark }) => {
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-      {/* 背景渐变 */}
+      {/* 主背景 */}
       <div className={`absolute inset-0 ${
-        isDark ? 'bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900' : 
-                'bg-gradient-to-br from-gray6/70 via-primary-light/60 to-gray5/70'
+        isDark 
+          ? 'bg-gradient-to-b from-gray-950 to-gray-900' 
+          : 'bg-gradient-to-b from-stone-50 to-neutral-50'
       }`}></div>
       
-      {/* 装饰圆点 */}
-      <div className="absolute top-20 left-10 w-80 h-80 rounded-full opacity-30 
-        bg-gradient-to-r from-purple/30 to-indigo/20 blur-3xl"></div>
-      <div className="absolute bottom-20 right-10 w-96 h-96 rounded-full opacity-20 
-        bg-gradient-to-r from-teal/30 to-blue/20 blur-3xl"></div>
+      {/* 顶部渐变光效 */}
+      <div className={`absolute top-0 left-0 right-0 h-[30vh] ${
+        isDark 
+          ? 'bg-gradient-to-b from-indigo-950/30 to-transparent' 
+          : 'bg-gradient-to-b from-blue-50/60 to-transparent'
+      } opacity-80`}></div>
       
-      {/* 增加微妙的格子图案 */}
+      {/* 右侧渐变球体 */}
+      <div className={`absolute top-[15%] right-[5%] w-[40vw] h-[40vw] rounded-full ${
+        isDark
+          ? 'bg-gradient-to-tr from-purple-900/10 to-blue-900/10'
+          : 'bg-gradient-to-tr from-indigo-100/30 to-blue-100/30'
+      } blur-3xl opacity-50 transform -rotate-12`}></div>
+      
+      {/* 左侧渐变球体 */}
+      <div className={`absolute bottom-[15%] left-[5%] w-[35vw] h-[35vw] rounded-full ${
+        isDark
+          ? 'bg-gradient-to-br from-slate-900/30 to-slate-800/20'
+          : 'bg-gradient-to-br from-slate-100/50 to-slate-200/30'
+      } blur-3xl opacity-40 transform rotate-12`}></div>
+      
+      {/* 微妙的网格图案 */}
       <div className={`absolute inset-0 ${
-        isDark ? 'opacity-5' : 'opacity-10'
+        isDark ? 'opacity-[0.03]' : 'opacity-[0.04]'
       }`} style={{ 
-        backgroundImage: `radial-gradient(circle at 1px 1px, ${isDark ? '#fff' : '#000'} 1px, transparent 0)`,
-        backgroundSize: '40px 40px' 
+        backgroundImage: `linear-gradient(${isDark ? '#fff' : '#000'} 1px, transparent 1px), 
+                          linear-gradient(to right, ${isDark ? '#fff' : '#000'} 1px, transparent 1px)`,
+        backgroundSize: '80px 80px',
+        backgroundPosition: '-1px -1px'
       }}></div>
+      
+      {/* 顶部装饰线条 */}
+      <div className={`absolute top-0 left-0 right-0 h-1 ${
+        isDark 
+          ? 'bg-gradient-to-r from-indigo-500/0 via-indigo-500/40 to-indigo-500/0'
+          : 'bg-gradient-to-r from-indigo-200/0 via-indigo-300/30 to-indigo-200/0'
+      }`}></div>
     </div>
   );
 };
@@ -380,9 +411,30 @@ const BackgroundPattern = ({ isDark }) => {
 const FancyTitle = ({ text, subtitle }) => {
   const { colorMode } = useTheme();
   const isDark = colorMode === 'dark';
+  const navigate = useNavigate();
   
   return (
     <div className="text-center mb-16 relative z-10">
+      <motion.div
+        className="absolute top-0 left-0 mb-8"
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.4 }}
+      >
+        <motion.button
+          onClick={() => navigate('/')}
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg ${
+            isDark ? 'bg-gray-800 text-gray-300 hover:bg-gray-700 border border-gray-700/30' : 
+                    'bg-white text-gray-600 hover:bg-gray-100 border border-gray-100'
+          }`}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          <i className="fas fa-arrow-left text-sm"></i>
+          <span>返回项目列表</span>
+        </motion.button>
+      </motion.div>
+      
       <motion.h1 
         className={`text-4xl sm:text-5xl font-bold tracking-tight mb-4 ${
           isDark ? 'text-white' : 'text-gray-900'
@@ -393,13 +445,13 @@ const FancyTitle = ({ text, subtitle }) => {
       >
         <span className="inline-block">CreativePro Studio</span>{" "}
         <span className={`inline-block ${
-          isDark ? 'text-primary/90' : 'text-teal'
+          isDark ? 'text-indigo-400' : 'text-indigo-600'
         }`}>文档中心</span>
       </motion.h1>
       
       <motion.p 
         className={`max-w-2xl mx-auto text-md md:text-lg ${
-          isDark ? 'text-gray-300' : 'text-gray'
+          isDark ? 'text-gray-300/90' : 'text-gray-600'
         }`}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -416,7 +468,7 @@ const SectionTitle = ({ title, isDark }) => {
   return (
     <motion.h2 
       className={`text-lg sm:text-xl font-semibold pb-3 mb-6 border-b ${
-        isDark ? 'text-gray-100 border-gray-700' : 'text-gray border-gray5'
+        isDark ? 'text-gray-100 border-gray-800' : 'text-gray-800 border-gray-200'
       }`}
       initial={{ opacity: 0, y: 15 }}
       whileInView={{ opacity: 1, y: 0 }}
@@ -437,13 +489,13 @@ const ScrollIndicator = ({ isDark }) => {
       animate={{ opacity: [0.4, 0.8, 0.4], y: [0, 8, 0] }}
       transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
     >
-      <div className={`w-8 h-12 rounded-full border-2 flex items-start justify-center p-2 ${
-        isDark ? 'border-gray-500 bg-gray-800/30 backdrop-blur-md' : 
-                'border-gray3 bg-white/30 backdrop-blur-md'
+      <div className={`w-8 h-12 rounded-full border-2 flex items-start justify-center p-2 backdrop-blur-lg ${
+        isDark ? 'border-gray-700 bg-gray-800/30' : 
+                'border-gray-200 bg-white/30'
       }`}>
         <motion.div 
           className={`w-1 h-2 rounded-full ${
-            isDark ? 'bg-gray-400' : 'bg-gray2'
+            isDark ? 'bg-gray-400' : 'bg-gray-500'
           }`}
           animate={{ y: [0, 4, 0] }}
           transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
@@ -517,7 +569,7 @@ const DocCenter = () => {
       <div className="container mx-auto px-4 sm:px-6 lg:max-w-6xl relative z-10">
         <FancyTitle 
           text="CreativePro Studio 文档中心" 
-          subtitle="集成设计、开发和文档资源，提供完整的产品设计解决方案" 
+          subtitle="美妆与潮流创意设计平台，面向Z世代女性用户的一站式创意内容创作工具" 
         />
         
         <section className="mb-16">
@@ -548,7 +600,7 @@ const DocCenter = () => {
         <footer className={`text-center mt-20 py-8 border-t ${
           isDark ? 'border-gray-700/50 text-gray-400' : 'border-gray5 text-gray2'
         }`}>
-          <p>© 2025 CreativePro Studio | AI赋能内容创作平台 | 版权所有</p>
+          <p>© 2025 domiyoung__ | CreativePro Studio - AI赋能内容创作平台 | 版权所有</p>
         </footer>
       </div>
       

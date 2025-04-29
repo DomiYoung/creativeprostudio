@@ -19,29 +19,59 @@ import BatchCreate from './pages/BatchCreate.jsx';
 import DatabaseDesign from './pages/DatabaseDesign.jsx';
 import ApiSpecification from './pages/ApiSpecification.jsx';
 import UiGuidelines from './pages/UiGuidelines.jsx';
+import ProjectBlueprint from './pages/ProjectBlueprint.jsx';
+import BackendArchitecture from './pages/BackendArchitecture.jsx';
+import FrontendArchitecture from './pages/FrontendArchitecture.jsx';
+import ProjectsList from './pages/ProjectsList.jsx';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<DocCenter />} />
-        <Route path="/document/:document" element={<DocumentFrame />} />
-        <Route path="/prototype" element={<PrototypeDesign />} />
-        <Route path="/asset-library" element={<AssetLibrary />} />
-        <Route path="/master-library" element={<MasterLibrary />} />
-        <Route path="/batch-center" element={<BatchCenter />} />
-        <Route path="/batch-center/:id" element={<BatchDetail />} />
-        <Route path="/canvas-editor" element={<CanvasEditor />} />
-        <Route path="/projects" element={<ProjectsView />} />
-        <Route path="/batch-create" element={<BatchCreate />} />
-        <Route path="/database-design" element={<DatabaseDesign />} />
-        <Route path="/api-specification" element={<ApiSpecification />} />
-        <Route path="/ui-guidelines" element={<UiGuidelines />} />
-        <Route path="/pages/*" element={<Navigate to="/" replace />} />
-        <Route path="/showcase" element={<UIShowcase />} />
-        <Route path="/demo" element={<CreativeDemo />} />
-        <Route path="/app" element={<App />} />
+        {/* 项目列表作为新首页 */}
+        <Route path="/" element={<ProjectsList />} />
+        
+        {/* CreativePro Studio项目路由 */}
+        <Route path="/creativeprostudio" element={<DocCenter />} />
+        <Route path="/creativeprostudio/document/:document" element={<DocumentFrame />} />
+        <Route path="/creativeprostudio/system-blueprint" element={<ProjectBlueprint />} />
+        <Route path="/creativeprostudio/backend-architecture" element={<BackendArchitecture />} />
+        <Route path="/creativeprostudio/frontend-architecture" element={<FrontendArchitecture />} />
+        <Route path="/creativeprostudio/prototype" element={<PrototypeDesign />} />
+        <Route path="/creativeprostudio/asset-library" element={<AssetLibrary />} />
+        <Route path="/creativeprostudio/master-library" element={<MasterLibrary />} />
+        <Route path="/creativeprostudio/batch-center" element={<BatchCenter />} />
+        <Route path="/creativeprostudio/batch-center/:id" element={<BatchDetail />} />
+        <Route path="/creativeprostudio/canvas-editor" element={<CanvasEditor />} />
+        <Route path="/creativeprostudio/projects" element={<ProjectsView />} />
+        <Route path="/creativeprostudio/batch-create" element={<BatchCreate />} />
+        <Route path="/creativeprostudio/database-design" element={<DatabaseDesign />} />
+        <Route path="/creativeprostudio/api-specification" element={<ApiSpecification />} />
+        <Route path="/creativeprostudio/ui-guidelines" element={<UiGuidelines />} />
+        <Route path="/creativeprostudio/showcase" element={<UIShowcase />} />
+        <Route path="/creativeprostudio/demo" element={<CreativeDemo />} />
+        <Route path="/creativeprostudio/app" element={<App />} />
+        
+        {/* 兼容旧路径的重定向 */}
+        <Route path="/document/*" element={<Navigate to="/creativeprostudio" replace />} />
+        <Route path="/system-blueprint" element={<Navigate to="/creativeprostudio/system-blueprint" replace />} />
+        <Route path="/backend-architecture" element={<Navigate to="/creativeprostudio/backend-architecture" replace />} />
+        <Route path="/frontend-architecture" element={<Navigate to="/creativeprostudio/frontend-architecture" replace />} />
+        <Route path="/prototype" element={<Navigate to="/creativeprostudio/prototype" replace />} />
+        <Route path="/asset-library" element={<Navigate to="/creativeprostudio/asset-library" replace />} />
+        <Route path="/master-library" element={<Navigate to="/creativeprostudio/master-library" replace />} />
+        <Route path="/batch-center" element={<Navigate to="/creativeprostudio/batch-center" replace />} />
+        <Route path="/projects" element={<Navigate to="/creativeprostudio/projects" replace />} />
+        <Route path="/batch-create" element={<Navigate to="/creativeprostudio/batch-create" replace />} />
+        <Route path="/database-design" element={<Navigate to="/creativeprostudio/database-design" replace />} />
+        <Route path="/api-specification" element={<Navigate to="/creativeprostudio/api-specification" replace />} />
+        <Route path="/ui-guidelines" element={<Navigate to="/creativeprostudio/ui-guidelines" replace />} />
+        <Route path="/showcase" element={<Navigate to="/creativeprostudio/showcase" replace />} />
+        <Route path="/demo" element={<Navigate to="/creativeprostudio/demo" replace />} />
+        <Route path="/app" element={<Navigate to="/creativeprostudio/app" replace />} />
+        
+        {/* 404页面 */}
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
