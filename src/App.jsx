@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import { ChakraProvider, extendTheme } from '@chakra-ui/react';
+import { ChakraProvider } from '@chakra-ui/provider';
+import { extendTheme } from '@chakra-ui/theme-utils';
 import './App.css';
 import Button from './design-system/components/Button';
 import Card from './design-system/components/Card';
