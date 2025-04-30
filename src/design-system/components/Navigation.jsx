@@ -79,13 +79,13 @@ const NavItem = styled.li`
 `;
 
 // 导航链接 - 符合Apple设计的导航链接
-const NavLink = styled.a`
+const NavLinkBase = styled.a`
   font-family: ${typography.fontFamily.base};
   font-weight: ${typography.fontWeight.medium};
   font-size: ${typography.fontSize.subhead};
   color: ${props => {
     const isDark = props.theme?.colorMode === 'dark';
-    return props.active 
+    return props.$active 
       ? isDark ? colors.primary.dark : colors.primary.light
       : isDark ? colors.ui.text.secondary.dark : colors.ui.text.secondary.light;
   }};
@@ -115,13 +115,18 @@ const NavLink = styled.a`
     font-size: 16px;
   }
   
-  ${props => props.active && `
+  ${props => props.$active && `
     background-color: ${props.theme?.colorMode === 'dark' 
       ? 'rgba(10, 132, 255, 0.15)' 
       : 'rgba(0, 122, 255, 0.1)'};
     font-weight: ${typography.fontWeight.semibold};
   `}
 `;
+
+// Wrapper component to handle the 'active' prop
+const NavLink = ({ active, ...props }) => (
+  <NavLinkBase $active={active} {...props} />
+);
 
 // 导航右侧区域
 const NavRight = styled.div`

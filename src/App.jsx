@@ -687,38 +687,36 @@ const CreativeProStudio = () => {
 
 function App() {
   return (
-    <ThemeProvider>
-      <ChakraProvider theme={theme}>
-        <AppContainer>
-          <Router>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/master-library" element={<MasterLibrary />} />
-              <Route path="/batch-center" element={<BatchCenter />} />
-              <Route path="/batch/:id" element={<BatchDetail />} />
-              <Route path="/ui-guidelines" element={<UiGuidelines />} />
-              <Route path="/api-specification" element={<ApiSpecification />} />
-              <Route path="/database-design" element={<DatabaseDesign />} />
-              <Route path="/interaction-guidelines" element={<InteractionGuidelines />} />
-              <Route path="/project-report" element={<ProjectReport />} />
-              <Route path="/project-blueprint" element={<ProjectBlueprint />} />
-              <Route path="/frontend-guide" element={<FrontendGuide />} />
-              <Route path="/backend-design" element={<BackendDesign />} />
-              <Route path="/prototype-design" element={<PrototypeDesign />} />
-              <Route path="/doc-center" element={<DocCenter />} />
-              <Route path="/asset-library" element={<AssetLibrary />} />
-              <Route path="/ux-documents" element={<UXDocuments />} />
-              <Route path="/product-lifecycle-presentation" element={<ProductLifecyclePresentation />} />
-              <Route path="/cto-presentation" element={<CtoPresentation />} />
-              <Route path="/creativepro-studio" element={<CreativeProStudio />} />
-              <Route path="/project-detail/:id" element={<ProjectDetail />} />
-              <Route path="/projects" element={<Projects />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </Router>
-        </AppContainer>
-      </ChakraProvider>
-    </ThemeProvider>
+    <ChakraProvider theme={theme}>
+      <AppContainer>
+        <Router>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/master-library" element={<MasterLibrary />} />
+            <Route path="/batch-center" element={<BatchCenter />} />
+            <Route path="/batch/:id" element={<BatchDetail />} />
+            <Route path="/ui-guidelines" element={<UiGuidelines />} />
+            <Route path="/api-specification" element={<ApiSpecification />} />
+            <Route path="/database-design" element={<DatabaseDesign />} />
+            <Route path="/interaction-guidelines" element={<InteractionGuidelines />} />
+            <Route path="/project-report" element={<ProjectReport />} />
+            <Route path="/project-blueprint" element={<ProjectBlueprint />} />
+            <Route path="/frontend-guide" element={<FrontendGuide />} />
+            <Route path="/backend-design" element={<BackendDesign />} />
+            <Route path="/prototype-design" element={<PrototypeDesign />} />
+            <Route path="/doc-center" element={<DocCenter />} />
+            <Route path="/asset-library" element={<AssetLibrary />} />
+            <Route path="/ux-documents" element={<UXDocuments />} />
+            <Route path="/product-lifecycle-presentation" element={<ProductLifecyclePresentation />} />
+            <Route path="/cto-presentation" element={<CtoPresentation />} />
+            <Route path="/creativepro-studio" element={<CreativeProStudio />} />
+            <Route path="/project-detail/:id" element={<ProjectDetail />} />
+            <Route path="/projects" element={<Projects />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Router>
+      </AppContainer>
+    </ChakraProvider>
   );
 }
 

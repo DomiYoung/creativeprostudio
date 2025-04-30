@@ -68,7 +68,7 @@ const PrototypeDesign = () => {
           <S.NavItem onClick={() => navigate('/canvas-editor')}>
             <i className="fas fa-edit"></i> 画布编辑器
           </S.NavItem>
-          <S.NavItem onClick={() => navigate('/batch-center')}>
+          <S.NavItem onClick={() => navigate('/creativeprostudio/batch-center')}>
             <i className="fas fa-th-large"></i> 批量处理中心
           </S.NavItem>
         </S.NavGroup>
@@ -186,7 +186,7 @@ const PrototypeDesign = () => {
                       boxShadow: '0 16px 30px rgba(0, 0, 0, 0.08)',
                       borderColor: 'rgba(0, 0, 0, 0.08)'
                     }}
-                    onClick={() => navigate('/projects')}
+                    onClick={() => navigate('/creativeprostudio/projects/1')}
                   >
                     <S.ProjectPreview>
                       <motion.img 

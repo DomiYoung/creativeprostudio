@@ -18,7 +18,6 @@ const ProjectCard = ({ title, description, date, status, onClick }) => {
       <Card
         shadow={isDark ? "sm" : "md"}
         interactive
-        padding="lg"
         className={`h-full border-none transition-all duration-300 ${
           isDark 
             ? 'bg-gray-800/80 backdrop-blur-xl border border-gray-700/30' 

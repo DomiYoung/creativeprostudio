@@ -18,6 +18,12 @@ const menuItems = [
     path: '/creativeprostudio/material-library'
   },
   {
+    id: 'ai-assistant',
+    label: 'AI创意助手',
+    icon: 'fas fa-robot',
+    path: '/creativeprostudio/ai-assistant'
+  },
+  {
     id: 'ux-documents',
     label: 'UX设计文档',
     icon: 'fas fa-file-alt',

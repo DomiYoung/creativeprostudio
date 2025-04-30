@@ -27,6 +27,7 @@ import ProjectsList from './pages/ProjectsList.jsx';
 import DocumentationPage from './pages/DocumentationPage.jsx';
 import MaterialLibrary from './pages/MaterialLibrary.jsx';
 import ProjectDetail from './pages/ProjectDetail.jsx';
+import AIAssistant from './pages/AIAssistant.jsx';
 import { ThemeProvider } from './design-system';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -53,6 +54,7 @@ root.render(
           <Route path="/creativeprostudio/projects" element={<ProjectsView />} />
           <Route path="/creativeprostudio/batch-create" element={<BatchCreate />} />
           <Route path="/creativeprostudio/material-library" element={<MaterialLibrary />} />
+          <Route path="/creativeprostudio/ai-assistant" element={<AIAssistant />} />
           <Route path="/creativeprostudio/database-design" element={<DatabaseDesign />} />
           <Route path="/creativeprostudio/api-specification" element={<ApiSpecification />} />
           <Route path="/creativeprostudio/ui-guidelines" element={<UiGuidelines />} />
@@ -72,9 +74,11 @@ root.render(
           <Route path="/asset-library" element={<Navigate to="/creativeprostudio/asset-library" replace />} />
           <Route path="/master-library" element={<Navigate to="/creativeprostudio/master-library" replace />} />
           <Route path="/batch-center" element={<Navigate to="/creativeprostudio/batch-center" replace />} />
+          <Route path="/batch-center/:id" element={<Navigate to={(location) => `/creativeprostudio/batch-center/${location.pathname.split('/').pop()}`} replace />} />
           <Route path="/projects" element={<Navigate to="/creativeprostudio/projects" replace />} />
           <Route path="/batch-create" element={<Navigate to="/creativeprostudio/batch-create" replace />} />
           <Route path="/material-library" element={<Navigate to="/creativeprostudio/material-library" replace />} />
+          <Route path="/ai-assistant" element={<Navigate to="/creativeprostudio/ai-assistant" replace />} />
           <Route path="/database-design" element={<Navigate to="/creativeprostudio/database-design" replace />} />
           <Route path="/api-specification" element={<Navigate to="/creativeprostudio/api-specification" replace />} />
           <Route path="/ui-guidelines" element={<Navigate to="/creativeprostudio/ui-guidelines" replace />} />

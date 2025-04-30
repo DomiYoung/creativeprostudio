@@ -711,7 +711,7 @@ const BatchCenter = () => {
   const selectProject = (id) => {
     console.log(`选择了项目ID: ${id}`);
     // 这里可以实现导航到项目详情页面
-    navigate(`/batch-center/${id}`);
+    navigate(`/creativeprostudio/batch-center/${id}`);
   };
   
   // 创建新项目
@@ -739,7 +739,7 @@ const BatchCenter = () => {
   };
   
   const handleProjectClick = (project) => {
-    navigate(`/batch-center/${project.id}`);
+    navigate(`/creativeprostudio/batch-center/${project.id}`);
   };
   
   return (

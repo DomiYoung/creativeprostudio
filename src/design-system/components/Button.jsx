@@ -1,156 +1,381 @@
 import React from 'react';
 import styled from '@emotion/styled';
 import { motion } from 'framer-motion';
-import colors from '../tokens/colors';
-import spacing from '../tokens/spacing';
-import typography from '../tokens/typography';
+import { useTheme } from '../ThemeContext';
 
-// 基础按钮组件 - 按照Apple设计风格
+// Button variants
+const VARIANTS = {
+  PRIMARY: 'primary',
+  SECONDARY: 'secondary',
+  TERTIARY: 'tertiary',
+  TEXT: 'text',
+  GRADIENT: 'gradient',
+  OUTLINE: 'outline',
+  GHOST: 'ghost',
+};
+
+// Button sizes
+const SIZES = {
+  XS: 'xs',
+  SM: 'sm',
+  MD: 'md',
+  LG: 'lg',
+  XL: 'xl',
+};
+
+// Base button styles
 const StyledButton = styled(motion.button)`
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  border-radius: ${props => props.pill ? spacing.borderRadius.pill : spacing.borderRadius.md};
-  font-family: ${typography.fontFamily.base};
-  font-weight: ${typography.fontWeight.semibold};
-  font-size: ${props => typography.fontSize[props.size === 'lg' ? 'body' : props.size === 'sm' ? 'footnote' : 'subhead']};
-  transition: all 0.2s ease;
+  border: 0;
+  border-radius: ${props => props.$rounded ? '9999px' : '12px'};
+  font-weight: 600;
+  font-family: inherit;
   cursor: pointer;
-  padding: ${props => 
-    props.size === 'lg' ? '12px 24px' : 
-    props.size === 'sm' ? '6px 16px' : 
-    '8px 20px'};
-  width: ${props => props.fullWidth ? '100%' : 'auto'};
+  transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+  overflow: hidden;
+  user-select: none;
   
-  /* 根据变体设置样式 */
+  /* Size variations */
   ${props => {
-    const isDark = props.theme?.colorMode === 'dark';
+    switch (props.$size) {
+      case SIZES.XS:
+        return `
+          padding: 6px 12px;
+          font-size: 12px;
+          height: 30px;
+        `;
+      case SIZES.SM:
+        return `
+          padding: 8px 16px;
+          font-size: 13px;
+          height: 36px;
+        `;
+      case SIZES.MD:
+        return `
+          padding: 10px 20px;
+          font-size: 14px;
+          height: 42px;
+        `;
+      case SIZES.LG:
+        return `
+          padding: 12px 24px;
+          font-size: 15px;
+          height: 48px;
+        `;
+      case SIZES.XL:
+        return `
+          padding: 14px 28px;
+          font-size: 16px;
+          height: 54px;
+        `;
+      default:
+        return `
+          padding: 10px 20px;
+          font-size: 14px;
+          height: 42px;
+        `;
+    }
+  }}
+  
+  /* Variant variations */
+  ${props => {
+    const isDark = props.$isDark;
     
-    switch(props.variant) {
-      case 'primary':
+    // Generate consistent color brightening/darkening for hover states
+    const brighten = (color, amount = 10) => {
+      // Simple implementation for demo purposes
+      return color;
+    };
+    
+    const darken = (color, amount = 10) => {
+      // Simple implementation for demo purposes
+      return color;
+    };
+    
+    // Color management based on variant and theme
+    let bgColor, textColor, hoverBgColor, hoverTextColor, activeBgColor;
+    
+    switch (props.$variant) {
+      case VARIANTS.PRIMARY:
+        bgColor = props.$color || '#FF9190';
+        textColor = '#FFF';
+        hoverBgColor = brighten(bgColor, 5);
+        activeBgColor = darken(bgColor, 10);
+        
         return `
-          background-color: ${isDark ? colors.primary.dark : colors.primary.light};
-          color: white;
-          border: none;
+          background-color: ${bgColor};
+          color: ${textColor};
           
           &:hover {
-            background-color: ${isDark ? '#097CEC' : '#0071EB'};
+            background-color: #FF7B7A;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 145, 144, 0.3);
           }
           
           &:active {
-            background-color: ${isDark ? '#0868C6' : '#0062CC'};
-          }
-        `;
-      
-      case 'secondary':
-        return `
-          background-color: ${isDark ? colors.gray[800] : colors.gray[100]};
-          color: ${isDark ? colors.gray[100] : colors.gray[900]};
-          border: none;
-          
-          &:hover {
-            background-color: ${isDark ? colors.gray[700] : colors.gray[200]};
-          }
-          
-          &:active {
-            background-color: ${isDark ? colors.gray[600] : colors.gray[300]};
-          }
-        `;
-      
-      case 'outline':
-        return `
-          background-color: transparent;
-          color: ${isDark ? colors.primary.dark : colors.primary.light};
-          border: 1px solid ${isDark ? colors.primary.dark : colors.primary.light};
-          
-          &:hover {
-            background-color: ${isDark ? 'rgba(10, 132, 255, 0.1)' : 'rgba(0, 122, 255, 0.1)'};
-          }
-          
-          &:active {
-            background-color: ${isDark ? 'rgba(10, 132, 255, 0.2)' : 'rgba(0, 122, 255, 0.2)'};
+            background-color: #FF6665;
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(255, 145, 144, 0.2);
           }
         `;
         
-      case 'ghost':
+      case VARIANTS.SECONDARY:
+        bgColor = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)';
+        textColor = isDark ? '#FFFFFF' : '#333333';
+        
         return `
-          background-color: transparent;
-          color: ${isDark ? colors.gray[100] : colors.gray[900]};
-          border: none;
+          background-color: ${bgColor};
+          color: ${textColor};
           
           &:hover {
-            background-color: ${isDark ? colors.gray[800] : colors.gray[100]};
+            background-color: ${isDark ? 'rgba(255, 255, 255, 0.15)' : 'rgba(0, 0, 0, 0.08)'};
+            transform: translateY(-2px);
+            box-shadow: ${isDark ? '0 4px 12px rgba(0, 0, 0, 0.3)' : '0 4px 12px rgba(0, 0, 0, 0.1)'};
           }
           
           &:active {
-            background-color: ${isDark ? colors.gray[700] : colors.gray[200]};
+            background-color: ${isDark ? 'rgba(255, 255, 255, 0.12)' : 'rgba(0, 0, 0, 0.06)'};
+            transform: translateY(0);
           }
         `;
         
-      case 'destructive':
+      case VARIANTS.TERTIARY:
+        textColor = isDark ? '#e0e0e0' : '#555555';
+        bgColor = 'transparent';
+        
         return `
-          background-color: ${colors.semantic.error};
-          color: white;
-          border: none;
+          background-color: ${bgColor};
+          color: ${textColor};
+          border: 1px solid ${isDark ? 'rgba(255, 255, 255, 0.12)' : 'rgba(0, 0, 0, 0.12)'};
           
           &:hover {
-            background-color: #E02F25;
+            background-color: ${isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.03)'};
+            transform: translateY(-2px);
+            border-color: ${isDark ? 'rgba(255, 255, 255, 0.18)' : 'rgba(0, 0, 0, 0.18)'};
           }
           
           &:active {
-            background-color: #C0271F;
+            background-color: ${isDark ? 'rgba(255, 255, 255, 0.03)' : 'rgba(0, 0, 0, 0.02)'};
+            transform: translateY(0);
           }
         `;
-      
+        
+      case VARIANTS.TEXT:
+        textColor = props.$color || (isDark ? '#e0e0e0' : '#555555');
+        bgColor = 'transparent';
+        
+        return `
+          background-color: transparent;
+          color: ${textColor};
+          padding-left: 8px;
+          padding-right: 8px;
+          
+          &:hover {
+            background-color: ${isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.03)'};
+            transform: translateY(-1px);
+          }
+          
+          &:active {
+            transform: translateY(0);
+          }
+        `;
+        
+      case VARIANTS.GRADIENT:
+        const gradientFrom = props.$gradientFrom || '#FF9190';
+        const gradientTo = props.$gradientTo || '#6DC9FF';
+        
+        return `
+          background: linear-gradient(135deg, ${gradientFrom}, ${gradientTo});
+          color: white;
+          
+          &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            background: linear-gradient(135deg, ${brighten(gradientFrom, 5)}, ${brighten(gradientTo, 5)});
+          }
+          
+          &:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(135deg, ${darken(gradientFrom, 5)}, ${darken(gradientTo, 5)});
+          }
+        `;
+        
+      case VARIANTS.OUTLINE:
+        textColor = props.$color || (isDark ? '#e0e0e0' : '#555555');
+        
+        return `
+          background-color: transparent;
+          color: ${textColor};
+          border: 2px solid ${textColor};
+          
+          &:hover {
+            background-color: ${isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.03)'};
+            transform: translateY(-2px);
+          }
+          
+          &:active {
+            transform: translateY(0);
+          }
+        `;
+        
+      case VARIANTS.GHOST:
+        textColor = props.$color || (isDark ? '#e0e0e0' : '#555555');
+        
+        return `
+          background-color: transparent;
+          color: ${textColor};
+          
+          &:hover {
+            background-color: ${isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.05)'};
+            transform: translateY(-2px);
+          }
+          
+          &:active {
+            background-color: ${isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.03)'};
+            transform: translateY(0);
+          }
+        `;
+        
       default:
         return '';
     }
   }}
   
-  /* 禁用状态 */
+  /* Full width option */
+  width: ${props => props.$fullWidth ? '100%' : 'auto'};
+  
+  /* Disabled state */
   ${props => props.disabled && `
-    opacity: 0.4;
+    opacity: 0.5;
     cursor: not-allowed;
     pointer-events: none;
   `}
+  
+  /* Icon only mode */
+  ${props => props.$iconOnly && `
+    padding: 0;
+    aspect-ratio: 1;
+    justify-content: center;
+  `}
+  
+  /* Ripple effect base styles */
+  .ripple {
+    position: absolute;
+    border-radius: 50%;
+    transform: scale(0);
+    animation: ripple 600ms linear;
+    background-color: rgba(255, 255, 255, 0.3);
+  }
+  
+  @keyframes ripple {
+    to {
+      transform: scale(4);
+      opacity: 0;
+    }
+  }
 `;
 
-// Button组件
-const Button = React.forwardRef(({
+// Main button component
+const ButtonBase = React.forwardRef(({
   children,
-  variant = 'primary',
-  size = 'md',
+  variant = VARIANTS.PRIMARY,
+  size = SIZES.MD,
+  color,
+  gradientFrom,
+  gradientTo,
   fullWidth = false,
-  disabled = false,
-  pill = false,
-  leftIcon,
-  rightIcon,
+  rounded = false,
+  iconOnly = false,
+  ripple = true,
+  className,
+  loading = false,
   onClick,
-  type = "button",
+  disabled = false,
+  isDark = false,
   ...props
 }, ref) => {
+  // Ripple effect
+  const createRipple = (e) => {
+    if (!ripple) return;
+    
+    const button = e.currentTarget;
+    const circle = document.createElement('span');
+    const diameter = Math.max(button.clientWidth, button.clientHeight);
+    const radius = diameter / 2;
+    
+    circle.style.width = circle.style.height = `${diameter}px`;
+    circle.style.left = `${e.clientX - button.getBoundingClientRect().left - radius}px`;
+    circle.style.top = `${e.clientY - button.getBoundingClientRect().top - radius}px`;
+    circle.classList.add('ripple');
+    
+    const existingRipple = button.getElementsByClassName('ripple')[0];
+    
+    if (existingRipple) {
+      existingRipple.remove();
+    }
+    
+    button.appendChild(circle);
+  };
+  
+  // Handle click and ripple effect
+  const handleClick = (e) => {
+    if (disabled || loading) return;
+    
+    createRipple(e);
+    
+    if (onClick) {
+      onClick(e);
+    }
+  };
+  
   return (
     <StyledButton
       ref={ref}
-      as={motion.button}
-      type={type}
-      variant={variant}
-      size={size}
-      fullWidth={fullWidth}
-      disabled={disabled}
-      pill={pill}
-      onClick={disabled ? undefined : onClick}
-      whileTap={!disabled ? { scale: 0.97 } : undefined}
+      $variant={variant}
+      $size={size}
+      $color={color}
+      $gradientFrom={gradientFrom}
+      $gradientTo={gradientTo}
+      $fullWidth={fullWidth}
+      $rounded={rounded}
+      $iconOnly={iconOnly}
+      $isDark={isDark}
+      className={className}
+      onClick={handleClick}
+      disabled={disabled || loading}
+      whileHover={{ scale: disabled || loading ? 1 : 1.02 }}
+      whileTap={{ scale: disabled || loading ? 1 : 0.98 }}
       {...props}
     >
-      {leftIcon && <span>{leftIcon}</span>}
-      {children}
-      {rightIcon && <span>{rightIcon}</span>}
+      {loading ? (
+        <span className="loading-spinner">
+          {/* Loading spinner */}
+          <svg viewBox="0 0 24 24" width="16" height="16">
+            <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" strokeWidth="3" strokeDasharray="35 15" />
+          </svg>
+        </span>
+      ) : (
+        children
+      )}
     </StyledButton>
   );
 });
 
-Button.displayName = "Button";
+// Wrapper component to use the theme context
+const Button = React.forwardRef((props, ref) => {
+  const { isDark } = useTheme();
+  
+  return <ButtonBase {...props} isDark={props.isDark !== undefined ? props.isDark : isDark} ref={ref} />;
+});
 
-export default Button; 
+// Export button with its variants and sizes
+Button.displayName = 'Button';
+Button.VARIANTS = VARIANTS;
+Button.SIZES = SIZES;
+
+export default Button;

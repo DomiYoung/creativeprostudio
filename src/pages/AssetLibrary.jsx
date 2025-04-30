@@ -784,8 +784,7 @@ const AssetLibrary = () => {
         showSearch={true}
         searchPlaceholder="搜索素材..."
         onSearch={handleSearch}
-        showSortFilter={true}
-        sortOptions={['最新', '最早', '名称', '热门']}
+        showSortFilter={false}
         activeSort={activeSort}
         onSortChange={setActiveSort}
       />

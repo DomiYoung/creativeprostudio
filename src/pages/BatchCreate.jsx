@@ -21,18 +21,18 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background-color: ${props => props.isDark ? '#121212' : '#f5f5f7'};
+  background-color: ${props => props.$isDark ? '#121212' : '#f5f5f7'};
   font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', Helvetica, Arial, sans-serif;
-  color: ${props => props.isDark ? '#f5f5f7' : '#1d1d1f'};
+  color: ${props => props.$isDark ? '#f5f5f7' : '#1d1d1f'};
   transition: background-color 0.3s ease, color 0.3s ease;
 `;
 
 const Header = styled.header`
   height: 60px;
-  background-color: ${props => props.isDark ? 'rgba(30, 30, 30, 0.8)' : 'rgba(255, 255, 255, 0.8)'};
+  background-color: ${props => props.$isDark ? 'rgba(30, 30, 30, 0.8)' : 'rgba(255, 255, 255, 0.8)'};
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border-bottom: 1px solid ${props => props.isDark ? '#333' : '#e0e0e0'};
+  border-bottom: 1px solid ${props => props.$isDark ? '#333' : '#e0e0e0'};
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -47,7 +47,7 @@ const BackButton = styled(motion.button)`
   align-items: center;
   background: none;
   border: none;
-  color: ${props => props.isDark ? '#f5f5f7' : '#1d1d1f'};
+  color: ${props => props.$isDark ? '#f5f5f7' : '#1d1d1f'};
   font-size: 16px;
   cursor: pointer;
   padding: 8px 16px;
@@ -55,7 +55,7 @@ const BackButton = styled(motion.button)`
   margin-right: 16px;
   
   &:hover {
-    background-color: ${props => props.isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)'};
+    background-color: ${props => props.$isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)'};
   }
   
   svg {
@@ -67,7 +67,7 @@ const Title = styled.h1`
   font-size: 28px;
   font-weight: 700;
   margin: 0;
-  background: ${props => props.isDark 
+  background: ${props => props.$isDark 
     ? 'linear-gradient(90deg, #FF9190 0%, #FFC3A0 100%)' 
     : 'linear-gradient(90deg, #FF6B6B 0%, #FFB88C 100%)'};
   -webkit-background-clip: text;
@@ -116,13 +116,13 @@ const StepCircle = styled.div`
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background-color: ${props => props.active ? '#0066cc' : props['data-completed'] ? '#4CAF50' : 'white'};
-  border: 2px solid ${props => props.active ? '#0066cc' : props['data-completed'] ? '#4CAF50' : '#e0e0e0'};
+  background-color: ${props => props['data-active'] ? '#0066cc' : props['data-completed'] ? '#4CAF50' : 'white'};
+  border: 2px solid ${props => props['data-active'] ? '#0066cc' : props['data-completed'] ? '#4CAF50' : '#e0e0e0'};
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 8px;
-  color: ${props => (props.active || props['data-completed']) ? 'white' : '#1d1d1f'};
+  color: ${props => (props['data-active'] || props['data-completed']) ? 'white' : '#1d1d1f'};
   font-weight: 500;
   transition: all 0.3s;
 
@@ -133,12 +133,12 @@ const StepCircle = styled.div`
 
 const StepLabel = styled.span`
   font-size: 14px;
-  color: ${props => props.active ? '#0066cc' : props['data-completed'] ? '#4CAF50' : '#86868b'};
-  font-weight: ${props => props.active ? '500' : 'normal'};
+  color: ${props => props['data-active'] ? '#0066cc' : props['data-completed'] ? '#4CAF50' : '#86868b'};
+  font-weight: ${props => props['data-active'] ? '500' : 'normal'};
 `;
 
 const Card = styled(motion.div)`
-  background-color: ${props => props.isDark ? '#1e1e1e' : 'white'};
+  background-color: ${props => props.$isDark ? '#1e1e1e' : 'white'};
   border-radius: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   padding: 24px;
@@ -482,18 +482,18 @@ const BatchCreate = () => {
   
   // 处理完成
   const handleComplete = () => {
-    navigate('/batch-center');
+    navigate('/creativeprostudio/batch-center');
   };
   
   // 模板类别列表
   const templateCategories = ['全部', '产品', '营销', '品牌'];
   
   return (
-    <Container isDark={isDark}>
-      <Header isDark={isDark}>
+    <Container $isDark={isDark}>
+      <Header $isDark={isDark}>
         <Tooltip title="返回">
           <BackButton 
-            isDark={isDark}
+            $isDark={isDark}
             onClick={handleBack}
             whileHover={{ x: -5 }}
             whileTap={{ scale: 0.95 }}
@@ -502,7 +502,7 @@ const BatchCreate = () => {
             返回
           </BackButton>
         </Tooltip>
-        <Title isDark={isDark}>批量创建</Title>
+        <Title $isDark={isDark}>批量创建</Title>
         <div style={{ width: '100px' }}></div>
       </Header>
       
@@ -521,28 +521,28 @@ const BatchCreate = () => {
         
         <StepIndicator>
           <Step>
-            <StepCircle active={currentStep === 1} data-completed={currentStep > 1} isDark={isDark}>
+            <StepCircle data-active={currentStep === 1} data-completed={currentStep > 1} $isDark={isDark}>
               {currentStep > 1 ? <CheckCircleIcon /> : 1}
             </StepCircle>
-            <StepLabel active={currentStep === 1} data-completed={currentStep > 1} isDark={isDark}>选择模板</StepLabel>
+            <StepLabel data-active={currentStep === 1} data-completed={currentStep > 1} $isDark={isDark}>选择模板</StepLabel>
           </Step>
           <Step>
-            <StepCircle active={currentStep === 2} data-completed={currentStep > 2} isDark={isDark}>
+            <StepCircle data-active={currentStep === 2} data-completed={currentStep > 2} $isDark={isDark}>
               {currentStep > 2 ? <CheckCircleIcon /> : 2}
             </StepCircle>
-            <StepLabel active={currentStep === 2} data-completed={currentStep > 2} isDark={isDark}>上传数据</StepLabel>
+            <StepLabel data-active={currentStep === 2} data-completed={currentStep > 2} $isDark={isDark}>上传数据</StepLabel>
           </Step>
           <Step>
-            <StepCircle active={currentStep === 3} data-completed={currentStep > 3} isDark={isDark}>
+            <StepCircle data-active={currentStep === 3} data-completed={currentStep > 3} $isDark={isDark}>
               {currentStep > 3 ? <CheckCircleIcon /> : 3}
             </StepCircle>
-            <StepLabel active={currentStep === 3} data-completed={currentStep > 3} isDark={isDark}>数据预览</StepLabel>
+            <StepLabel data-active={currentStep === 3} data-completed={currentStep > 3} $isDark={isDark}>数据预览</StepLabel>
           </Step>
           <Step>
-            <StepCircle active={currentStep === 4} isDark={isDark}>
+            <StepCircle data-active={currentStep === 4} $isDark={isDark}>
               4
             </StepCircle>
-            <StepLabel active={currentStep === 4} isDark={isDark}>完成创建</StepLabel>
+            <StepLabel data-active={currentStep === 4} $isDark={isDark}>完成创建</StepLabel>
           </Step>
         </StepIndicator>
         

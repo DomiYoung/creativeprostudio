@@ -59,11 +59,30 @@ const canvasSizes = [
   { id: 'product', name: '产品展示', width: 800, height: 1000 },
 ];
 
+// 在模拟数据部分添加背景和促销机制相关数据
+const mockBackgrounds = [
+  { id: 'bg1', name: '简约白色', color: '#FFFFFF', type: 'color' },
+  { id: 'bg2', name: '渐变红粉', gradient: 'linear-gradient(135deg, #FF9190 0%, #FFCCCB 100%)', type: 'gradient' },
+  { id: 'bg3', name: '节日主题', url: 'https://via.placeholder.com/800x800/F9FAFB/1D1D1F?text=节日背景', type: 'image' },
+  { id: 'bg4', name: '618活动', url: 'https://via.placeholder.com/800x800/FFE5E0/1D1D1F?text=618背景', type: 'image' },
+];
+
+const mockPromotions = [
+  { id: 'promo1', name: '买2赠3', description: '买2赠3', type: 'text', color: '#FF3B30' },
+  { id: 'promo2', name: '买1送200毫升', description: '买1送200毫升', type: 'text', color: '#FF9500' },
+  { id: 'promo3', name: '第2件半价', description: '第2件半价', type: 'text', color: '#5856D6' },
+  { id: 'promo4', name: '满399减100', description: '满399减100', type: 'text', color: '#34C759' },
+];
+
 // 模拟绘图元素数据
 const mockElements = [
   { id: 'elem1', type: 'text', x: 100, y: 100, width: 200, height: 50, content: '标题文本', fontSize: 24, fontWeight: 'bold', color: '#000000' },
   { id: 'elem2', type: 'image', x: 100, y: 200, width: 300, height: 200, src: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60' },
   { id: 'elem3', type: 'shape', x: 450, y: 100, width: 150, height: 150, shapeType: 'rectangle', backgroundColor: '#FF9190', borderRadius: '10px' },
+  // 新增背景元素
+  { id: 'background', type: 'background', x: 0, y: 0, width: '100%', height: '100%', backgroundType: 'color', backgroundColor: '#FFFFFF' },
+  // 新增促销机制元素
+  { id: 'promotion', type: 'promotion', x: 50, y: 50, width: 120, height: 40, content: '买2赠3', backgroundColor: '#FF3B30', color: '#FFFFFF', borderRadius: '20px' },
 ];
 
 // 样式组件
@@ -341,7 +360,8 @@ const CanvasContainer = styled.div`
   position: relative;
   overflow: auto;
   padding: 40px;
-  background-color: ${props => props.backgroundColor};
+  background-color: ${props => props.$backgroundColor};
+  transition: background-color 0.3s ease;
 `;
 
 const Canvas = styled.div`
@@ -368,8 +388,8 @@ const ZoomControls = styled.div`
 
 const ZoomText = styled.span`
   font-size: 12px;
+  color: ${props => props.$color};
   margin: 0 8px;
-  color: ${props => props.color};
 `;
 
 const LayersContainer = styled.div`
@@ -493,6 +513,96 @@ const ZoomButton = styled.button`
   }
 `;
 
+// 添加背景面板和促销机制面板的样式
+const BackgroundOptionsList = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+`;
+
+const BackgroundOption = styled.div`
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
+  border: 2px solid ${props => props.selected ? '#0066cc' : 'transparent'};
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  transition: all 0.2s ease;
+`;
+
+const ColorBackground = styled.div`
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  background-color: ${props => props.$color};
+`;
+
+const GradientBackground = styled.div`
+  width: 100%;
+  height: 100%;
+  background: ${props => props.gradient};
+`;
+
+const ImageBackground = styled.div`
+  width: 100%;
+  height: 100%;
+  background-image: url(${props => props.url});
+  background-size: cover;
+  background-position: center;
+`;
+
+const PromotionOptionsList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+`;
+
+const PromotionOption = styled.div`
+  padding: 10px;
+  border-radius: 8px;
+  background-color: ${props => props.selected ? '#f0f0f0' : 'white'};
+  border: 1px solid ${props => props.selected ? '#0066cc' : '#e0e0e0'};
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  
+  &:hover {
+    background-color: #f5f5f7;
+  }
+`;
+
+const PromotionPreview = styled.div`
+  padding: 6px 12px;
+  border-radius: 4px;
+  background-color: ${props => props.$color};
+  color: white;
+  font-size: 12px;
+  font-weight: 500;
+`;
+
+const SizeButton = styled.button`
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid ${props => props.$active ? '#007AFF' : 'rgba(0, 0, 0, 0.1)'};
+  background: ${props => props.$active ? 'rgba(0, 122, 255, 0.1)' : 'transparent'};
+  color: ${props => props.$active ? '#007AFF' : '#333'};
+  font-size: 12px;
+  margin-right: 8px;
+  cursor: pointer;
+  
+  &:hover {
+    background: rgba(0, 122, 255, 0.05);
+  }
+`;
+
 const CanvasEditor = () => {
   const navigate = useNavigate();
   const { colorMode } = useTheme();
@@ -512,6 +622,20 @@ const CanvasEditor = () => {
   const [selectedElement, setSelectedElement] = useState(null);
   const [dragState, setDragState] = useState({ isDragging: false, startX: 0, startY: 0, elementId: null });
   const [canvasBackgroundImage, setCanvasBackgroundImage] = useState(null);
+  
+  // 新增状态
+  const [selectedTool, setSelectedTool] = useState('select');
+  const [selectedCanvasSize, setSelectedCanvasSize] = useState(null);
+  const [selectedLayer, setSelectedLayer] = useState(null);
+  const [canvasWidth, setCanvasWidth] = useState(800);
+  const [canvasHeight, setCanvasHeight] = useState(800);
+  const [canvasElements, setCanvasElements] = useState(mockElements);
+  
+  // 新增状态
+  const [selectedBackground, setSelectedBackground] = useState('bg1');
+  const [selectedPromotion, setSelectedPromotion] = useState('promo1');
+  const [showBackgroundPanel, setShowBackgroundPanel] = useState(false);
+  const [showPromotionPanel, setShowPromotionPanel] = useState(false);
   
   // 初始化 - 检查URL参数
   useEffect(() => {
@@ -802,6 +926,64 @@ const CanvasEditor = () => {
     );
   };
 
+  // 新增背景处理函数
+  const handleBackgroundChange = (backgroundId) => {
+    setSelectedBackground(backgroundId);
+    const background = mockBackgrounds.find(bg => bg.id === backgroundId);
+    
+    if(background) {
+      // 更新背景元素
+      const updatedElements = canvasElements.map(elem => {
+        if(elem.id === 'background') {
+          if(background.type === 'color') {
+            return { ...elem, backgroundType: 'color', backgroundColor: background.color };
+          } else if(background.type === 'gradient') {
+            return { ...elem, backgroundType: 'gradient', gradient: background.gradient };
+          } else if(background.type === 'image') {
+            return { ...elem, backgroundType: 'image', backgroundUrl: background.url };
+          }
+        }
+        return elem;
+      });
+      
+      setCanvasElements(updatedElements);
+    }
+  };
+  
+  // 新增促销机制处理函数
+  const handlePromotionChange = (promotionId) => {
+    setSelectedPromotion(promotionId);
+    const promotion = mockPromotions.find(promo => promo.id === promotionId);
+    
+    if(promotion) {
+      // 更新促销机制元素
+      const updatedElements = canvasElements.map(elem => {
+        if(elem.id === 'promotion') {
+          return { 
+            ...elem, 
+            content: promotion.description, 
+            backgroundColor: promotion.color
+          };
+        }
+        return elem;
+      });
+      
+      setCanvasElements(updatedElements);
+    }
+  };
+
+  // 切换背景面板显示
+  const toggleBackgroundPanel = () => {
+    setShowBackgroundPanel(!showBackgroundPanel);
+    setShowPromotionPanel(false);
+  };
+  
+  // 切换促销机制面板显示
+  const togglePromotionPanel = () => {
+    setShowPromotionPanel(!showPromotionPanel);
+    setShowBackgroundPanel(false);
+  };
+
   return (
     <Container style={{backgroundColor: isDark ? '#121212' : '#f5f5f7', color: isDark ? '#f5f5f7' : '#1d1d1f'}}>
       <Header style={{backgroundColor: isDark ? 'rgba(30, 30, 30, 0.8)' : 'rgba(255, 255, 255, 0.8)', borderBottomColor: isDark ? '#333' : '#e0e0e0'}}>
@@ -889,21 +1071,13 @@ const CanvasEditor = () => {
             <PanelTitle style={{color: isDark ? '#f5f5f7' : '#1d1d1f'}}>画布尺寸</PanelTitle>
             <CanvasSizeContainer>
               {canvasSizes.map((size) => (
-                <CanvasSizeOption 
-                  key={size.name}
-                  active={canvasSize.name === size.name}
+                <SizeButton 
+                  key={size.id}
+                  $active={canvasSize.name === size.name}
                   onClick={() => setCanvasSize(size)}
-                  style={{
-                    backgroundColor: isDark 
-                      ? (canvasSize.name === size.name ? '#333' : '#1e1e1e') 
-                      : (canvasSize.name === size.name ? '#f0f0f0' : 'white'),
-                    color: isDark ? '#f5f5f7' : '#1d1d1f',
-                    borderColor: isDark ? '#444' : '#e0e0e0'
-                  }}
                 >
-                  <div>{size.name}</div>
-                  <div>{size.width} × {size.height}px</div>
-                </CanvasSizeOption>
+                  {size.name}
+                </SizeButton>
               ))}
             </CanvasSizeContainer>
           </PanelSection>
@@ -947,10 +1121,59 @@ const CanvasEditor = () => {
               ))}
             </ToolsContainer>
           </PanelSection>
+          
+          {/* 背景设置面板 */}
+          <PanelSection>
+            <PanelTitle color="#1d1d1f">背景设置</PanelTitle>
+            <Button fullWidth variant="outlined" color="secondary" onClick={toggleBackgroundPanel}>
+              更换背景
+            </Button>
+            
+            {showBackgroundPanel && (
+              <BackgroundOptionsList>
+                {mockBackgrounds.map(bg => (
+                  <BackgroundOption 
+                    key={bg.id} 
+                    selected={selectedBackground === bg.id}
+                    onClick={() => handleBackgroundChange(bg.id)}
+                  >
+                    {bg.type === 'color' && <ColorBackground $color={bg.color} />}
+                    {bg.type === 'gradient' && <GradientBackground gradient={bg.gradient} />}
+                    {bg.type === 'image' && <ImageBackground url={bg.url} />}
+                  </BackgroundOption>
+                ))}
+              </BackgroundOptionsList>
+            )}
+          </PanelSection>
+          
+          {/* 促销机制面板 */}
+          <PanelSection>
+            <PanelTitle color="#1d1d1f">促销机制设置</PanelTitle>
+            <Button fullWidth variant="outlined" color="secondary" onClick={togglePromotionPanel}>
+              更换促销机制
+            </Button>
+            
+            {showPromotionPanel && (
+              <PromotionOptionsList>
+                {mockPromotions.map(promo => (
+                  <PromotionOption 
+                    key={promo.id} 
+                    selected={selectedPromotion === promo.id}
+                    onClick={() => handlePromotionChange(promo.id)}
+                  >
+                    <span>{promo.name}</span>
+                    <PromotionPreview $color={promo.color}>
+                      {promo.description}
+                    </PromotionPreview>
+                  </PromotionOption>
+                ))}
+              </PromotionOptionsList>
+            )}
+          </PanelSection>
         </LeftPanel>
         
         <WorkArea>
-          <CanvasContainer backgroundColor={isDark ? '#1e1e1e' : 'white'}>
+          <CanvasContainer $backgroundColor={isDark ? '#1e1e1e' : 'white'}>
             {renderCanvas()}
           </CanvasContainer>
           
@@ -961,7 +1184,7 @@ const CanvasEditor = () => {
             >
               <ZoomOutIcon />
             </ZoomButton>
-            <ZoomText color={isDark ? '#f5f5f7' : '#1d1d1f'}>{Math.round(zoom * 100)}%</ZoomText>
+            <ZoomText $color={isDark ? '#f5f5f7' : '#1d1d1f'}>{Math.round(zoom * 100)}%</ZoomText>
             <ZoomButton 
               onClick={handleZoomIn}
               disabled={zoom >= 2}
@@ -992,7 +1215,7 @@ const CanvasEditor = () => {
               {layers.map((layer) => (
                 <LayerItem 
                   key={layer.id}
-                  active={activeLayer?.id === layer.id}
+                  $active={activeLayer?.id === layer.id}
                   onClick={() => setActiveLayer(layer)}
                   style={{
                     backgroundColor: isDark 

@@ -279,6 +279,7 @@ const PageLayout = ({
     { id: 'asset-library', label: '素材库', icon: 'fa-images', path: '/creativeprostudio/asset-library' },
     { id: 'material-library', label: '材质库', icon: 'fa-brush', path: '/creativeprostudio/material-library' },
     { id: 'master-library', label: '母版库', icon: 'fa-palette', path: '/creativeprostudio/master-library' },
+    { id: 'ai-assistant', label: 'AI助手', icon: 'fa-robot', path: '/creativeprostudio/ai-assistant' },
     { id: 'batch-create', label: '批量创建', icon: 'fa-th-large', path: '/creativeprostudio/batch-create' },
     { id: 'projects', label: '项目', icon: 'fa-folder-open', path: '/creativeprostudio/projects' }
   ];

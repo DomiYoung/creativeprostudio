@@ -122,11 +122,33 @@ export default defineConfig({
     ]
   },
   build: {
+    // 构建优化配置
+    outDir: 'dist',
+    assetsDir: 'assets',
+    // 使用内容哈希，确保浏览器始终加载最新资源
     rollupOptions: {
+      output: {
+        // 根据内容生成哈希文件名
+        entryFileNames: 'assets/[name]-[hash].js',
+        chunkFileNames: 'assets/[name]-[hash].js',
+        assetFileNames: 'assets/[name]-[hash].[ext]'
+      },
       input: {
         main: path.resolve(__dirname, 'index.html'),
         ...pagesInput
       },
     },
+    // 移除console语句和debugger
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true
+      }
+    },
+    // 分割代码块，提高缓存效率
+    chunkSizeWarningLimit: 1600,
+    // 生成 sourcemap 以便调试
+    sourcemap: false // 生产环境设为false
   },
 }); 
