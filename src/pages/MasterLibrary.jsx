@@ -317,6 +317,7 @@ const MasterLibrary = () => {
   const [templateToDelete, setTemplateToDelete] = useState(null);
   const [mockTemplatesState, setMockTemplatesState] = useState(mockTemplates);
   const [filteredTemplates, setFilteredTemplates] = useState(mockTemplates);
+  const [showTemplateModal, setShowTemplateModal] = useState(false);
   
   // 导航路径
   const breadcrumbs = [
@@ -365,17 +366,43 @@ const MasterLibrary = () => {
     setSearchQuery(query);
   };
   
-  // 点击模板
+  // 处理模板选择
   const handleTemplateSelect = (template) => {
+    // 如果处于选择模式，则切换选择状态
     if (isSelectMode) {
-      if (selectedTemplates.some(t => t.id === template.id)) {
-        setSelectedTemplates(prev => prev.filter(t => t.id !== template.id));
+      const newSelected = [...selectedTemplates];
+      const index = newSelected.findIndex(id => id === template.id);
+      
+      if (index !== -1) {
+        newSelected.splice(index, 1);
       } else {
-        setSelectedTemplates(prev => [...prev, template]);
+        newSelected.push(template.id);
       }
+      
+      setSelectedTemplates(newSelected);
     } else {
+      // 否则，显示模板详情
       setSelectedTemplate(template);
+      setShowTemplateModal(true);
     }
+  };
+  
+  // 编辑模板
+  const handleEditTemplate = (template) => {
+    // 关闭当前模态框
+    setShowTemplateModal(false);
+    
+    // 导航到画布编辑器，带上模板ID
+    navigate(`/creativeprostudio/canvas-editor?template=${template.id}`);
+  };
+
+  // 使用模板
+  const handleUseTemplate = (template) => {
+    // 关闭当前模态框
+    setShowTemplateModal(false);
+    
+    // 导航到批量创建页面，带上模板ID
+    navigate(`/creativeprostudio/batch-create?template=${template.id}`);
   };
   
   // 关闭模板详情
@@ -770,7 +797,12 @@ const MasterLibrary = () => {
               { 
                 icon: 'fa-edit', 
                 label: '编辑', 
-                onClick: () => navigate(`/creativeprostudio/canvas-editor?template=${template.id}`) 
+                onClick: () => handleEditTemplate(template) 
+              },
+              { 
+                icon: 'fa-use', 
+                label: '使用', 
+                onClick: () => handleUseTemplate(template) 
               },
               { 
                 icon: 'fa-trash-alt', 
@@ -803,7 +835,7 @@ const MasterLibrary = () => {
                 template={selectedTemplate}
                 onClose={handleCloseModal}
                 onToggleFavorite={toggleBookmark}
-                onEdit={() => navigate(`/creativeprostudio/canvas-editor?template=${selectedTemplate.id}`)}
+                onEdit={handleEditTemplate}
                 relatedTemplates={mockTemplatesState.filter(t => 
                   t.id !== selectedTemplate.id && 
                   (t.category === selectedTemplate.category || t.tags.some(tag => selectedTemplate.tags.includes(tag)))

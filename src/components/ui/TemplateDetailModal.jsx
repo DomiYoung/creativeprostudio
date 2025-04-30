@@ -265,26 +265,87 @@ const DescriptionText = styled.p`
   margin-bottom: 24px;
 `;
 
+const PrimaryButton = styled(motion.button)`
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  margin-bottom: 12px;
+  transition: all 0.2s;
+  
+  &.primary {
+    background: linear-gradient(135deg, #FF9190 0%, #FFA194 100%);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 12px rgba(255, 145, 144, 0.25);
+    
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(255, 145, 144, 0.35);
+    }
+  }
+`;
+
+const SecondaryButton = styled(motion.button)`
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  margin-bottom: 12px;
+  transition: all 0.2s;
+  
+  &.secondary {
+    background: ${props => props.isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.05)'};
+    color: ${props => props.isDark ? 'white' : '#1d1d1f'};
+    border: 1px solid ${props => props.isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'};
+    
+    &:hover {
+      background: ${props => props.isDark ? 'rgba(255, 255, 255, 0.12)' : 'rgba(0, 0, 0, 0.08)'};
+      transform: translateY(-2px);
+    }
+  }
+`;
+
 const TemplateDetailModal = ({ template, onClose, onUse, onToggleFavorite, onEdit, relatedTemplates = [], isDark = false }) => {
   const navigate = useNavigate();
   
-  // 生成模板描述（示例）
   const generateDescription = (template) => {
-    return `这个${template.category}类型的设计模板适用于${template.tags.join('、')}等场景，采用了${template.type === 'horizontal' ? '横版' : template.type === 'vertical' ? '竖版' : '方形'}布局，分辨率为${template.resolution}。此模板提供了良好的视觉层次和用户体验，方便快速定制和应用。`;
+    return `${template.description || '无描述信息'}`;
   };
   
-  // 处理使用模板
   const handleUseTemplate = () => {
-    if (onUse) {
+    if (typeof onUse === 'function') {
       onUse(template);
     } else {
-      navigate(`/creativeprostudio/canvas-editor?template=${template.id}`);
+      // 默认行为
+      navigate(`/creativeprostudio/batch-create?template=${template.id}`);
     }
   };
   
-  // 处理克隆模板
   const handleCloneTemplate = () => {
-    navigate(`/creativeprostudio/canvas-editor?clone=${template.id}`);
+    console.log('Clone template:', template.id);
+    // 实现克隆逻辑
+  };
+  
+  const handleEditTemplate = () => {
+    if (typeof onEdit === 'function') {
+      onEdit(template);
+    } else {
+      // 默认行为
+      navigate(`/creativeprostudio/canvas-editor?template=${template.id}`);
+    }
   };
   
   // 生成模板元信息
@@ -301,40 +362,46 @@ const TemplateDetailModal = ({ template, onClose, onUse, onToggleFavorite, onEdi
   return (
     <ModalContainer>
       <ModalHeader isDark={isDark}>
+        <CloseButton 
+          isDark={isDark}
+          onClick={onClose}
+          whileTap={{ scale: 0.95 }}
+        >
+          <CloseIcon />
+        </CloseButton>
         <ActionButtons>
           <ActionButton 
             isDark={isDark}
+            whileTap={{ scale: 0.95 }}
             className={template.isFavorite ? 'active' : ''}
-            onClick={() => onToggleFavorite && onToggleFavorite(template.id)}
-            whileHover={{ y: -2 }}
-            whileTap={{ scale: 0.9 }}
+            onClick={() => onToggleFavorite(template.id)}
+            title={template.isFavorite ? '取消收藏' : '加入收藏'}
           >
             {template.isFavorite ? <BookmarkIcon /> : <BookmarkBorderIcon />}
           </ActionButton>
           <ActionButton 
             isDark={isDark}
-            onClick={() => onEdit && onEdit(template)}
-            whileHover={{ y: -2 }}
-            whileTap={{ scale: 0.9 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={handleEditTemplate}
+            title="编辑模板"
           >
             <EditIcon />
           </ActionButton>
           <ActionButton 
             isDark={isDark}
-            whileHover={{ y: -2 }}
-            whileTap={{ scale: 0.9 }}
+            whileTap={{ scale: 0.95 }}
+            title="下载模板"
+          >
+            <DownloadIcon />
+          </ActionButton>
+          <ActionButton 
+            isDark={isDark}
+            whileTap={{ scale: 0.95 }}
+            title="分享模板"
           >
             <ShareIcon />
           </ActionButton>
         </ActionButtons>
-        <CloseButton 
-          isDark={isDark}
-          onClick={onClose}
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-        >
-          <CloseIcon />
-        </CloseButton>
       </ModalHeader>
       
       <PreviewContainer isDark={isDark}>
@@ -371,24 +438,32 @@ const TemplateDetailModal = ({ template, onClose, onUse, onToggleFavorite, onEdi
           {generateDescription(template)}
         </DescriptionText>
         
-        <ActionButtonLarge 
-          className="primary"
+        <PrimaryButton 
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
           onClick={handleUseTemplate}
-          whileHover={{ y: -4 }}
-          whileTap={{ scale: 0.98 }}
-        >
-          <EditIcon /> 使用此模板
-        </ActionButtonLarge>
-        
-        <ActionButtonLarge 
-          className="secondary"
           isDark={isDark}
-          onClick={handleCloneTemplate}
-          whileHover={{ y: -2 }}
-          whileTap={{ scale: 0.98 }}
         >
-          <ContentCopyIcon /> 复制此模板
-        </ActionButtonLarge>
+          <i className="fas fa-play"></i> 使用此模板
+        </PrimaryButton>
+        
+        <SecondaryButton
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          onClick={handleEditTemplate}
+          isDark={isDark}
+        >
+          <EditIcon fontSize="small" /> 编辑模板
+        </SecondaryButton>
+        
+        <SecondaryButton
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          onClick={handleCloneTemplate}
+          isDark={isDark}
+        >
+          <ContentCopyIcon fontSize="small" /> 复制此模板
+        </SecondaryButton>
         
         {relatedTemplates.length > 0 && (
           <>

@@ -404,4 +404,5 @@ Card.Button = ({ children, primary, isDark, ...props }) => {
 
 Card.Badge = Badge;
 
+export { Card };
 export default Card; 

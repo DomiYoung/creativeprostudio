@@ -1,9 +1,9 @@
 // 设计系统组件导出
 import Button from './components/Button';
-import Card from './components/Card';
+import { Card } from './components/Card';
 import PageLayout from './components/PageLayout';
 import ContentCard from './components/ContentCard';
-import GridLayout from './components/GridLayout';
+import { GridLayout } from './components/GridLayout';
 import FilterBar from './components/FilterBar';
 import { Link } from 'react-router-dom';
 
