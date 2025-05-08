@@ -928,7 +928,7 @@ const EditorContainer = styled.div`
   margin: auto;
 `;
 
-const EditorCanvasContainer = styled.div`
+const CanvasElementContainer = styled.div`
   position: relative;
   margin-top: 20px;
   margin-left: 20px;
@@ -2184,9 +2184,9 @@ const CanvasEditor = () => {
               </>
             )}
             
-            <EditorCanvasContainer>
+            <CanvasElementContainer>
               {renderCanvas()}
-            </EditorCanvasContainer>
+            </CanvasElementContainer>
           </EditorContainer>
         </EditorMain>
         
