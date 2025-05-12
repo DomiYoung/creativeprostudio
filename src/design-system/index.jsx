@@ -1,54 +1,69 @@
 // 设计系统组件导出
 import Button from './components/Button';
-import Card from './components/Card';
+import { Card } from './components/Card';
+import PageLayout from './components/PageLayout';
+import ContentCard from './components/ContentCard';
+import { GridLayout } from './components/GridLayout';
+import FilterBar from './components/FilterBar';
+import { Link } from 'react-router-dom';
 
 // 创意组件导出
 import WaveAnimation from '../components/ui/WaveAnimation';
 import AnimatedText from '../components/ui/AnimatedText';
 import InteractiveCard from '../components/ui/InteractiveCard';
 
-// 创建一个ThemeProvider组件来提供全局主题
-import React, { createContext, useContext, useState } from 'react';
-
-// 创建主题上下文
-const ThemeContext = createContext({
-  colorMode: 'light',
-  toggleColorMode: () => {},
-});
-
-// 主题提供者组件
-export const ThemeProvider = ({ children, defaultColorMode = 'light' }) => {
-  const [colorMode, setColorMode] = useState(defaultColorMode);
-
-  const toggleColorMode = () => {
-    setColorMode(prevMode => (prevMode === 'light' ? 'dark' : 'light'));
-    
-    // 如果是深色模式，添加dark类到html标签
-    if (colorMode === 'light') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  };
-
-  return (
-    <ThemeContext.Provider value={{ colorMode, toggleColorMode }}>
-      {children}
-    </ThemeContext.Provider>
-  );
-};
-
-// 使用主题的hook
-export const useTheme = () => useContext(ThemeContext);
+// 主题相关导出
+import { ThemeProvider, useTheme } from './ThemeContext';
 
 // 导出所有组件
 export {
+  // 主题相关
+  ThemeProvider,
+  useTheme,
+  
   // 基础UI组件
   Button,
   Card,
+  PageLayout,
+  ContentCard,
+  GridLayout,
+  FilterBar,
   
   // 创意组件
   WaveAnimation,
   AnimatedText,
   InteractiveCard
+};
+
+// 添加版权信息
+export const COPYRIGHT_INFO = "© 版权归属domiyoung__ 2025 CreativePro Studio. All rights reserved.";
+
+// 默认导出
+export default {
+  ThemeProvider,
+  useTheme,
+  Button,
+  Card,
+  PageLayout,
+  ContentCard,
+  GridLayout,
+  FilterBar,
+  COPYRIGHT_INFO
+};
+
+// 设计系统导航组件
+export const DesignSystemNav = () => {
+  return (
+    <div className="flex space-x-4 my-4">
+      <Link to="/design-system" className="px-4 py-2 bg-purple-100 text-purple-800 rounded-md hover:bg-purple-200">
+        组件库
+      </Link>
+      <Link to="/creativeprostudio/ux-guidelines" className="px-4 py-2 bg-pink-100 text-pink-800 rounded-md hover:bg-pink-200">
+        UX设计文档
+      </Link>
+      <Link to="/creativeprostudio/system-blueprint" className="px-4 py-2 bg-blue-100 text-blue-800 rounded-md hover:bg-blue-200">
+        系统蓝图
+      </Link>
+    </div>
+  );
 }; 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Card, ThemeProvider, useTheme } from '../design-system';
+import { Card, useTheme } from '../design-system';
 import { useNavigate } from 'react-router-dom';
 
 const ProjectCard = ({ title, description, date, status, onClick }) => {
@@ -18,7 +18,6 @@ const ProjectCard = ({ title, description, date, status, onClick }) => {
       <Card
         shadow={isDark ? "sm" : "md"}
         interactive
-        padding="lg"
         className={`h-full border-none transition-all duration-300 ${
           isDark 
             ? 'bg-gray-800/80 backdrop-blur-xl border border-gray-700/30' 
@@ -252,10 +251,4 @@ const ProjectsList = () => {
   );
 };
 
-const ProjectsListWithTheme = () => (
-  <ThemeProvider>
-    <ProjectsList />
-  </ThemeProvider>
-);
-
-export default ProjectsListWithTheme; 
+export default ProjectsList; 

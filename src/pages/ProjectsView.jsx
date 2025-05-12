@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useTheme } from '../design-system';
+
+// 导入统一组件
+import PageLayout from '../design-system/components/PageLayout';
+import ContentCard from '../design-system/components/ContentCard';
+import GridLayout from '../design-system/components/GridLayout';
+import FilterBar from '../design-system/components/FilterBar';
+import CreateProjectModal from '../components/ui/CreateProjectModal';
+import DeleteConfirmModal from '../components/ui/DeleteConfirmModal';
 
 // 图标导入
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import SearchIcon from '@mui/icons-material/Search';
-import FilterListIcon from '@mui/icons-material/FilterList';
-import SortIcon from '@mui/icons-material/Sort';
-import GridViewIcon from '@mui/icons-material/GridView';
-import ViewListIcon from '@mui/icons-material/ViewList';
-import FolderIcon from '@mui/icons-material/Folder';
-import ImageIcon from '@mui/icons-material/Image';
 import StarIcon from '@mui/icons-material/Star';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
@@ -19,737 +19,591 @@ import ShareIcon from '@mui/icons-material/Share';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DownloadIcon from '@mui/icons-material/Download';
+import AddIcon from '@mui/icons-material/Add';
 
-// 样式组件
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  background-color: #f5f5f7;
-  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', Helvetica, Arial, sans-serif;
-`;
+// 素材库样式
+import styled from '@emotion/styled';
 
-const Header = styled.header`
-  height: 60px;
-  background-color: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border-bottom: 1px solid #e0e0e0;
+// 按钮和模态框组件
+const ActionButton = styled(motion.button)`
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 24px;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-`;
-
-const BackButton = styled.button`
-  display: flex;
-  align-items: center;
-  background: transparent;
-  border: none;
-  color: #0066cc;
+  justify-content: center;
+  padding: 8px 16px;
   font-size: 14px;
+  border-radius: 12px;
   cursor: pointer;
-  padding: 8px;
-  border-radius: 6px;
-  transition: background-color 0.2s;
-
-  &:hover {
-    background-color: rgba(0, 102, 204, 0.05);
-  }
-
-  svg {
-    font-size: 18px;
-    margin-right: 4px;
-  }
-`;
-
-const Title = styled.h1`
-  font-size: 18px;
+  background: linear-gradient(135deg, #FF9190 0%, #FFA194 100%);
+  color: white;
+  border: none;
   font-weight: 600;
-  color: #1d1d1f;
-  margin: 0;
-`;
-
-const ActionButtons = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 12px;
-`;
-
-const ActionButton = styled.button`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: ${props => props.primary ? '#0066cc' : 'transparent'};
-  color: ${props => props.primary ? 'white' : '#0066cc'};
-  border: ${props => props.primary ? 'none' : '1px solid #0066cc'};
-  padding: 8px 16px;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-
-  &:hover {
-    background-color: ${props => props.primary ? '#004d99' : 'rgba(0, 102, 204, 0.05)'};
-  }
-
-  svg {
-    margin-right: ${props => props.iconOnly ? '0' : '8px'};
-  }
-`;
-
-const IconButton = styled.button`
-  width: 36px;
-  height: 36px;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: ${props => props.active ? '#f0f0f0' : 'transparent'};
-  border: none;
-  color: #1d1d1f;
-  cursor: pointer;
-  transition: all 0.2s;
-
-  &:hover {
-    background-color: #f0f0f0;
-  }
+  box-shadow: 0 4px 12px rgba(255, 145, 144, 0.25);
   
-  svg {
-    font-size: 20px;
-  }
-`;
-
-const MainContent = styled.div`
-  flex: 1;
-  padding: 24px;
-  max-width: 1400px;
-  margin: 0 auto;
-  width: 100%;
-`;
-
-const SearchFilterBar = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 24px;
-  flex-wrap: wrap;
-  gap: 16px;
-`;
-
-const SearchContainer = styled.div`
-  position: relative;
-  width: 320px;
-  
-  svg {
-    position: absolute;
-    left: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #86868b;
-    font-size: 20px;
-  }
-`;
-
-const SearchInput = styled.input`
-  width: 100%;
-  padding: 10px 12px 10px 40px;
-  border-radius: 8px;
-  border: 1px solid #e0e0e0;
-  font-size: 14px;
-  outline: none;
-  background-color: white;
-  transition: all 0.2s;
-  
-  &:focus {
-    border-color: #0066cc;
-    box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.1);
-  }
-`;
-
-const FilterContainer = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-`;
-
-const FilterButton = styled.button`
-  display: flex;
-  align-items: center;
-  padding: 8px 16px;
-  border-radius: 6px;
-  border: 1px solid #e0e0e0;
-  background-color: white;
-  font-size: 14px;
-  color: #1d1d1f;
-  cursor: pointer;
-  transition: all 0.2s;
-  
-  &:hover {
-    background-color: #f5f5f7;
-  }
-  
-  svg {
+  i {
     margin-right: 8px;
-    font-size: 18px;
   }
 `;
 
-const ViewToggleContainer = styled.div`
-  display: flex;
-  background-color: #f0f0f0;
-  border-radius: 6px;
-  padding: 4px;
+// 快速开始区域
+const QuickStartSection = styled.div`
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 24px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  text-align: left;
 `;
 
-const ViewToggleButton = styled.button`
-  width: 36px;
-  height: 36px;
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: ${props => props.active ? 'white' : 'transparent'};
-  border: none;
-  color: #1d1d1f;
-  cursor: pointer;
-  box-shadow: ${props => props.active ? '0 1px 3px rgba(0, 0, 0, 0.1)' : 'none'};
-  
-  svg {
-    font-size: 20px;
-  }
+const QuickStartTitle = styled.h4`
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: #FF9190;
 `;
 
-const ProjectsGrid = styled.div`
+const QuickStartGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 24px;
-`;
-
-const ProjectsList = styled.div`
-  display: flex;
-  flex-direction: column;
+  grid-template-columns: repeat(3, 1fr);
   gap: 16px;
 `;
 
-const ProjectCard = styled(motion.div)`
-  background-color: white;
+const QuickStartCard = styled.div`
+  background: rgba(255, 255, 255, 0.1);
   border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  cursor: pointer;
-  position: relative;
-`;
-
-const ProjectThumbnail = styled.div`
-  height: 160px;
-  background-image: url(${props => props.image});
-  background-size: cover;
-  background-position: center;
-  position: relative;
-`;
-
-const ProjectInfo = styled.div`
   padding: 16px;
-`;
-
-const ProjectTitle = styled.h3`
-  font-size: 16px;
-  font-weight: 600;
-  color: #1d1d1f;
-  margin: 0 0 8px 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-`;
-
-const ProjectMeta = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 13px;
-  color: #86868b;
-  margin-bottom: 12px;
-`;
-
-const MetaItem = styled.div`
-  display: flex;
-  align-items: center;
-  
-  svg {
-    margin-right: 4px;
-    font-size: 16px;
-  }
-`;
-
-const ProjectListItem = styled(motion.div)`
-  display: flex;
-  background-color: white;
-  border-radius: 12px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
   cursor: pointer;
-`;
-
-const ListItemThumbnail = styled.div`
-  width: 120px;
-  background-image: url(${props => props.image});
-  background-size: cover;
-  background-position: center;
-`;
-
-const ListItemContent = styled.div`
-  flex: 1;
-  padding: 16px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-const ListItemInfo = styled.div`
-  flex: 1;
-`;
-
-const ListItemTitle = styled.h3`
-  font-size: 16px;
-  font-weight: 600;
-  color: #1d1d1f;
-  margin: 0 0 8px 0;
-`;
-
-const ListItemMeta = styled.div`
-  display: flex;
-  gap: 16px;
-  font-size: 13px;
-  color: #86868b;
-`;
-
-const ListItemActions = styled.div`
-  display: flex;
-  gap: 8px;
-`;
-
-const StarButton = styled(IconButton)`
-  color: ${props => props.starred ? '#FFB800' : '#86868b'};
-  
-  &:hover {
-    color: ${props => props.starred ? '#FFB800' : '#1d1d1f'};
-  }
-`;
-
-const EmptyState = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 80px 0;
+  transition: all 0.2s;
   text-align: center;
   
-  svg {
-    font-size: 64px;
-    color: #86868b;
-    margin-bottom: 24px;
-  }
-  
-  h3 {
-    font-size: 20px;
-    font-weight: 500;
-    margin: 0 0 8px 0;
-    color: #1d1d1f;
-  }
-  
-  p {
-    font-size: 16px;
-    color: #86868b;
-    margin: 0 0 24px 0;
-    max-width: 400px;
-  }
-`;
-
-const Dropdown = styled.div`
-  position: absolute;
-  top: 40px;
-  right: 8px;
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  z-index: 10;
-  overflow: hidden;
-  width: 180px;
-`;
-
-const DropdownItem = styled.button`
-  display: flex;
-  align-items: center;
-  width: 100%;
-  padding: 12px 16px;
-  border: none;
-  background-color: transparent;
-  font-size: 14px;
-  text-align: left;
-  color: ${props => props.danger ? '#ff3b30' : '#1d1d1f'};
-  cursor: pointer;
-  
   &:hover {
-    background-color: #f5f5f7;
+    transform: translateY(-4px);
+    background: rgba(255, 145, 144, 0.2);
   }
-  
-  svg {
-    margin-right: 12px;
-    font-size: 18px;
-  }
+`;
+
+const QuickStartIcon = styled.div`
+  font-size: 24px;
+  margin-bottom: 12px;
+  color: #FF9190;
+`;
+
+const QuickStartLabel = styled.div`
+  font-size: 14px;
+  font-weight: 500;
 `;
 
 // 模拟数据
 const mockProjects = [
   {
-    id: 1,
-    title: "夏季美妆产品",
-    type: "电商产品",
-    createdAt: "2025-03-15",
+    id: "1",
+    title: '夏季美妆产品',
+    thumbnail: 'https://images.pexels.com/photos/5632402/pexels-photo-5632402.jpeg?auto=compress&cs=tinysrgb&w=800',
+    type: '电商产品',
+    updated: '2025-03-15',
     itemCount: 24,
-    status: "已导出",
-    starred: true,
-    thumbnail: "https://source.unsplash.com/random/300x200?cosmetics"
+    status: '已导出',
+    isFavorite: true
   },
   {
-    id: 2,
-    title: "春节促销活动",
-    type: "营销活动",
-    createdAt: "2025-02-28",
+    id: "2",
+    title: '春节促销活动',
+    thumbnail: 'https://images.pexels.com/photos/3373739/pexels-photo-3373739.jpeg?auto=compress&cs=tinysrgb&w=800',
+    type: '营销活动',
+    updated: '2025-02-28',
     itemCount: 36,
-    status: "完成",
-    starred: true,
-    thumbnail: "https://source.unsplash.com/random/300x200?newyear"
+    status: '完成',
+    isFavorite: true
   },
   {
-    id: 3,
-    title: "口红色号展示",
-    type: "产品展示",
-    createdAt: "2025-02-20",
+    id: "3",
+    title: '口红色号展示',
+    thumbnail: 'https://images.pexels.com/photos/4620843/pexels-photo-4620843.jpeg?auto=compress&cs=tinysrgb&w=800',
+    type: '产品展示',
+    updated: '2025-02-20',
     itemCount: 16,
-    status: "进行中",
-    starred: false,
-    thumbnail: "https://source.unsplash.com/random/300x200?lipstick"
+    status: '进行中',
+    isFavorite: false
   },
   {
-    id: 4,
-    title: "护肤品成分解析",
-    type: "教育内容",
-    createdAt: "2025-02-15",
+    id: "4",
+    title: '护肤品成分解析',
+    thumbnail: 'https://images.pexels.com/photos/3785147/pexels-photo-3785147.jpeg?auto=compress&cs=tinysrgb&w=800',
+    type: '教育内容',
+    updated: '2025-02-15',
     itemCount: 12,
-    status: "已导出",
-    starred: false,
-    thumbnail: "https://source.unsplash.com/random/300x200?skincare"
+    status: '已导出',
+    isFavorite: false
   },
   {
-    id: 5,
-    title: "母亲节特别系列",
-    type: "营销活动",
-    createdAt: "2025-02-10",
+    id: "5",
+    title: '母亲节特别系列',
+    thumbnail: 'https://images.pexels.com/photos/3826678/pexels-photo-3826678.jpeg?auto=compress&cs=tinysrgb&w=800',
+    type: '营销活动',
+    updated: '2025-02-10',
     itemCount: 28,
-    status: "完成",
-    starred: false,
-    thumbnail: "https://source.unsplash.com/random/300x200?mothersday"
+    status: '完成',
+    isFavorite: false
   },
   {
-    id: 6,
-    title: "夏季防晒产品",
-    type: "产品展示",
-    createdAt: "2025-02-05",
+    id: "6",
+    title: '夏季防晒产品',
+    thumbnail: 'https://images.pexels.com/photos/8128072/pexels-photo-8128072.jpeg?auto=compress&cs=tinysrgb&w=800',
+    type: '产品展示',
+    updated: '2025-02-05',
     itemCount: 8,
-    status: "已导出",
-    starred: true,
-    thumbnail: "https://source.unsplash.com/random/300x200?sunscreen"
+    status: '已导出',
+    isFavorite: true
   }
 ];
 
+// 过滤选项
+const statusFilters = [
+  { id: 'all', label: '全部', icon: 'fa-border-all' },
+  { id: 'inProgress', label: '进行中', icon: 'fa-spinner' },
+  { id: 'completed', label: '已完成', icon: 'fa-check-circle' },
+  { id: 'exported', label: '已导出', icon: 'fa-file-export' }
+];
+
+const typeFilters = [
+  { id: 'all', label: '全部类型', icon: 'fa-layer-group' },
+  { id: 'product', label: '产品展示', icon: 'fa-box-open' },
+  { id: 'marketing', label: '营销活动', icon: 'fa-bullhorn' },
+  { id: 'education', label: '教育内容', icon: 'fa-graduation-cap' }
+];
+
+const projectTags = [
+  { id: 'favorites', label: '收藏', icon: 'fa-star' },
+  { id: 'recent', label: '最近浏览', icon: 'fa-clock' },
+  { id: 'shared', label: '已共享', icon: 'fa-share-alt' }
+];
+
+// 主组件
 const ProjectsView = () => {
   const navigate = useNavigate();
-  const [viewMode, setViewMode] = useState('grid');
-  const [searchTerm, setSearchTerm] = useState('');
+  const { isDark } = useTheme();
+  
+  // 状态管理
   const [projects, setProjects] = useState(mockProjects);
-  const [filteredProjects, setFilteredProjects] = useState(mockProjects);
-  const [activeDropdown, setActiveDropdown] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [viewMode, setViewMode] = useState('grid');
+  const [dropdownOpen, setDropdownOpen] = useState(null);
+  const [activeStatus, setActiveStatus] = useState('all');
+  const [activeType, setActiveType] = useState('all');
+  const [activeTags, setActiveTags] = useState([]);
+  const [selectedProjects, setSelectedProjects] = useState([]);
+  const [isSelectMode, setIsSelectMode] = useState(false);
   
-  // 搜索和过滤项目
-  useEffect(() => {
-    if (searchTerm) {
-      const results = projects.filter(project => 
-        project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        project.type.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setFilteredProjects(results);
-    } else {
-      setFilteredProjects(projects);
-    }
-  }, [searchTerm, projects]);
+  // 模态框状态
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [projectToDelete, setProjectToDelete] = useState(null);
+  const [projectsToDelete, setProjectsToDelete] = useState([]);
   
-  // 处理返回按钮
-  const handleBack = () => {
-    navigate(-1);
-  };
-  
-  // 处理收藏切换
+  // 处理收藏/取消收藏
   const toggleStar = (id, e) => {
     e.stopPropagation();
     setProjects(projects.map(project => 
-      project.id === id ? { ...project, starred: !project.starred } : project
+      project.id === id ? {...project, isFavorite: !project.isFavorite} : project
     ));
   };
-  
+
   // 处理项目点击
   const handleProjectClick = (id) => {
-    navigate(`/canvas-editor`);
+    navigate(`/creativeprostudio/projects/${id}`);
   };
-  
-  // 处理更多菜单
+
+  // 处理下拉菜单
   const toggleDropdown = (id, e) => {
     e.stopPropagation();
-    setActiveDropdown(activeDropdown === id ? null : id);
+    setDropdownOpen(dropdownOpen === id ? null : id);
   };
-  
-  // 处理操作菜单项
+
+  // 处理操作
   const handleAction = (action, id, e) => {
     e.stopPropagation();
-    setActiveDropdown(null);
-    console.log(`执行操作: ${action} 项目ID: ${id}`);
+    setDropdownOpen(null);
     
-    if (action === 'edit') {
-      navigate(`/canvas-editor`);
-    } else if (action === 'delete') {
-      setProjects(projects.filter(project => project.id !== id));
+    switch(action) {
+      case 'edit':
+        navigate(`/creativeprostudio/canvas-editor?project=${id}`);
+        break;
+      case 'share':
+        // 共享逻辑
+        break;
+      case 'delete':
+        // 打开删除确认模态框
+        setProjectToDelete(projects.find(p => p.id === id));
+        setIsDeleteModalOpen(true);
+        break;
+      case 'download':
+        // 下载逻辑
+        break;
+      default:
+        break;
+    }
+  };
+
+  // 处理状态过滤
+  const handleStatusChange = (statusId) => {
+    setActiveStatus(statusId);
+  };
+
+  // 处理类型过滤
+  const handleTypeChange = (typeId) => {
+    setActiveType(typeId);
+  };
+
+  // 处理标签过滤
+  const handleTagChange = (tagId) => {
+    setActiveTags(
+      activeTags.includes(tagId)
+        ? activeTags.filter(id => id !== tagId)
+        : [...activeTags, tagId]
+    );
+  };
+
+  // 处理搜索
+  const handleSearch = (query) => {
+    setSearchTerm(query);
+  };
+
+  // 处理新建项目
+  const handleCreateProject = () => {
+    setIsCreateModalOpen(true);
+  };
+  
+  // 关闭新建项目模态框
+  const handleCloseCreateModal = () => {
+    setIsCreateModalOpen(false);
+  };
+  
+  // 处理新项目创建
+  const handleProjectCreated = (newProject) => {
+    setProjects([newProject, ...projects]);
+    
+    // 显示成功通知
+    showNotification('项目创建成功');
+  };
+  
+  // 批量删除选中项目
+  const handleBatchDelete = () => {
+    if (selectedProjects.length > 0) {
+      setProjectsToDelete(selectedProjects);
+      setIsDeleteModalOpen(true);
     }
   };
   
+  // 确认删除项目
+  const confirmDelete = () => {
+    if (projectToDelete) {
+      // 单个删除
+      setProjects(projects.filter(p => p.id !== projectToDelete.id));
+      showNotification(`项目"${projectToDelete.title}"已删除`);
+      setProjectToDelete(null);
+    } else if (projectsToDelete.length > 0) {
+      // 批量删除
+      setProjects(projects.filter(p => !projectsToDelete.includes(p.id)));
+      showNotification(`已删除${projectsToDelete.length}个项目`);
+      setSelectedProjects([]);
+      setProjectsToDelete([]);
+      setIsSelectMode(false);
+    }
+    setIsDeleteModalOpen(false);
+  };
+  
+  // 取消删除
+  const cancelDelete = () => {
+    setProjectToDelete(null);
+    setProjectsToDelete([]);
+    setIsDeleteModalOpen(false);
+  };
+  
+  // 辅助函数：显示通知
+  const showNotification = (message) => {
+    // 这里可以接入通知系统，例如 toast 通知
+    console.log('通知:', message);
+  };
+
+  // 切换选择模式
+  const toggleSelectMode = () => {
+    setIsSelectMode(!isSelectMode);
+    if (isSelectMode) {
+      setSelectedProjects([]);
+    }
+  };
+  
+  // 获取删除确认信息
+  const getDeleteConfirmInfo = () => {
+    if (projectToDelete) {
+      return {
+        title: '删除项目',
+        message: `确定要删除项目"${projectToDelete.title}"吗？此操作不可撤销。`,
+        confirmText: '删除',
+        cancelText: '取消'
+      };
+    } else if (projectsToDelete.length > 0) {
+      return {
+        title: '批量删除项目',
+        message: `确定要删除选中的${projectsToDelete.length}个项目吗？此操作不可撤销。`,
+        confirmText: '全部删除',
+        cancelText: '取消'
+      };
+    }
+    return {};
+  };
+
+  // 过滤项目
+  const filteredProjects = projects.filter(project => {
+    const matchesSearch = project.title.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesStatus = activeStatus === 'all' || 
+      (activeStatus === 'inProgress' && project.status === '进行中') ||
+      (activeStatus === 'completed' && project.status === '完成') ||
+      (activeStatus === 'exported' && project.status === '已导出');
+    const matchesType = activeType === 'all' || 
+      (activeType === 'product' && project.type === '产品展示') ||
+      (activeType === 'marketing' && project.type === '营销活动') ||
+      (activeType === 'education' && project.type === '教育内容');
+    const matchesTags = activeTags.length === 0 || 
+      (activeTags.includes('favorites') && project.isFavorite) ||
+      (activeTags.includes('recent')) || // 这里可以添加最近浏览逻辑
+      (activeTags.includes('shared')); // 这里可以添加已共享逻辑
+    
+    return matchesSearch && matchesStatus && matchesType && matchesTags;
+  });
+  
+  // 构建页面操作按钮
+  const renderPageActions = () => {
+    return isSelectMode ? [
+      <ActionButton 
+        key="batch-delete"
+        onClick={handleBatchDelete}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        disabled={selectedProjects.length === 0}
+        style={{ 
+          opacity: selectedProjects.length === 0 ? 0.6 : 1,
+          cursor: selectedProjects.length === 0 ? 'not-allowed' : 'pointer' 
+        }}
+      >
+        <i className="fas fa-trash-alt"></i>
+        删除所选 ({selectedProjects.length})
+      </ActionButton>
+    ] : [
+      <ActionButton 
+        key="create-project"
+        onClick={handleCreateProject}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+      >
+        <i className="fas fa-plus"></i>
+        创建项目
+      </ActionButton>
+    ];
+  };
+
+  // 处理卡片点击导航到项目详情
+  const handleCardClick = (id) => {
+    console.log(`导航到项目详情，项目ID: ${id}，类型: ${typeof id}`);
+    navigate(`/creativeprostudio/projects/${id}`);
+  };
+
+  // 处理编辑设计按钮点击
+  const handleEditDesign = (e, id) => {
+    e.stopPropagation();
+    console.log(`导航到画布编辑器，项目ID: ${id}，类型: ${typeof id}`);
+    navigate(`/creativeprostudio/canvas-editor?project=${id}`);
+  };
+
   return (
-    <Container>
-      <Header>
-        <BackButton onClick={handleBack}>
-          <ArrowBackIosNewIcon fontSize="small" />
-          返回
-        </BackButton>
-        <Title>项目管理</Title>
-        <ActionButtons>
-          <ActionButton primary onClick={() => navigate('/batch-create')}>
-            创建项目
-          </ActionButton>
-        </ActionButtons>
-      </Header>
+    <PageLayout 
+      title="项目管理"
+      breadcrumbs={[
+        { label: '首页', path: '/creativeprostudio' },
+        { label: '项目管理', path: '/creativeprostudio/projects' }
+      ]}
+      actions={renderPageActions()}
+    >
+      {/* 过滤栏 */}
+      <FilterBar
+        searchPlaceholder="搜索项目..."
+        onSearch={handleSearch}
+        filterGroups={[
+          {
+            title: '项目状态',
+            items: statusFilters,
+            activeItem: activeStatus,
+            onChange: handleStatusChange
+          },
+          {
+            title: '项目类型',
+            items: typeFilters,
+            activeItem: activeType,
+            onChange: handleTypeChange
+          },
+          {
+            title: '标签',
+            items: projectTags,
+            activeItems: activeTags,
+            onChange: handleTagChange,
+            multiSelect: true
+          }
+        ]}
+        viewOptions={true}
+        currentView={viewMode}
+        onViewChange={setViewMode}
+        selectionMode={{
+          enabled: isSelectMode,
+          onToggle: toggleSelectMode,
+          selectedItems: selectedProjects,
+          onSelectionChange: setSelectedProjects
+        }}
+      />
+
+      {/* 项目网格 */}
+      <GridLayout>
+        {filteredProjects.map(project => (
+          <ContentCard
+            key={project.id}
+            title={project.title}
+            image={project.thumbnail || "https://source.unsplash.com/random/300x200?fashion"}
+            metaItems={[
+              { text: project.type, icon: 'fa-tag' },
+              { text: `${project.itemCount || 0}项`, icon: 'fa-layer-group' },
+              { text: project.updated, icon: 'fa-clock' }
+            ]}
+            status={project.status === '进行中' ? 'in-progress' : project.status === '完成' ? 'completed' : 'review'}
+            statusText={project.status}
+            progress={project.progress || 0}
+            isFavorite={project.isFavorite}
+            tags={project.tags || []}
+            contributors={project.team || []}
+            onClick={() => handleCardClick(project.id)}
+            onDelete={(e) => {
+              e.stopPropagation();
+              setProjectToDelete(project);
+              setIsDeleteModalOpen(true);
+            }}
+            selectable={isSelectMode}
+            selected={selectedProjects.includes(project.id)}
+            onSelect={() => {
+              if (isSelectMode) {
+                setSelectedProjects(
+                  selectedProjects.includes(project.id)
+                    ? selectedProjects.filter(id => id !== project.id)
+                    : [...selectedProjects, project.id]
+                );
+              } else {
+                handleCardClick(project.id);
+              }
+            }}
+          />
+        ))}
+      </GridLayout>
       
-      <MainContent>
-        <SearchFilterBar>
-          <SearchContainer>
-            <SearchIcon />
-            <SearchInput 
-              placeholder="搜索项目..." 
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </SearchContainer>
+      {/* 空状态提示 */}
+      {filteredProjects.length === 0 && (
+        <div style={{ 
+          textAlign: 'center', 
+          padding: '60px 20px',
+          color: isDark ? '#bbb' : '#666'
+        }}>
+          <div style={{ 
+            fontSize: '72px', 
+            marginBottom: '20px',
+            opacity: 0.6 
+          }}>
+            <i className="fas fa-folder-open"></i>
+          </div>
+          <h3 style={{ 
+            fontSize: '20px', 
+            fontWeight: '600',
+            marginBottom: '8px',
+            color: isDark ? '#f5f5f5' : '#1d1d1f'
+          }}>
+            没有找到项目
+          </h3>
+          <p style={{ 
+            fontSize: '16px', 
+            maxWidth: '400px',
+            margin: '0 auto 24px'
+          }}>
+            {searchTerm 
+              ? `没有找到与"${searchTerm}"相关的项目，请尝试其他搜索条件。` 
+              : '创建新项目开始您的创意之旅。'}
+          </p>
           
-          <FilterContainer>
-            <FilterButton>
-              <FilterListIcon />
-              筛选
-            </FilterButton>
-            <FilterButton>
-              <SortIcon />
-              排序
-            </FilterButton>
-            <ViewToggleContainer>
-              <ViewToggleButton 
-                active={viewMode === 'grid'}
-                onClick={() => setViewMode('grid')}
+          {!isSelectMode && (
+            <div>
+              <ActionButton 
+                onClick={handleCreateProject}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                style={{ display: 'inline-flex', marginBottom: '24px' }}
               >
-                <GridViewIcon />
-              </ViewToggleButton>
-              <ViewToggleButton 
-                active={viewMode === 'list'}
-                onClick={() => setViewMode('list')}
-              >
-                <ViewListIcon />
-              </ViewToggleButton>
-            </ViewToggleContainer>
-          </FilterContainer>
-        </SearchFilterBar>
-        
-        {filteredProjects.length === 0 ? (
-          <EmptyState>
-            <FolderIcon fontSize="large" />
-            <h3>没有找到项目</h3>
-            <p>尝试使用不同的搜索条件或创建一个新项目</p>
-            <ActionButton primary onClick={() => navigate('/batch-create')}>
-              创建项目
-            </ActionButton>
-          </EmptyState>
-        ) : viewMode === 'grid' ? (
-          <ProjectsGrid>
-            {filteredProjects.map(project => (
-              <ProjectCard 
-                key={project.id}
-                whileHover={{ 
-                  y: -5,
-                  boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)'
-                }}
-                onClick={() => handleProjectClick(project.id)}
-              >
-                <ProjectThumbnail image={project.thumbnail}>
-                  <div style={{ 
-                    position: 'absolute', 
-                    top: 12, 
-                    right: 12,
-                    display: 'flex',
-                    gap: '8px'
-                  }}>
-                    <StarButton 
-                      starred={project.starred}
-                      onClick={(e) => toggleStar(project.id, e)}
-                    >
-                      {project.starred ? <StarIcon /> : <StarBorderIcon />}
-                    </StarButton>
-                    <IconButton onClick={(e) => toggleDropdown(project.id, e)}>
-                      <MoreVertIcon />
-                    </IconButton>
-                    {activeDropdown === project.id && (
-                      <Dropdown>
-                        <DropdownItem onClick={(e) => handleAction('edit', project.id, e)}>
-                          <EditIcon />
-                          编辑
-                        </DropdownItem>
-                        <DropdownItem onClick={(e) => handleAction('download', project.id, e)}>
-                          <DownloadIcon />
-                          下载
-                        </DropdownItem>
-                        <DropdownItem onClick={(e) => handleAction('share', project.id, e)}>
-                          <ShareIcon />
-                          分享
-                        </DropdownItem>
-                        <DropdownItem danger onClick={(e) => handleAction('delete', project.id, e)}>
-                          <DeleteIcon />
-                          删除
-                        </DropdownItem>
-                      </Dropdown>
-                    )}
-                  </div>
-                </ProjectThumbnail>
-                <ProjectInfo>
-                  <ProjectTitle>
-                    {project.title}
-                  </ProjectTitle>
-                  <ProjectMeta>
-                    <MetaItem>
-                      <ImageIcon fontSize="small" />
-                      {project.itemCount}项
-                    </MetaItem>
-                    <MetaItem>{project.type}</MetaItem>
-                  </ProjectMeta>
-                  <div style={{ 
-                    fontSize: '13px',
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center'
-                  }}>
-                    <span>{project.createdAt}</span>
-                    <span style={{ 
-                      display: 'inline-block', 
-                      padding: '2px 8px', 
-                      borderRadius: '4px',
-                      backgroundColor: project.status === '已导出' ? '#e7f8ed' : 
-                                      project.status === '完成' ? '#e6f1ff' : 
-                                      '#fff4e5',
-                      color: project.status === '已导出' ? '#34c759' : 
-                             project.status === '完成' ? '#0066cc' : 
-                             '#ff9500',
-                      fontWeight: 500
-                    }}>
-                      {project.status}
-                    </span>
-                  </div>
-                </ProjectInfo>
-              </ProjectCard>
-            ))}
-          </ProjectsGrid>
-        ) : (
-          <ProjectsList>
-            {filteredProjects.map(project => (
-              <ProjectListItem 
-                key={project.id}
-                whileHover={{ 
-                  y: -2,
-                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
-                }}
-                onClick={() => handleProjectClick(project.id)}
-              >
-                <ListItemThumbnail image={project.thumbnail} />
-                <ListItemContent>
-                  <ListItemInfo>
-                    <ListItemTitle>{project.title}</ListItemTitle>
-                    <ListItemMeta>
-                      <MetaItem>
-                        <ImageIcon fontSize="small" />
-                        {project.itemCount}项
-                      </MetaItem>
-                      <MetaItem>{project.type}</MetaItem>
-                      <MetaItem>{project.createdAt}</MetaItem>
-                      <div style={{ 
-                        display: 'inline-block', 
-                        padding: '2px 8px', 
-                        borderRadius: '4px',
-                        backgroundColor: project.status === '已导出' ? '#e7f8ed' : 
-                                        project.status === '完成' ? '#e6f1ff' : 
-                                        '#fff4e5',
-                        color: project.status === '已导出' ? '#34c759' : 
-                              project.status === '完成' ? '#0066cc' : 
-                              '#ff9500',
-                        fontWeight: 500
-                      }}>
-                        {project.status}
-                      </div>
-                    </ListItemMeta>
-                  </ListItemInfo>
-                  <ListItemActions>
-                    <StarButton 
-                      starred={project.starred}
-                      onClick={(e) => toggleStar(project.id, e)}
-                    >
-                      {project.starred ? <StarIcon /> : <StarBorderIcon />}
-                    </StarButton>
-                    <IconButton onClick={(e) => toggleDropdown(project.id, e)}>
-                      <MoreVertIcon />
-                    </IconButton>
-                    {activeDropdown === project.id && (
-                      <Dropdown>
-                        <DropdownItem onClick={(e) => handleAction('edit', project.id, e)}>
-                          <EditIcon />
-                          编辑
-                        </DropdownItem>
-                        <DropdownItem onClick={(e) => handleAction('download', project.id, e)}>
-                          <DownloadIcon />
-                          下载
-                        </DropdownItem>
-                        <DropdownItem onClick={(e) => handleAction('share', project.id, e)}>
-                          <ShareIcon />
-                          分享
-                        </DropdownItem>
-                        <DropdownItem danger onClick={(e) => handleAction('delete', project.id, e)}>
-                          <DeleteIcon />
-                          删除
-                        </DropdownItem>
-                      </Dropdown>
-                    )}
-                  </ListItemActions>
-                </ListItemContent>
-              </ProjectListItem>
-            ))}
-          </ProjectsList>
-        )}
-      </MainContent>
-    </Container>
+                <i className="fas fa-plus"></i>
+                创建项目
+              </ActionButton>
+              
+              <QuickStartSection>
+                <QuickStartTitle>快速开始</QuickStartTitle>
+                <QuickStartGrid>
+                  <QuickStartCard
+                    onClick={() => {
+                      setIsCreateModalOpen(true);
+                      // 可以预设模板ID
+                    }}
+                  >
+                    <QuickStartIcon>
+                      <i className="fas fa-shopping-bag"></i>
+                    </QuickStartIcon>
+                    <QuickStartLabel>电商营销</QuickStartLabel>
+                  </QuickStartCard>
+                  
+                  <QuickStartCard
+                    onClick={() => {
+                      setIsCreateModalOpen(true);
+                      // 可以预设模板ID
+                    }}
+                  >
+                    <QuickStartIcon>
+                      <i className="fas fa-images"></i>
+                    </QuickStartIcon>
+                    <QuickStartLabel>社交媒体</QuickStartLabel>
+                  </QuickStartCard>
+                  
+                  <QuickStartCard
+                    onClick={() => {
+                      setIsCreateModalOpen(true);
+                      // 可以预设模板ID
+                    }}
+                  >
+                    <QuickStartIcon>
+                      <i className="fas fa-magic"></i>
+                    </QuickStartIcon>
+                    <QuickStartLabel>内容创作</QuickStartLabel>
+                  </QuickStartCard>
+                </QuickStartGrid>
+              </QuickStartSection>
+            </div>
+          )}
+        </div>
+      )}
+      
+      {/* 新建项目模态框 */}
+      <CreateProjectModal
+        isOpen={isCreateModalOpen}
+        onClose={handleCloseCreateModal}
+        onCreateProject={handleProjectCreated}
+      />
+      
+      {/* 删除确认模态框 */}
+      <DeleteConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={cancelDelete}
+        onConfirm={confirmDelete}
+        {...getDeleteConfirmInfo()}
+      />
+    </PageLayout>
   );
 };
 

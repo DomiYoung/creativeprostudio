@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
-import { useColorMode, Box, Flex, Text, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, useDisclosure, useMediaQuery } from '@chakra-ui/react';
+import { Box, Flex, Text, Button, useMediaQuery } from '@chakra-ui/react';
+import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton } from '@chakra-ui/modal';
+import { useDisclosure } from '@chakra-ui/hooks';
+import { useColorMode } from '@chakra-ui/color-mode';
 import { motion } from 'framer-motion';
 
 const LifecycleFlow = () => {

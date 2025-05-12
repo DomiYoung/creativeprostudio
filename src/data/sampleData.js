@@ -5,7 +5,9 @@ export const navigationItems = [
   { label: '后端概设', href: '/backend-design' },
   { label: '详细设计', href: '/detailed-design' },
   { label: 'UX设计', href: '/ui-guidelines' },
-  { label: '项目蓝图', href: '/project-blueprint' }
+  { label: '项目蓝图', href: '/project-blueprint' },
+  { label: '产品生命周期', href: '/product-lifecycle' },
+  { label: 'CTO汇报模板', href: '/cto-presentation' }
 ];
 
 export const cardExamples = [

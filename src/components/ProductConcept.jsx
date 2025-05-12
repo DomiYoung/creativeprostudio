@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { useColorMode, Box, Flex, Badge, useMediaQuery } from '@chakra-ui/react';
+import { Box, Flex, Badge, useMediaQuery } from '@chakra-ui/react';
+import { useColorMode } from '@chakra-ui/color-mode';
 import { motion } from 'framer-motion';
 
 const ProductConcept = () => {

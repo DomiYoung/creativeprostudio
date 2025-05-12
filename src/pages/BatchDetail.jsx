@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import PauseIcon from '@mui/icons-material/Pause';
@@ -24,6 +24,22 @@ import {
   batchItems,
   batchVersionHistory
 } from '../data/mock/batches';
+
+// 添加促销机制和背景数据
+const promotionMechanisms = [
+  { id: 'promo1', name: '买2赠3', color: '#FF3B30' },
+  { id: 'promo2', name: '买1送200毫升', color: '#FF9500' },
+  { id: 'promo3', name: '第2件半价', color: '#5856D6' },
+  { id: 'promo4', name: '满399减100', color: '#34C759' },
+  { id: 'promo5', name: '买2赠4', color: '#FF3B30' }, // 新促销机制
+];
+
+const backgroundOptions = [
+  { id: 'bg1', name: '简约白色', preview: '#FFFFFF', type: 'color' },
+  { id: 'bg2', name: '活动红', preview: '#FFE5E0', type: 'color' },
+  { id: 'bg3', name: '节日主题', preview: 'https://via.placeholder.com/100x100/F9FAFB/1D1D1F?text=节日', type: 'image' },
+  { id: 'bg4', name: '618主题', preview: 'https://via.placeholder.com/100x100/FFE5E0/1D1D1F?text=618', type: 'image' },
+];
 
 // 样式组件
 const Container = styled.div`
@@ -498,6 +514,162 @@ const StatValue = styled.div`
   margin-top: 8px;
 `;
 
+// 添加批量编辑面板样式
+const BatchEditPanel = styled(motion.div)`
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 380px;
+  height: 100vh;
+  background-color: white;
+  box-shadow: -5px 0 20px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+`;
+
+const PanelHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e0e0e0;
+`;
+
+const CloseButton = styled.button`
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #86868b;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  &:hover {
+    color: #1d1d1f;
+  }
+`;
+
+const PanelTitle = styled.h3`
+  font-size: 18px;
+  font-weight: 600;
+  color: #1d1d1f;
+  margin: 0;
+`;
+
+const OptionGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+`;
+
+const OptionCard = styled.div`
+  border: 2px solid ${props => props.selected ? '#0066cc' : '#e0e0e0'};
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+`;
+
+const ColorPreview = styled.div`
+  width: 100%;
+  height: 80px;
+  background-color: ${props => props.color};
+  border-radius: 4px;
+  margin-bottom: 8px;
+`;
+
+const ImagePreview = styled.div`
+  width: 100%;
+  height: 80px;
+  background-image: url(${props => props.src});
+  background-size: cover;
+  background-position: center;
+  border-radius: 4px;
+  margin-bottom: 8px;
+`;
+
+const PromotionPreview = styled.div`
+  padding: 8px 16px;
+  background-color: ${props => props.color};
+  color: white;
+  border-radius: 20px;
+  font-weight: 500;
+  margin-bottom: 8px;
+`;
+
+const OptionName = styled.span`
+  font-size: 14px;
+  color: #1d1d1f;
+`;
+
+const PreviewSection = styled.div`
+  margin-top: 24px;
+  
+  h4 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1d1d1f;
+    margin: 0 0 16px 0;
+  }
+`;
+
+const PreviewGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+`;
+
+const PreviewItem = styled.div`
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+`;
+
+const PreviewImage = styled.img`
+  width: 100%;
+  height: auto;
+  display: block;
+`;
+
+const PreviewOverlay = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const SelectionCount = styled.div`
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background-color: #0066cc;
+  color: white;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 12px;
+`;
+
 const BatchDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -508,6 +680,15 @@ const BatchDetail = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState('items');
+  const [progress, setProgress] = useState(68);
+  
+  // 新增批量编辑状态
+  const [showBackgroundEditPanel, setShowBackgroundEditPanel] = useState(false);
+  const [showPromotionEditPanel, setShowPromotionEditPanel] = useState(false);
+  const [selectedBackground, setSelectedBackground] = useState(null);
+  const [selectedPromotion, setSelectedPromotion] = useState(null);
+  const [previewItems, setPreviewItems] = useState([]);
+  const [selectedItemCount, setSelectedItemCount] = useState(0);
 
   useEffect(() => {
     // 模拟API调用以获取批次详情
@@ -529,7 +710,7 @@ const BatchDetail = () => {
   }, [id]);
 
   const handleBack = () => {
-    navigate('/batch-center');
+    navigate('/creativeprostudio/batch-center');
   };
 
   const getStatusText = (statusId) => {
@@ -572,6 +753,52 @@ const BatchDetail = () => {
           </ActionButton>
         );
     }
+  };
+
+  // 新增批量编辑功能函数
+  const openBackgroundEditPanel = () => {
+    setShowBackgroundEditPanel(true);
+    setShowPromotionEditPanel(false);
+    // 默认选中第一个背景
+    setSelectedBackground(backgroundOptions[0].id);
+    // 设置预览项目
+    setPreviewItems(batchItems.slice(0, 4));
+    setSelectedItemCount(batchItems.length);
+  };
+  
+  const openPromotionEditPanel = () => {
+    setShowPromotionEditPanel(true);
+    setShowBackgroundEditPanel(false);
+    // 默认选中第一个促销机制
+    setSelectedPromotion(promotionMechanisms[0].id);
+    // 设置预览项目
+    setPreviewItems(batchItems.slice(0, 4));
+    setSelectedItemCount(batchItems.length);
+  };
+  
+  const closeEditPanels = () => {
+    setShowBackgroundEditPanel(false);
+    setShowPromotionEditPanel(false);
+  };
+  
+  const handleSelectBackground = (bgId) => {
+    setSelectedBackground(bgId);
+  };
+  
+  const handleSelectPromotion = (promoId) => {
+    setSelectedPromotion(promoId);
+  };
+  
+  const applyBackgroundChange = () => {
+    alert(`批量应用背景变更到 ${selectedItemCount} 个项目`);
+    // 这里会实际更新项目背景
+    closeEditPanels();
+  };
+  
+  const applyPromotionChange = () => {
+    alert(`批量应用促销机制 "${promotionMechanisms.find(p => p.id === selectedPromotion)?.name}" 到 ${selectedItemCount} 个项目`);
+    // 这里会实际更新项目促销机制
+    closeEditPanels();
   };
 
   if (loading) {
@@ -855,7 +1082,136 @@ const BatchDetail = () => {
             </div>
           )}
         </ItemsSection>
+        
+        {/* 添加批量操作按钮 */}
+        <InfoSection>
+          <SectionTitle>
+            批量操作
+          </SectionTitle>
+          <ActionButtons>
+            <ActionButton onClick={openBackgroundEditPanel}>
+              <SettingsIcon />
+              批量更换背景
+            </ActionButton>
+            <ActionButton onClick={openPromotionEditPanel}>
+              <ReceiptIcon />
+              批量更新促销机制
+            </ActionButton>
+          </ActionButtons>
+        </InfoSection>
       </Content>
+      
+      {/* 背景批量编辑面板 */}
+      <AnimatePresence>
+        {showBackgroundEditPanel && (
+          <BatchEditPanel
+            initial={{ x: 380 }}
+            animate={{ x: 0 }}
+            exit={{ x: 380 }}
+            transition={{ type: 'spring', damping: 25 }}
+          >
+            <PanelHeader>
+              <PanelTitle>批量更换背景</PanelTitle>
+              <CloseButton onClick={closeEditPanels}>×</CloseButton>
+            </PanelHeader>
+            
+            <p>选择要应用的背景：</p>
+            
+            <OptionGrid>
+              {backgroundOptions.map(bg => (
+                <OptionCard
+                  key={bg.id}
+                  selected={selectedBackground === bg.id}
+                  onClick={() => handleSelectBackground(bg.id)}
+                >
+                  {bg.type === 'color' ? (
+                    <ColorPreview color={bg.preview} />
+                  ) : (
+                    <ImagePreview src={bg.preview} />
+                  )}
+                  <OptionName>{bg.name}</OptionName>
+                </OptionCard>
+              ))}
+            </OptionGrid>
+            
+            <PreviewSection>
+              <h4>预览效果（保持产品位置不变）</h4>
+              <PreviewGrid>
+                {previewItems.map(item => (
+                  <PreviewItem key={item.id}>
+                    <PreviewImage src={item.thumbnail} alt={item.name} />
+                    {selectedItemCount > 4 && <SelectionCount>+{selectedItemCount - 4}</SelectionCount>}
+                  </PreviewItem>
+                ))}
+              </PreviewGrid>
+            </PreviewSection>
+            
+            <div style={{ marginTop: 'auto', paddingTop: '24px' }}>
+              <ActionButton 
+                primary 
+                style={{ width: '100%' }}
+                onClick={applyBackgroundChange}
+              >
+                应用到 {selectedItemCount} 个项目
+              </ActionButton>
+            </div>
+          </BatchEditPanel>
+        )}
+        
+        {/* 促销机制批量编辑面板 */}
+        {showPromotionEditPanel && (
+          <BatchEditPanel
+            initial={{ x: 380 }}
+            animate={{ x: 0 }}
+            exit={{ x: 380 }}
+            transition={{ type: 'spring', damping: 25 }}
+          >
+            <PanelHeader>
+              <PanelTitle>批量更新促销机制</PanelTitle>
+              <CloseButton onClick={closeEditPanels}>×</CloseButton>
+            </PanelHeader>
+            
+            <p>选择要应用的促销机制：</p>
+            
+            <OptionGrid>
+              {promotionMechanisms.map(promo => (
+                <OptionCard
+                  key={promo.id}
+                  selected={selectedPromotion === promo.id}
+                  onClick={() => handleSelectPromotion(promo.id)}
+                >
+                  <PromotionPreview color={promo.color}>
+                    {promo.name}
+                  </PromotionPreview>
+                  <OptionName>{promo.name}</OptionName>
+                </OptionCard>
+              ))}
+            </OptionGrid>
+            
+            <PreviewSection>
+              <h4>应用效果预览</h4>
+              <PreviewGrid>
+                {previewItems.map(item => (
+                  <PreviewItem key={item.id}>
+                    <PreviewImage src={item.thumbnail} alt={item.name} />
+                    {selectedItemCount > 4 && <SelectionCount>+{selectedItemCount - 4}</SelectionCount>}
+                  </PreviewItem>
+                ))}
+              </PreviewGrid>
+            </PreviewSection>
+            
+            <div style={{ marginTop: 'auto', paddingTop: '24px' }}>
+              <ActionButton 
+                primary 
+                style={{ width: '100%' }}
+                onClick={applyPromotionChange}
+              >
+                应用到 {selectedItemCount} 个项目
+              </ActionButton>
+            </div>
+          </BatchEditPanel>
+        )}
+      </AnimatePresence>
     </Container>
   );
 };
