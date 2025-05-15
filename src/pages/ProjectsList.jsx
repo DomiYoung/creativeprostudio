@@ -139,14 +139,14 @@ const projects = [
   {
     id: 'creativeprostudio',
     title: 'CreativePro Studio',
-    description: '美妆与潮流创意设计平台，面向Z世代女性用户的一站式创意内容创作工具。',
+    description: 'Beauty and trend creative design platform, a one-stop creative content creation tool for Z-generation users.',
     date: '2025-04-30',
     status: 'active'
   },
   {
     id: 'zephyrdashboard',
     title: 'Zephyr Dashboard',
-    description: '智能数据可视化仪表盘项目，整合多种数据源，提供实时数据分析与决策支持。',
+    description: 'Smart data visualization dashboard project, integrating multiple data sources, providing real-time data analysis and decision support.',
     date: '2025-04-25',
     status: 'development'
   },
@@ -197,12 +197,12 @@ const ProjectsList = () => {
           <h1 className={`text-4xl sm:text-5xl font-bold tracking-tight mb-4 ${
             isDark ? 'text-white' : 'text-gray-900'
           }`}>
-            项目中心
+            Project Center
           </h1>
           <p className={`max-w-2xl mx-auto text-md md:text-lg ${
             isDark ? 'text-gray-300/90' : 'text-gray-600'
           }`}>
-            从这里访问您的所有创意项目，查看文档、管理资源和跟踪开发进度
+            Access all your creative projects, view documents, manage resources, and track development progress here.
           </p>
         </motion.div>
         
@@ -234,17 +234,17 @@ const ProjectsList = () => {
                 ? 'bg-indigo-600 hover:bg-indigo-700 text-white' 
                 : 'bg-indigo-600 hover:bg-indigo-700 text-white'
             } shadow-md`}
-            onClick={() => alert('新项目创建功能即将上线!')}
+            onClick={() => alert('New project creation feature coming soon!')}
           >
             <i className="fas fa-plus"></i>
-            <span>创建新项目</span>
+            <span>Create New Project</span>
           </button>
         </motion.div>
         
         <footer className={`text-center mt-20 py-8 border-t ${
           isDark ? 'border-gray-800 text-gray-400' : 'border-gray-200 text-gray-500'
         }`}>
-          <p>© 2025 domiyoung__ | 创意项目管理平台 | 版权所有</p>
+          <p>© 2025 domiyoung__ | Creative Project Management Platform | All Rights Reserved</p>
         </footer>
       </div>
     </div>

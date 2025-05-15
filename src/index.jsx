@@ -28,6 +28,7 @@ import DocumentationPage from './pages/DocumentationPage.jsx';
 import MaterialLibrary from './pages/MaterialLibrary.jsx';
 import ProjectDetail from './pages/ProjectDetail.jsx';
 import AIAssistant from './pages/AIAssistant.jsx';
+import EfficiencyAnalytics from './pages/EfficiencyAnalytics.jsx';
 import { ThemeProvider } from './design-system';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -43,6 +44,7 @@ root.render(
           <Route path="/creativeprostudio" element={<DocCenter />} />
           <Route path="/creativeprostudio/document/:document" element={<DocumentFrame />} />
           <Route path="/creativeprostudio/system-blueprint" element={<ProjectBlueprint />} />
+          <Route path="/creativeprostudio/project-blueprint" element={<ProjectBlueprint />} />
           <Route path="/creativeprostudio/backend-architecture" element={<BackendArchitecture />} />
           <Route path="/creativeprostudio/frontend-architecture" element={<FrontendArchitecture />} />
           <Route path="/creativeprostudio/prototype" element={<PrototypeDesign />} />
@@ -64,6 +66,7 @@ root.render(
           <Route path="/creativeprostudio/app" element={<App />} />
           <Route path="/creativeprostudio/documentation" element={<DocumentationPage />} />
           <Route path="/creativeprostudio/projects/:id" element={<ProjectDetail />} />
+          <Route path="/creativeprostudio/efficiency-analytics" element={<EfficiencyAnalytics />} />
           
           {/* 兼容旧路径的重定向 */}
           <Route path="/document/*" element={<Navigate to="/creativeprostudio" replace />} />
@@ -87,6 +90,7 @@ root.render(
           <Route path="/demo" element={<Navigate to="/creativeprostudio/demo" replace />} />
           <Route path="/app" element={<Navigate to="/creativeprostudio/app" replace />} />
           <Route path="/documentation" element={<Navigate to="/creativeprostudio/documentation" replace />} />
+          <Route path="/efficiency-analytics" element={<Navigate to="/creativeprostudio/efficiency-analytics" replace />} />
           
           {/* 404页面 */}
           <Route path="*" element={<NotFound />} />

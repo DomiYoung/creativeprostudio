@@ -40,6 +40,26 @@ const CreateButton = styled(motion.button)`
   }
 `;
 
+const AnalyticsButton = styled(motion.button)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  font-size: 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  background: linear-gradient(135deg, #5E5CE6 0%, #7B68EE 100%);
+  color: white;
+  border: none;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(94, 92, 230, 0.25);
+  margin-right: 12px;
+  
+  i {
+    margin-right: 8px;
+  }
+`;
+
 const ImportButton = styled(motion.button)`
   display: flex;
   align-items: center;
@@ -176,6 +196,11 @@ const BatchCenter = () => {
     setSearchTerm(query);
   };
 
+  // 导航到效率分析页面
+  const handleNavigateToAnalytics = () => {
+    navigate('/creativeprostudio/efficiency-analytics');
+  };
+
   // 获取类型标签
   const getProjectTags = (project) => {
     const tags = [];
@@ -227,6 +252,14 @@ const BatchCenter = () => {
           <i className="fas fa-file-import"></i>
           导入项目
         </ImportButton>
+        
+        <AnalyticsButton
+          whileHover={{ y: -4, boxShadow: '0 10px 20px rgba(94, 92, 230, 0.3)' }}
+          whileTap={{ scale: 0.95 }}
+          onClick={handleNavigateToAnalytics}
+        >
+          <i className="fas fa-chart-line"></i> 效率分析
+        </AnalyticsButton>
         
         <div style={{ flex: 1 }}></div>
         

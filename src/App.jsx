@@ -11,34 +11,14 @@ import { navigationItems, cardExamples } from './data/sampleData';
 import styled from '@emotion/styled';
 import spacing from './design-system/tokens/spacing';
 import typography from './design-system/tokens/typography';
-import MasterLibrary from './pages/MasterLibrary';
-import BatchCenter from './pages/BatchCenter';
-import BatchDetail from './pages/BatchDetail';
-import UiGuidelines from './pages/UiGuidelines';
-import ApiSpecification from './pages/ApiSpecification';
-import DatabaseDesign from './pages/DatabaseDesign';
-import InteractionGuidelines from './pages/InteractionGuidelines';
-import ProjectReport from './pages/ProjectReport';
-import ProjectBlueprint from './pages/ProjectBlueprint';
-import FrontendGuide from './pages/FrontendGuide';
-import BackendDesign from './pages/BackendDesign';
-import PrototypeDesign from './pages/PrototypeDesign';
-import ProductConcept from './components/ProductConcept';
-import LifecycleFlow from './components/LifecycleFlow';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
 import { ThemeProvider } from './design-system';
-import AssetLibrary from './pages/AssetLibrary';
-import UXDocuments from './pages/UXDocuments';
-import UXDocumentation from './design-system/ux';
-import ProductLifecyclePresentation from './pages/ProductLifecyclePresentation';
-import CtoPresentation from './pages/CtoPresentation';
 import DocCenter from './DocCenter';
 import { createGlobalStyle } from 'styled-components';
 import ProductLifecycleFlow from './components/ProductLifecycleFlow';
 import GlamShiftConcept from './components/GlamShiftConcept';
-import ProjectDetail from './pages/ProjectDetail';
-import Projects from './pages/Projects';
+import { allRoutes } from './routes/routeConfig.jsx';
 
 // 创建Chakra UI主题
 const theme = extendTheme({
@@ -691,27 +671,13 @@ function App() {
       <AppContainer>
         <Router>
           <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/master-library" element={<MasterLibrary />} />
-            <Route path="/batch-center" element={<BatchCenter />} />
-            <Route path="/batch/:id" element={<BatchDetail />} />
-            <Route path="/ui-guidelines" element={<UiGuidelines />} />
-            <Route path="/api-specification" element={<ApiSpecification />} />
-            <Route path="/database-design" element={<DatabaseDesign />} />
-            <Route path="/interaction-guidelines" element={<InteractionGuidelines />} />
-            <Route path="/project-report" element={<ProjectReport />} />
-            <Route path="/project-blueprint" element={<ProjectBlueprint />} />
-            <Route path="/frontend-guide" element={<FrontendGuide />} />
-            <Route path="/backend-design" element={<BackendDesign />} />
-            <Route path="/prototype-design" element={<PrototypeDesign />} />
-            <Route path="/doc-center" element={<DocCenter />} />
-            <Route path="/asset-library" element={<AssetLibrary />} />
-            <Route path="/ux-documents" element={<UXDocuments />} />
-            <Route path="/product-lifecycle-presentation" element={<ProductLifecyclePresentation />} />
-            <Route path="/cto-presentation" element={<CtoPresentation />} />
-            <Route path="/creativepro-studio" element={<CreativeProStudio />} />
-            <Route path="/project-detail/:id" element={<ProjectDetail />} />
-            <Route path="/projects" element={<Projects />} />
+            {allRoutes.map((route, index) => (
+              <Route 
+                key={index}
+                path={route.path} 
+                element={React.createElement(route.component)}
+              />
+            ))}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Router>

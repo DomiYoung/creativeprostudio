@@ -15,6 +15,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import HistoryIcon from '@mui/icons-material/History';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import BarChartIcon from '@mui/icons-material/BarChart';
+import TimelineIcon from '@mui/icons-material/Timeline';
 
 // 导入批量处理中心相关数据
 import { 
@@ -801,6 +802,10 @@ const BatchDetail = () => {
     closeEditPanels();
   };
 
+  const handleNavigateToAnalytics = () => {
+    navigate('/creativeprostudio/efficiency-analytics');
+  };
+
   if (loading) {
     return (
       <Container>
@@ -835,12 +840,16 @@ const BatchDetail = () => {
     <Container>
       <Header>
         <BackButton onClick={handleBack}>
-          <ArrowBackIosNewIcon /> 返回
+          <ArrowBackIosNewIcon fontSize="small" />
+          返回批量处理中心
         </BackButton>
-        <Title>{batchDetail.name}</Title>
+        <Title>
+          {batchDetail ? batchDetail.name : '批量任务详情'}
+        </Title>
         <ActionButtons>
-          <ActionButton>
-            <SettingsIcon /> 设置
+          <ActionButton onClick={handleNavigateToAnalytics}>
+            <TimelineIcon />
+            效率分析
           </ActionButton>
           {getStatusAction()}
         </ActionButtons>

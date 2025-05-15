@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
 import { useTheme } from '../index';
+import MainNavigation from '../../components/navigation/MainNavigation';
 
 // 动画变体
 const pageTransition = {
@@ -32,7 +33,7 @@ const childElement = {
 
 // 布局组件
 const Container = styled(motion.div)`
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
   background-color: ${props => props.isDark ? '#121212' : '#fafafa'};
   color: ${props => props.isDark ? '#f5f5f5' : '#212121'};
   line-height: 1.5;
@@ -44,96 +45,17 @@ const Container = styled(motion.div)`
   transition: background-color 0.3s ease, color 0.3s ease;
 `;
 
-// 页眉
-const Header = styled.header`
-  height: 64px;
-  background-color: ${props => props.isDark ? 'rgba(30, 30, 30, 0.98)' : 'rgba(255, 255, 255, 0.98)'};
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid ${props => props.isDark ? 'rgba(255, 255, 255, 0.06)' : 'rgba(0, 0, 0, 0.06)'};
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 32px;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  box-shadow: 0 1px 3px ${props => props.isDark ? 'rgba(0, 0, 0, 0.2)' : 'rgba(0, 0, 0, 0.03)'};
-  transition: background-color 0.3s ease, border-bottom 0.3s ease;
-`;
-
-const NavGroup = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-const LogoContainer = styled.div`
-  display: flex;
-  align-items: center;
-  margin-right: 32px;
-`;
-
-const Logo = styled.div`
-  font-weight: 700;
-  font-size: 18px;
-  display: flex;
-  align-items: center;
-  letter-spacing: -0.2px;
-`;
-
-const LogoText = styled.span`
-  color: ${props => props.isDark ? '#f5f5f5' : '#333'};
-  transition: color 0.3s ease;
-`;
-
-const LogoHighlight = styled.span`
-  background: linear-gradient(135deg, #FF9190 0%, #FFA194 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  text-fill-color: transparent;
-`;
-
-const NavItem = styled.a`
-  display: flex;
-  align-items: center;
-  color: ${props => props.isDark ? '#aaa' : '#555'};
-  text-decoration: none;
-  font-size: 14px;
-  padding: 0 18px;
-  height: 64px;
-  transition: all 0.2s ease;
-  font-weight: 500;
-  letter-spacing: -0.2px;
+// 主要内容
+const MainContent = styled.div`
+  padding: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  flex: 1;
   
-  &:hover, &.active {
-    color: #FF9190;
+  @media (max-width: 768px) {
+    padding: 24px;
   }
-  
-  &.active {
-    box-shadow: inset 0 -2px 0 #FF9190;
-    font-weight: 600;
-  }
-  
-  i {
-    margin-right: 8px;
-    font-size: 16px;
-  }
-`;
-
-const UserAvatar = styled(motion.div)`
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #FF9190 0%, #FFA194 100%);
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 600;
-  font-size: 14px;
-  box-shadow: 0 2px 6px rgba(255, 145, 144, 0.3);
-  cursor: pointer;
 `;
 
 // 面包屑导航
@@ -170,19 +92,6 @@ const BreadcrumbItem = styled.span`
   }
 `;
 
-// 主要内容
-const MainContent = styled.div`
-  padding: 40px;
-  max-width: 1200px;
-  margin: 0 auto;
-  width: 100%;
-  flex: 1;
-  
-  @media (max-width: 768px) {
-    padding: 24px;
-  }
-`;
-
 // 页面标题
 const PageHeaderContainer = styled(motion.div)`
   margin-bottom: 32px;
@@ -192,8 +101,9 @@ const PageTitle = styled.h1`
   font-size: 28px;
   font-weight: 700;
   margin-bottom: 12px;
-  color: ${props => props.isDark ? '#f5f5f5' : '#212121'};
+  color: ${props => props.isDark ? '#f5f5f7' : '#212121'};
   transition: color 0.3s ease;
+  letter-spacing: -0.022em;
 `;
 
 const PageDescription = styled.p`
@@ -218,7 +128,7 @@ const FooterLogo = styled.div`
   margin-bottom: 16px;
   
   span:first-of-type {
-    color: ${props => props.isDark ? '#f5f5f5' : '#333'};
+    color: ${props => props.isDark ? '#f5f5f7' : '#333'};
   }
   
   span:last-of-type {
@@ -273,17 +183,6 @@ const PageLayout = ({
   const { colorMode } = useTheme();
   const isDark = colorMode === 'dark';
   
-  // 导航项配置
-  const navItems = [
-    { id: 'home', label: '首页', icon: 'fa-home', path: '/creativeprostudio/prototype' },
-    { id: 'asset-library', label: '素材库', icon: 'fa-images', path: '/creativeprostudio/asset-library' },
-    { id: 'material-library', label: '材质库', icon: 'fa-brush', path: '/creativeprostudio/material-library' },
-    { id: 'master-library', label: '母版库', icon: 'fa-palette', path: '/creativeprostudio/master-library' },
-    { id: 'ai-assistant', label: 'AI助手', icon: 'fa-robot', path: '/creativeprostudio/ai-assistant' },
-    { id: 'batch-create', label: '批量创建', icon: 'fa-th-large', path: '/creativeprostudio/batch-create' },
-    { id: 'projects', label: '项目', icon: 'fa-folder-open', path: '/creativeprostudio/projects' }
-  ];
-
   return (
     <Container 
       variants={pageTransition}
@@ -292,36 +191,8 @@ const PageLayout = ({
       exit="exit"
       isDark={isDark}
     >
-      {/* 导航栏 */}
-      <Header isDark={isDark}>
-        <NavGroup>
-          <LogoContainer>
-            <Logo onClick={() => navigate('/creativeprostudio/prototype')} style={{ cursor: 'pointer' }}>
-              <LogoText isDark={isDark}>CreativePro </LogoText><LogoHighlight>Studio</LogoHighlight>
-            </Logo>
-          </LogoContainer>
-          
-          {navItems.map(item => (
-            <NavItem 
-              key={item.id}
-              isDark={isDark}
-              className={activeNav === item.id ? 'active' : ''}
-              onClick={() => navigate(item.path)}
-            >
-              <i className={`fas ${item.icon}`}></i> {item.label}
-            </NavItem>
-          ))}
-        </NavGroup>
-        
-        <NavGroup>
-          <UserAvatar 
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            D
-          </UserAvatar>
-        </NavGroup>
-      </Header>
+      {/* 使用统一的MainNavigation组件 */}
+      <MainNavigation />
 
       {/* 主要内容 */}
       <MainContent>
